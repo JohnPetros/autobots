@@ -11,7 +11,7 @@ public class AtualizaClienteServico {
   private VerificaStringNuloServico verificaStringServico;
 
   @Autowired
-  private AtualizaEnderoServico atualizaEnderoServico;
+  private AtualizaEnderecoServico atualizaEnderoServico;
 
   @Autowired
   private AtualizaDocumentoServico atualizaDocumentoServico;

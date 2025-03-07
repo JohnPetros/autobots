@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.autobots.server.entidades.Documento;
 import br.com.autobots.server.repositorios.DocumentoRepositorio;
 import br.com.autobots.server.servicos.AtualizaDocumentoServico;
-import lombok.Data;
 
 @RestController
 @RequestMapping("documento")
@@ -25,11 +24,6 @@ public class DocumentoControlador {
 
   @Autowired
   private AtualizaDocumentoServico atualizaDocumentoServico;
-
-  @Data
-  private static class Bo {
-    String name;
-  }
 
   @PostMapping("/cadastro")
   public void cadastrarDocumento(@RequestBody Documento documento) {
