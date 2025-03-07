@@ -14,13 +14,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity(name = "clientes")
+@Entity
+@Table(name = "clientes")
 public class Cliente extends RepresentationModel<Cliente> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

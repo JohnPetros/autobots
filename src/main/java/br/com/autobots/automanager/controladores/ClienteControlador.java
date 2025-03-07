@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.automanager.entidades.Cliente;
@@ -20,6 +21,7 @@ import br.com.autobots.automanager.servicos.AtualizaClienteServico;
 import br.com.autobots.automanager.repositorios.ClienteRepositorio;
 
 @RestController
+@RequestMapping("clientes")
 public class ClienteControlador {
   @Autowired
   private ClienteRepositorio repositorio;
@@ -28,7 +30,7 @@ public class ClienteControlador {
   @Autowired
   private AtualizaClienteServico atualizaClienteServico;
 
-  @GetMapping("/cliente/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<Cliente> obterCliente(@PathVariable long id) {
     Optional<Cliente> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -40,7 +42,7 @@ public class ClienteControlador {
     }
   }
 
-  @GetMapping("/clientes")
+  @GetMapping
   public ResponseEntity<List<Cliente>> obterClientes() {
     List<Cliente> clientes = repositorio.findAll();
     if (clientes.isEmpty()) {
@@ -53,7 +55,7 @@ public class ClienteControlador {
     }
   }
 
-  @PostMapping("/cliente/cadastro")
+  @PostMapping("/cadastro")
   public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
     HttpStatus status = HttpStatus.CONFLICT;
     if (cliente.getId() == null) {
@@ -64,7 +66,7 @@ public class ClienteControlador {
 
   }
 
-  @PutMapping("/cliente/atualizar")
+  @PutMapping("/atualizar")
   public ResponseEntity<?> atualizarCliente(@RequestBody Cliente clienteAtualizacao) {
     HttpStatus status = HttpStatus.CONFLICT;
     Optional<Cliente> cliente = repositorio.findById(clienteAtualizacao.getId());
@@ -78,7 +80,7 @@ public class ClienteControlador {
     return new ResponseEntity<>(status);
   }
 
-  @DeleteMapping("/cliente/excluir")
+  @DeleteMapping("/excluir")
   public ResponseEntity<?> excluirCliente(@RequestBody Cliente exclusao) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
     Optional<Cliente> cliente = repositorio.findById(exclusao.getId());
