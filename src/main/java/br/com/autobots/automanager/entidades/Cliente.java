@@ -1,8 +1,10 @@
-package br.com.autobots.server.entidades;
+package br.com.autobots.automanager.entidades;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.hateoas.RepresentationModel;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,11 +15,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "clientes")
-public class Cliente {
+public class Cliente extends RepresentationModel<Cliente> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

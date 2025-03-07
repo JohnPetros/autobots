@@ -1,4 +1,4 @@
-package br.com.autobots.server.controladores;
+package br.com.autobots.automanager.controladores;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.autobots.server.entidades.Endereco;
-import br.com.autobots.server.repositorios.EnderecoRepositorio;
-import br.com.autobots.server.servicos.AtualizaEnderecoServico;
+import br.com.autobots.automanager.entidades.Endereco;
+import br.com.autobots.automanager.repositorios.EnderecoRepositorio;
+import br.com.autobots.automanager.servicos.AtualizaEnderecoServico;
 
 @RestController
 @RequestMapping("endereco")

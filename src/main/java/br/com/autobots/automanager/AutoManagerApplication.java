@@ -1,13 +1,13 @@
-package br.com.autobots.server;
+package br.com.autobots.automanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ServerApplication {
+public class AutoManagerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ServerApplication.class, args);
+		SpringApplication.run(AutoManagerApplication.class, args);
 	}
 
 }

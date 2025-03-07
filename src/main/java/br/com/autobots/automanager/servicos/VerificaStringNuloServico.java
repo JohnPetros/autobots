@@ -1,4 +1,4 @@
-package br.com.autobots.server.servicos;
+package br.com.autobots.automanager.servicos;
 
 import org.springframework.stereotype.Service;
 
