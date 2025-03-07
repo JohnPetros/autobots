@@ -12,30 +12,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.autobots.server.entidades.Cliente;
 import br.com.autobots.server.entidades.Documento;
-import br.com.autobots.server.repositorios.ClienteRepositorio;
 import br.com.autobots.server.repositorios.DocumentoRepositorio;
 import br.com.autobots.server.servicos.AtualizaDocumentoServico;
+import lombok.Data;
 
 @RestController
-@RequestMapping("/documento")
+@RequestMapping("documento")
 public class DocumentoControlador {
-  @Autowired
-  private ClienteRepositorio clienteRepositorio;
-
   @Autowired
   private DocumentoRepositorio documentoRepositorio;
 
   @Autowired
   private AtualizaDocumentoServico atualizaDocumentoServico;
 
+  @Data
+  private static class Bo {
+    String name;
+  }
+
   @PostMapping("/cadastro")
   public void cadastrarDocumento(@RequestBody Documento documento) {
-    Cliente cliente = clienteRepositorio
-        .findById(documento.getCliente().getId())
-        .orElse(null);
-    documento.setCliente(cliente);
     documentoRepositorio.save(documento);
   }
 
@@ -47,6 +44,7 @@ public class DocumentoControlador {
 
   @GetMapping("/documento/{id}")
   public Documento obterDocumento(@PathVariable long id) {
+    System.out.println(id);
     var documento = documentoRepositorio.findById(id);
     return documento.get();
   }
