@@ -32,9 +32,14 @@ public class DocumentoControlador {
   @Autowired
   private AtualizaDocumentoServico atualizaDocumentoServico;
 
-  @PostMapping("/cadastro")
-  public void cadastrarDocumento(@RequestBody Documento documento) {
-    repositorio.save(documento);
+  @PostMapping
+  public ResponseEntity<?> cadastrarDocumento(@RequestBody Documento documento) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    if (documento.getId() == null) {
+      repositorio.save(documento);
+      status = HttpStatus.CREATED;
+    }
+    return new ResponseEntity<>(status);
   }
 
   @GetMapping
@@ -45,7 +50,7 @@ public class DocumentoControlador {
       return resposta;
     } else {
       adicionaLinkDocumentoServico.adicionarLink(documentos);
-      ResponseEntity<List<Documento>> resposta = new ResponseEntity<>(documentos, HttpStatus.FOUND);
+      ResponseEntity<List<Documento>> resposta = new ResponseEntity<>(documentos, HttpStatus.OK);
       return resposta;
     }
   }
@@ -62,14 +67,14 @@ public class DocumentoControlador {
     }
   }
 
-  @PutMapping("/atualizar")
+  @PutMapping
   public void atualizarDocumento(@RequestBody Documento documentoAtualizado) {
     var documento = repositorio.findById(documentoAtualizado.getId());
     atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
     repositorio.save(documento.get());
   }
 
-  @DeleteMapping("/excluir")
+  @DeleteMapping
   public void excluirDocumento(@RequestBody Documento exclusao) {
     var documento = repositorio.findById(exclusao.getId());
     repositorio.delete(documento.get());

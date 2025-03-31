@@ -50,12 +50,12 @@ public class ClienteControlador {
       return resposta;
     } else {
       adicionaLinkClienteServico.adicionarLink(clientes);
-      ResponseEntity<List<Cliente>> resposta = new ResponseEntity<>(clientes, HttpStatus.FOUND);
+      ResponseEntity<List<Cliente>> resposta = new ResponseEntity<>(clientes, HttpStatus.OK);
       return resposta;
     }
   }
 
-  @PostMapping("/cadastro")
+  @PostMapping
   public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
     HttpStatus status = HttpStatus.CONFLICT;
     if (cliente.getId() == null) {
@@ -66,11 +66,11 @@ public class ClienteControlador {
 
   }
 
-  @PutMapping("/atualizar")
+  @PutMapping
   public ResponseEntity<?> atualizarCliente(@RequestBody Cliente clienteAtualizacao) {
     HttpStatus status = HttpStatus.CONFLICT;
     Optional<Cliente> cliente = repositorio.findById(clienteAtualizacao.getId());
-    if (cliente.isEmpty()) {
+    if (cliente.isPresent()) {
       atualizaClienteServico.atualizar(cliente.get(), clienteAtualizacao);
       repositorio.save(cliente.get());
       status = HttpStatus.OK;
@@ -80,7 +80,7 @@ public class ClienteControlador {
     return new ResponseEntity<>(status);
   }
 
-  @DeleteMapping("/excluir")
+  @DeleteMapping
   public ResponseEntity<?> excluirCliente(@RequestBody Cliente exclusao) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
     Optional<Cliente> cliente = repositorio.findById(exclusao.getId());

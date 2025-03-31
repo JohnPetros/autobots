@@ -1,8 +1,11 @@
 package br.com.autobots.automanager.controladores;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,45 +17,61 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.automanager.entidades.Telefone;
 import br.com.autobots.automanager.repositorios.TelefoneRepositorio;
+import br.com.autobots.automanager.servicos.AdicionaLinkTelefoneServico;
 import br.com.autobots.automanager.servicos.AtualizaTelefoneServico;
 
 @RestController
-@RequestMapping("telefone")
+@RequestMapping("telefones")
 public class TelefoneControlador {
   @Autowired
-  private TelefoneRepositorio telefoneRepositorio;
+  private TelefoneRepositorio repositorio;
 
   @Autowired
-  private AtualizaTelefoneServico TtualizatelefoneServico;
+  private AtualizaTelefoneServico atualizaTelefoneServico;
 
-  @PostMapping("/cadastro")
-  public void Cadastrartelefone(@RequestBody Telefone Telefone) {
-    telefoneRepositorio.save(Telefone);
+  @Autowired
+  private AdicionaLinkTelefoneServico adicionaLinkTelefoneServico;
+
+  @PostMapping
+  public void cadastrarTelefone(@RequestBody Telefone telefone) {
+    repositorio.save(telefone);
   }
 
-  @GetMapping("/telefones")
-  public List<Telefone> Obtertelefones() {
-    List<Telefone> Telefones = telefoneRepositorio.findAll();
-    return Telefones;
+  @GetMapping
+  public ResponseEntity<List<Telefone>> obterTelefones() {
+    List<Telefone> telefones = repositorio.findAll();
+    if (telefones.isEmpty()) {
+      ResponseEntity<List<Telefone>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return resposta;
+    } else {
+      adicionaLinkTelefoneServico.adicionarLink(telefones);
+      ResponseEntity<List<Telefone>> resposta = new ResponseEntity<>(telefones, HttpStatus.OK);
+      return resposta;
+    }
   }
 
-  @GetMapping("/telefone/{id}")
-  public Telefone Obtertelefone(@PathVariable long id) {
-    System.out.println(id);
-    var Telefone = telefoneRepositorio.findById(id);
-    return Telefone.get();
+  @GetMapping("/{id}")
+  public ResponseEntity<Telefone> obterTelefone(@PathVariable long id) {
+    Optional<Telefone> cliente = repositorio.findById(id);
+    if (cliente.isEmpty()) {
+      ResponseEntity<Telefone> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return resposta;
+    } else {
+      adicionaLinkTelefoneServico.adicionarLink(cliente.get());
+      return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
+    }
   }
 
-  @PutMapping("/atualizar")
-  public void Atualizartelefone(@RequestBody Telefone telefoneAtualizado) {
-    var telefone = telefoneRepositorio.findById(telefoneAtualizado.getId());
-    TtualizatelefoneServico.atualizar(telefone.get(), telefoneAtualizado);
-    telefoneRepositorio.save(telefone.get());
+  @PutMapping
+  public void atualizarTelefone(@RequestBody Telefone TelefoneAtualizado) {
+    var telefone = repositorio.findById(TelefoneAtualizado.getId());
+    atualizaTelefoneServico.atualizar(telefone.get(), TelefoneAtualizado);
+    repositorio.save(telefone.get());
   }
 
-  @DeleteMapping("/excluir")
-  public void Excluirtelefone(@RequestBody Telefone exclusao) {
-    var telefone = telefoneRepositorio.findById(exclusao.getId());
-    telefoneRepositorio.delete(telefone.get());
+  @DeleteMapping
+  public void excluirTelefone(@RequestBody Telefone exclusao) {
+    var telefone = repositorio.findById(exclusao.getId());
+    repositorio.delete(telefone.get());
   }
 }
