@@ -12,7 +12,7 @@ import br.com.autobots.automanager.entidades.Mercadoria;
 import br.com.autobots.automanager.entidades.Servico;
 
 @Service
-public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Servico> {
+public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercadoria> {
 
   @Override
   public void adicionarLink(List<Mercadoria> mercadorias) {
@@ -37,7 +37,6 @@ public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Servic
 
   @Override
   public void adicionarLink(Servico objeto) {
-    // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'adicionarLink'");
   }
 

@@ -2,6 +2,8 @@ package br.com.autobots.automanager.entidades;
 
 import java.util.Date;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "mercadorias")
-public class Mercadoria {
+public class Mercadoria extends RepresentationModel<Mercadoria> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
