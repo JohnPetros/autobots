@@ -21,7 +21,7 @@ import br.com.autobots.automanager.servicos.AtualizaClienteServico;
 import br.com.autobots.automanager.repositorios.ClienteRepositorio;
 
 @RestController
-@RequestMapping("clientes")
+@RequestMapping
 public class ClienteControlador {
   @Autowired
   private ClienteRepositorio repositorio;
@@ -30,7 +30,7 @@ public class ClienteControlador {
   @Autowired
   private AtualizaClienteServico atualizaClienteServico;
 
-  @GetMapping("/{id}")
+  @GetMapping("/cliente/{id}")
   public ResponseEntity<Cliente> obterCliente(@PathVariable long id) {
     Optional<Cliente> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -42,7 +42,7 @@ public class ClienteControlador {
     }
   }
 
-  @GetMapping
+  @GetMapping("/clientes")
   public ResponseEntity<List<Cliente>> obterClientes() {
     List<Cliente> clientes = repositorio.findAll();
     if (clientes.isEmpty()) {
@@ -55,7 +55,7 @@ public class ClienteControlador {
     }
   }
 
-  @PostMapping
+  @PostMapping("/cliente/cadastrar")
   public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
     HttpStatus status = HttpStatus.CONFLICT;
     if (cliente.getId() == null) {
@@ -66,7 +66,7 @@ public class ClienteControlador {
 
   }
 
-  @PutMapping
+  @PutMapping("/cliente/atualizar")
   public ResponseEntity<?> atualizarCliente(@RequestBody Cliente clienteAtualizacao) {
     HttpStatus status = HttpStatus.CONFLICT;
     Optional<Cliente> cliente = repositorio.findById(clienteAtualizacao.getId());
@@ -80,7 +80,7 @@ public class ClienteControlador {
     return new ResponseEntity<>(status);
   }
 
-  @DeleteMapping
+  @DeleteMapping("/cliente/excluir")
   public ResponseEntity<?> excluirCliente(@RequestBody Cliente exclusao) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
     Optional<Cliente> cliente = repositorio.findById(exclusao.getId());

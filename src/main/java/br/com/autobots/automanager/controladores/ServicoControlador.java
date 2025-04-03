@@ -18,25 +18,31 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.autobots.automanager.entidades.Servico;
 import br.com.autobots.automanager.repositorios.ServicoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkServicoServico;
+import br.com.autobots.automanager.servicos.AtualizaServicoServico;
 
 @RestController
-@RequestMapping("servicos")
+@RequestMapping
 public class ServicoControlador {
   @Autowired
   private ServicoRepositorio repositorio;
 
   @Autowired
-  private AtualizaServicoServico atualizaServicoServico;
-
-  @Autowired
   private AdicionaLinkServicoServico adicionaLinkServicoServico;
 
-  @PostMapping
-  public void cadastrarServico(@RequestBody Servico servico) {
-    repositorio.save(servico);
+  @Autowired
+  private AtualizaServicoServico atualizaServicoServico;
+
+  @PostMapping("/servico/cadastrar")
+  public ResponseEntity<?> cadastrarServico(@RequestBody Servico servico) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    if (servico.getId() == null) {
+      repositorio.save(servico);
+      status = HttpStatus.CREATED;
+    }
+    return new ResponseEntity<>(status);
   }
 
-  @GetMapping
+  @GetMapping("/servicos")
   public ResponseEntity<List<Servico>> obterServicos() {
     List<Servico> servicos = repositorio.findAll();
     if (servicos.isEmpty()) {
@@ -49,7 +55,7 @@ public class ServicoControlador {
     }
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/servico/{id}")
   public ResponseEntity<Servico> obterServico(@PathVariable long id) {
     Optional<Servico> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -61,14 +67,14 @@ public class ServicoControlador {
     }
   }
 
-  @PutMapping
-  public void atualizarServico(@RequestBody Servico ServicoAtualizado) {
-    var servico = repositorio.findById(ServicoAtualizado.getId());
-    atualizaServicoServico.atualizar(servico.get(), ServicoAtualizado);
+  @PutMapping("/servico/atualizar")
+  public void atualizarServico(@RequestBody Servico servicoAtualizado) {
+    var servico = repositorio.findById(servicoAtualizado.getId());
+    atualizaServicoServico.atualizar(servico.get(), servicoAtualizado);
     repositorio.save(servico.get());
   }
 
-  @DeleteMapping
+  @DeleteMapping("/servico/excluir")
   public void excluirServico(@RequestBody Servico exclusao) {
     var servico = repositorio.findById(exclusao.getId());
     repositorio.delete(servico.get());

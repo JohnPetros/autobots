@@ -7,9 +7,8 @@ import java.util.List;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
-import br.com.autobots.automanager.controladores.ServicoControlador;
+import br.com.autobots.automanager.controladores.MercadoriaControlador;
 import br.com.autobots.automanager.entidades.Mercadoria;
-import br.com.autobots.automanager.entidades.Servico;
 
 @Service
 public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercadoria> {
@@ -34,10 +33,4 @@ public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercad
         .withRel("mercadorias");
     mercadoria.add(linkProprio);
   }
-
-  @Override
-  public void adicionarLink(Servico objeto) {
-    throw new UnsupportedOperationException("Unimplemented method 'adicionarLink'");
-  }
-
 }

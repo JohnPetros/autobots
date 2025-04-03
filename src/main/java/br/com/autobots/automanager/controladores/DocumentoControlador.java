@@ -21,7 +21,7 @@ import br.com.autobots.automanager.servicos.AdicionaLinkDocumentoServico;
 import br.com.autobots.automanager.servicos.AtualizaDocumentoServico;
 
 @RestController
-@RequestMapping("documentos")
+@RequestMapping
 public class DocumentoControlador {
   @Autowired
   private DocumentoRepositorio repositorio;
@@ -32,7 +32,7 @@ public class DocumentoControlador {
   @Autowired
   private AtualizaDocumentoServico atualizaDocumentoServico;
 
-  @PostMapping
+  @PostMapping("/documento/cadastrar")
   public ResponseEntity<?> cadastrarDocumento(@RequestBody Documento documento) {
     HttpStatus status = HttpStatus.CONFLICT;
     if (documento.getId() == null) {
@@ -42,7 +42,7 @@ public class DocumentoControlador {
     return new ResponseEntity<>(status);
   }
 
-  @GetMapping
+  @GetMapping("/documentos")
   public ResponseEntity<List<Documento>> obterDocumentos() {
     List<Documento> documentos = repositorio.findAll();
     if (documentos.isEmpty()) {
@@ -55,7 +55,7 @@ public class DocumentoControlador {
     }
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/documento/{id}")
   public ResponseEntity<Documento> obterDocumento(@PathVariable long id) {
     Optional<Documento> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -67,14 +67,14 @@ public class DocumentoControlador {
     }
   }
 
-  @PutMapping
+  @PutMapping("/documento/atualizar")
   public void atualizarDocumento(@RequestBody Documento documentoAtualizado) {
     var documento = repositorio.findById(documentoAtualizado.getId());
     atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
     repositorio.save(documento.get());
   }
 
-  @DeleteMapping
+  @DeleteMapping("/documento/excluir")
   public void excluirDocumento(@RequestBody Documento exclusao) {
     var documento = repositorio.findById(exclusao.getId());
     repositorio.delete(documento.get());

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.autobots.automanager.entidades.Mercadoria;
 
-public class AtualizaMercadoriaMercadoria {
+public class AtualizaMercadoriaServico {
   @Autowired
   private VerificaStringNuloServico verificaStringServico;
 

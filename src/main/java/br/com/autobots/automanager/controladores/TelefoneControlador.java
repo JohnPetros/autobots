@@ -21,7 +21,7 @@ import br.com.autobots.automanager.servicos.AdicionaLinkTelefoneServico;
 import br.com.autobots.automanager.servicos.AtualizaTelefoneServico;
 
 @RestController
-@RequestMapping("telefones")
+@RequestMapping
 public class TelefoneControlador {
   @Autowired
   private TelefoneRepositorio repositorio;
@@ -32,12 +32,12 @@ public class TelefoneControlador {
   @Autowired
   private AdicionaLinkTelefoneServico adicionaLinkTelefoneServico;
 
-  @PostMapping
+  @PostMapping("/telefone/cadastrar")
   public void cadastrarTelefone(@RequestBody Telefone telefone) {
     repositorio.save(telefone);
   }
 
-  @GetMapping
+  @GetMapping("/telefones")
   public ResponseEntity<List<Telefone>> obterTelefones() {
     List<Telefone> telefones = repositorio.findAll();
     if (telefones.isEmpty()) {
@@ -50,7 +50,7 @@ public class TelefoneControlador {
     }
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/telefone/{id}")
   public ResponseEntity<Telefone> obterTelefone(@PathVariable long id) {
     Optional<Telefone> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -62,14 +62,14 @@ public class TelefoneControlador {
     }
   }
 
-  @PutMapping
+  @PutMapping("/telefone/atualizar")
   public void atualizarTelefone(@RequestBody Telefone TelefoneAtualizado) {
     var telefone = repositorio.findById(TelefoneAtualizado.getId());
     atualizaTelefoneServico.atualizar(telefone.get(), TelefoneAtualizado);
     repositorio.save(telefone.get());
   }
 
-  @DeleteMapping
+  @DeleteMapping("/telefone/excluir")
   public void excluirTelefone(@RequestBody Telefone exclusao) {
     var telefone = repositorio.findById(exclusao.getId());
     repositorio.delete(telefone.get());
