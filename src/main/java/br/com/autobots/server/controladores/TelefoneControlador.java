@@ -12,46 +12,60 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.autobots.server.dtos.TelefoneDto;
 import br.com.autobots.server.entidades.Telefone;
 import br.com.autobots.server.repositorios.TelefoneRepositorio;
 import br.com.autobots.server.servicos.AtualizaTelefoneServico;
+import br.com.autobots.server.servicos.CadastraTelefoneServico;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("telefone")
+@Tag(name = "Telefone", description = "CRUD de telefones")
 public class TelefoneControlador {
   @Autowired
   private TelefoneRepositorio telefoneRepositorio;
 
   @Autowired
-  private AtualizaTelefoneServico TtualizatelefoneServico;
+  private AtualizaTelefoneServico atualizaTelefoneServico;
+
+  @Autowired
+  private CadastraTelefoneServico cadastraTelefoneServico;
 
   @PostMapping("/cadastro")
-  public void Cadastrartelefone(@RequestBody Telefone Telefone) {
-    telefoneRepositorio.save(Telefone);
+  @Operation(summary = "Cadastrar telefone", description = "Cadastra um novo telefone")
+  public void cadastrarTelefone(@RequestBody TelefoneDto telefone) {
+    var telefoneEntity = cadastraTelefoneServico.cadastrar(telefone);
+    telefoneRepositorio.save(telefoneEntity);
   }
 
   @GetMapping("/telefones")
-  public List<Telefone> Obtertelefones() {
+  @Operation(summary = "Obter todos os telefones", description = "Retorna uma lista de todos os telefones cadastrados")
+  public List<Telefone> obtertelefones() {
     List<Telefone> Telefones = telefoneRepositorio.findAll();
     return Telefones;
   }
 
   @GetMapping("/telefone/{id}")
-  public Telefone Obtertelefone(@PathVariable long id) {
+  @Operation(summary = "Obter telefone", description = "Retorna um telefone específico com base no ID fornecido")
+  public Telefone obtertelefone(@PathVariable long id) {
     System.out.println(id);
     var Telefone = telefoneRepositorio.findById(id);
     return Telefone.get();
   }
 
   @PutMapping("/atualizar")
-  public void Atualizartelefone(@RequestBody Telefone telefoneAtualizado) {
+  @Operation(summary = "Atualizar telefone", description = "Atualiza as informações de um telefone existente")
+  public void atualizartelefone(@RequestBody Telefone telefoneAtualizado) {
     var telefone = telefoneRepositorio.findById(telefoneAtualizado.getId());
-    TtualizatelefoneServico.atualizar(telefone.get(), telefoneAtualizado);
+    atualizaTelefoneServico.atualizar(telefone.get(), telefoneAtualizado);
     telefoneRepositorio.save(telefone.get());
   }
 
   @DeleteMapping("/excluir")
-  public void Excluirtelefone(@RequestBody Telefone exclusao) {
+  @Operation(summary = "Excluir telefone", description = "Exclui um telefone existente")
+  public void excluirtelfone(@RequestBody Telefone exclusao) {
     var telefone = telefoneRepositorio.findById(exclusao.getId());
     telefoneRepositorio.delete(telefone.get());
   }
