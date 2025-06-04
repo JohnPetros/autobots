@@ -19,9 +19,12 @@ import br.com.autobots.automanager.entidades.Telefone;
 import br.com.autobots.automanager.repositorios.TelefoneRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkTelefoneServico;
 import br.com.autobots.automanager.servicos.AtualizaTelefoneServico;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("telefones")
+@Tag(name = "Telefone", description = "CRUD de telefones")
 public class TelefoneControlador {
   @Autowired
   private TelefoneRepositorio repositorio;
@@ -33,11 +36,18 @@ public class TelefoneControlador {
   private AdicionaLinkTelefoneServico adicionaLinkTelefoneServico;
 
   @PostMapping
-  public void cadastrarTelefone(@RequestBody Telefone telefone) {
-    repositorio.save(telefone);
+  @Operation(summary = "Cadastrar telefone", description = "Cadastra um novo telefone")
+  public ResponseEntity<?> cadastrarTelefone(@RequestBody Telefone telefone) {
+    Optional<Telefone> telefoneExistente = repositorio.findById(telefone.getId());
+    if (telefoneExistente.isEmpty()) {
+      repositorio.save(telefone);
+      return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    return new ResponseEntity<>(HttpStatus.CONFLICT);
   }
 
   @GetMapping
+  @Operation(summary = "Obter todos os telefones", description = "Retorna uma lista de todos os telefones cadastrados")
   public ResponseEntity<List<Telefone>> obterTelefones() {
     List<Telefone> telefones = repositorio.findAll();
     if (telefones.isEmpty()) {
@@ -51,6 +61,7 @@ public class TelefoneControlador {
   }
 
   @GetMapping("/{id}")
+  @Operation(summary = "Obter telefone", description = "Retorna um telefone específico com base no ID fornecido")
   public ResponseEntity<Telefone> obterTelefone(@PathVariable long id) {
     Optional<Telefone> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -63,6 +74,7 @@ public class TelefoneControlador {
   }
 
   @PutMapping
+  @Operation(summary = "Atualizar telefone", description = "Atualiza as informações de um telefone existente")
   public void atualizarTelefone(@RequestBody Telefone TelefoneAtualizado) {
     var telefone = repositorio.findById(TelefoneAtualizado.getId());
     atualizaTelefoneServico.atualizar(telefone.get(), TelefoneAtualizado);
@@ -70,6 +82,7 @@ public class TelefoneControlador {
   }
 
   @DeleteMapping
+  @Operation(summary = "Excluir telefone", description = "Exclui um telefone existente")
   public void excluirTelefone(@RequestBody Telefone exclusao) {
     var telefone = repositorio.findById(exclusao.getId());
     repositorio.delete(telefone.get());

@@ -19,9 +19,12 @@ import br.com.autobots.automanager.entidades.Endereco;
 import br.com.autobots.automanager.repositorios.EnderecoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkEnderecoServico;
 import br.com.autobots.automanager.servicos.AtualizaEnderecoServico;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("enderecos")
+@Tag(name = "Endereço", description = "CRUD de endereços")
 public class EnderecoControlador {
   @Autowired
   private EnderecoRepositorio repositorio;
@@ -33,11 +36,18 @@ public class EnderecoControlador {
   private AdicionaLinkEnderecoServico adicionaLinkEnderecoServico;
 
   @PostMapping
-  public void cadastrarEndereco(@RequestBody Endereco endereco) {
-    repositorio.save(endereco);
+  @Operation(summary = "Cadastrar endereço", description = "Cadastra um novo endereço")
+  public ResponseEntity<?> cadastrarEndereco(@RequestBody Endereco endereco) {
+    Optional<Endereco> enderecoExistente = repositorio.findById(endereco.getId());
+    if (enderecoExistente.isEmpty()) {
+      repositorio.save(endereco);
+      return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    return new ResponseEntity<>(HttpStatus.CONFLICT);
   }
 
   @GetMapping
+  @Operation(summary = "Obter todos os endereços", description = "Retorna uma lista de todos os endereços cadastrados")
   public ResponseEntity<List<Endereco>> obterEnderecos() {
     List<Endereco> enderecos = repositorio.findAll();
     if (enderecos.isEmpty()) {
@@ -51,6 +61,7 @@ public class EnderecoControlador {
   }
 
   @GetMapping("/{id}")
+  @Operation(summary = "Obter endereço", description = "Retorna um endereço específico com base no ID fornecido")
   public ResponseEntity<Endereco> obterEndereco(@PathVariable long id) {
     Optional<Endereco> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -63,6 +74,7 @@ public class EnderecoControlador {
   }
 
   @PutMapping
+  @Operation(summary = "Atualizar endereço", description = "Atualiza as informações de um endereço existente")
   public void atualizarEndereco(@RequestBody Endereco EnderecoAtualizado) {
     var endereco = repositorio.findById(EnderecoAtualizado.getId());
     atualizaEnderecoServico.atualizar(endereco.get(), EnderecoAtualizado);
@@ -70,6 +82,7 @@ public class EnderecoControlador {
   }
 
   @DeleteMapping
+  @Operation(summary = "Excluir endereço", description = "Exclui um endereço existente")
   public void excluirEndereco(@RequestBody Endereco exclusao) {
     var endereco = repositorio.findById(exclusao.getId());
     repositorio.delete(endereco.get());

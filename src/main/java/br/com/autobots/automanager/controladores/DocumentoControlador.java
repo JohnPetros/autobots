@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import br.com.autobots.automanager.entidades.Documento;
 import br.com.autobots.automanager.repositorios.DocumentoRepositorio;
@@ -22,6 +24,7 @@ import br.com.autobots.automanager.servicos.AtualizaDocumentoServico;
 
 @RestController
 @RequestMapping("documentos")
+@Tag(name = "Documento", description = "CRUD de documentos")
 public class DocumentoControlador {
   @Autowired
   private DocumentoRepositorio repositorio;
@@ -33,16 +36,18 @@ public class DocumentoControlador {
   private AtualizaDocumentoServico atualizaDocumentoServico;
 
   @PostMapping
+  @Operation(summary = "Cadastrar documento", description = "Cadastra um novo documento")
   public ResponseEntity<?> cadastrarDocumento(@RequestBody Documento documento) {
-    HttpStatus status = HttpStatus.CONFLICT;
-    if (documento.getId() == null) {
+    Optional<Documento> documentoExistente = repositorio.findById(documento.getId());
+    if (documentoExistente.isEmpty()) {
       repositorio.save(documento);
-      status = HttpStatus.CREATED;
+      return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    return new ResponseEntity<>(status);
+    return new ResponseEntity<>(HttpStatus.CONFLICT);
   }
 
   @GetMapping
+  @Operation(summary = "Obter todos os documentos", description = "Retorna uma lista de todos os documentos cadastrados")
   public ResponseEntity<List<Documento>> obterDocumentos() {
     List<Documento> documentos = repositorio.findAll();
     if (documentos.isEmpty()) {
@@ -56,6 +61,7 @@ public class DocumentoControlador {
   }
 
   @GetMapping("/{id}")
+  @Operation(summary = "Obter documento", description = "Retorna um documento específico com base no ID fornecido")
   public ResponseEntity<Documento> obterDocumento(@PathVariable long id) {
     Optional<Documento> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -68,6 +74,7 @@ public class DocumentoControlador {
   }
 
   @PutMapping
+  @Operation(summary = "Atualizar documento", description = "Atualiza as informações de um documento existente")
   public void atualizarDocumento(@RequestBody Documento documentoAtualizado) {
     var documento = repositorio.findById(documentoAtualizado.getId());
     atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
@@ -75,6 +82,7 @@ public class DocumentoControlador {
   }
 
   @DeleteMapping
+  @Operation(summary = "Excluir documento", description = "Exclui um documento existente")
   public void excluirDocumento(@RequestBody Documento exclusao) {
     var documento = repositorio.findById(exclusao.getId());
     repositorio.delete(documento.get());

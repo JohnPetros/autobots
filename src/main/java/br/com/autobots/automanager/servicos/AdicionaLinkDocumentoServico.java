@@ -13,7 +13,7 @@ import br.com.autobots.automanager.entidades.Documento;
 public class AdicionaLinkDocumentoServico implements AdicionaLinkServico<Documento> {
 
   @Override
-  public void adicionarLink(List<Documento> documentos) {
+  public List<Documento> adicionarLink(List<Documento> documentos) {
     for (Documento documento : documentos) {
       long id = documento.getId();
       Link linkProprio = WebMvcLinkBuilder
@@ -21,16 +21,17 @@ public class AdicionaLinkDocumentoServico implements AdicionaLinkServico<Documen
           .withSelfRel();
       documento.add(linkProprio);
     }
+    return documentos;
   }
 
   @Override
-  public void adicionarLink(Documento documento) {
+  public Documento adicionarLink(Documento documento) {
     Link linkProprio = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(DocumentoControlador.class)
             .obterDocumentos())
         .withRel("documentos");
     documento.add(linkProprio);
+    return documento;
   }
-
 }

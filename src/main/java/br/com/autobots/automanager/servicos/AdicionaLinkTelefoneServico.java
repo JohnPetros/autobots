@@ -13,7 +13,7 @@ import br.com.autobots.automanager.entidades.Telefone;
 public class AdicionaLinkTelefoneServico implements AdicionaLinkServico<Telefone> {
 
   @Override
-  public void adicionarLink(List<Telefone> telefones) {
+  public List<Telefone> adicionarLink(List<Telefone> telefones) {
     for (Telefone telefone : telefones) {
       long id = telefone.getId();
       Link linkProprio = WebMvcLinkBuilder
@@ -21,16 +21,18 @@ public class AdicionaLinkTelefoneServico implements AdicionaLinkServico<Telefone
           .withSelfRel();
       telefone.add(linkProprio);
     }
+    return telefones;
   }
 
   @Override
-  public void adicionarLink(Telefone telefone) {
+  public Telefone adicionarLink(Telefone telefone) {
     Link linkProprio = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(TelefoneControlador.class)
             .obterTelefones())
         .withRel("telefones");
     telefone.add(linkProprio);
+    return telefone;
   }
 
 }

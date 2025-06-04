@@ -2,18 +2,27 @@ package br.com.autobots.automanager.servicos;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.controladores.ClienteControlador;
 import br.com.autobots.automanager.entidades.Cliente;
 
-@Component
+@Service
 public class AdicionaLinkClienteServico implements AdicionaLinkServico<Cliente> {
+	@Autowired
+	private AdicionaLinkDocumentoServico adicionaLinkDocumentoServico;
+
+	@Autowired
+	private AdicionaLinkTelefoneServico adicionaLinkTelefoneServico;
+
+	@Autowired
+	private AdicionaLinkEnderecoServico adicionaLinkEnderecoServico;
 
 	@Override
-	public void adicionarLink(List<Cliente> clientes) {
+	public List<Cliente> adicionarLink(List<Cliente> clientes) {
 		for (Cliente cliente : clientes) {
 			long id = cliente.getId();
 			Link linkProprio = WebMvcLinkBuilder
@@ -21,15 +30,40 @@ public class AdicionaLinkClienteServico implements AdicionaLinkServico<Cliente> 
 					.withSelfRel();
 			cliente.add(linkProprio);
 		}
+		return clientes;
 	}
 
 	@Override
-	public void adicionarLink(Cliente cliente) {
+	public Cliente adicionarLink(Cliente cliente) {
 		Link linkProprio = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(ClienteControlador.class)
 						.obterClientes())
-				.withRel("clientes");
+				.withSelfRel();
+		Link linkCadastrar = WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder
+						.methodOn(ClienteControlador.class)
+						.cadastrarCliente(null))
+				.withRel("cadastrar");
+		Link linkAtualizar = WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder
+						.methodOn(ClienteControlador.class)
+						.atualizarCliente(null))
+				.withRel("atualizar");
+		Link linkExcluir = WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder
+						.methodOn(ClienteControlador.class)
+						.excluirCliente(null))
+				.withRel("excluir");
+		var documentos = adicionaLinkDocumentoServico.adicionarLink(cliente.getDocumentos());
+		// var telefones =
+		// adicionaLinkTelefoneServico.adicionarLink(cliente.getTelefones());
+		// var endereco =
+		// adicionaLinkEnderecoServico.adicionarLink(cliente.getEndereco());
 		cliente.add(linkProprio);
+		cliente.add(linkCadastrar);
+		cliente.add(linkAtualizar);
+		cliente.add(linkExcluir);
+		return cliente;
 	}
 }
