@@ -22,24 +22,19 @@ public class AdicionaLinkClienteServico implements AdicionaLinkServico<Cliente> 
 	private AdicionaLinkEnderecoServico adicionaLinkEnderecoServico;
 
 	@Override
-	public List<Cliente> adicionarLink(List<Cliente> clientes) {
+	public void adicionarLink(List<Cliente> clientes) {
 		for (Cliente cliente : clientes) {
-			long id = cliente.getId();
-			Link linkProprio = WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder.methodOn(ClienteControlador.class).obterCliente(id))
-					.withSelfRel();
-			cliente.add(linkProprio);
+			adicionarLink(cliente);
 		}
-		return clientes;
 	}
 
 	@Override
-	public Cliente adicionarLink(Cliente cliente) {
+	public void adicionarLink(Cliente cliente) {
 		Link linkProprio = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(ClienteControlador.class)
 						.obterClientes())
-				.withSelfRel();
+				.withRel("obter-todos");
 		Link linkCadastrar = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(ClienteControlador.class)
@@ -55,15 +50,14 @@ public class AdicionaLinkClienteServico implements AdicionaLinkServico<Cliente> 
 						.methodOn(ClienteControlador.class)
 						.excluirCliente(null))
 				.withRel("excluir");
-		var documentos = adicionaLinkDocumentoServico.adicionarLink(cliente.getDocumentos());
-		// var telefones =
-		// adicionaLinkTelefoneServico.adicionarLink(cliente.getTelefones());
-		// var endereco =
-		// adicionaLinkEnderecoServico.adicionarLink(cliente.getEndereco());
+		adicionaLinkDocumentoServico.adicionarLink(cliente.getDocumentos());
+		adicionaLinkTelefoneServico.adicionarLink(cliente.getTelefones());
+		if (cliente.getEndereco() != null) {
+			adicionaLinkEnderecoServico.adicionarLink(cliente.getEndereco());
+		}
 		cliente.add(linkProprio);
 		cliente.add(linkCadastrar);
 		cliente.add(linkAtualizar);
 		cliente.add(linkExcluir);
-		return cliente;
 	}
 }

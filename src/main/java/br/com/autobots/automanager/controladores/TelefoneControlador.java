@@ -12,42 +12,53 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import br.com.autobots.automanager.entidades.Telefone;
 import br.com.autobots.automanager.repositorios.TelefoneRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkTelefoneServico;
 import br.com.autobots.automanager.servicos.AtualizaTelefoneServico;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping("telefones")
 @Tag(name = "Telefone", description = "CRUD de telefones")
 public class TelefoneControlador {
   @Autowired
   private TelefoneRepositorio repositorio;
 
   @Autowired
-  private AtualizaTelefoneServico atualizaTelefoneServico;
-
-  @Autowired
   private AdicionaLinkTelefoneServico adicionaLinkTelefoneServico;
 
-  @PostMapping
+  @Autowired
+  private AtualizaTelefoneServico atualizaTelefoneServico;
+
+  @PostMapping("/telefone/cadastrar")
   @Operation(summary = "Cadastrar telefone", description = "Cadastra um novo telefone")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Telefone cadastrado com sucesso"),
+      @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
+  })
   public ResponseEntity<?> cadastrarTelefone(@RequestBody Telefone telefone) {
     Optional<Telefone> telefoneExistente = repositorio.findById(telefone.getId());
-    if (telefoneExistente.isEmpty()) {
-      repositorio.save(telefone);
-      return new ResponseEntity<>(HttpStatus.CREATED);
+    if (telefoneExistente.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    return new ResponseEntity<>(HttpStatus.CONFLICT);
+    repositorio.save(telefone);
+    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping
+  @GetMapping("/telefones")
   @Operation(summary = "Obter todos os telefones", description = "Retorna uma lista de todos os telefones cadastrados")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Telefones encontrados", content = @Content(schema = @Schema(implementation = List.class))),
+      @ApiResponse(responseCode = "404", description = "Nenhum telefone cadastrado")
+  })
   public ResponseEntity<List<Telefone>> obterTelefones() {
     List<Telefone> telefones = repositorio.findAll();
     if (telefones.isEmpty()) {
@@ -60,8 +71,12 @@ public class TelefoneControlador {
     }
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/telefone/{id}")
   @Operation(summary = "Obter telefone", description = "Retorna um telefone específico com base no ID fornecido")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Telefone encontrado", content = @Content(schema = @Schema(implementation = Telefone.class))),
+      @ApiResponse(responseCode = "404", description = "Telefone não encontrado")
+  })
   public ResponseEntity<Telefone> obterTelefone(@PathVariable long id) {
     Optional<Telefone> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -73,18 +88,35 @@ public class TelefoneControlador {
     }
   }
 
-  @PutMapping
+  @PutMapping("/telefone/atualizar")
   @Operation(summary = "Atualizar telefone", description = "Atualiza as informações de um telefone existente")
-  public void atualizarTelefone(@RequestBody Telefone TelefoneAtualizado) {
-    var telefone = repositorio.findById(TelefoneAtualizado.getId());
-    atualizaTelefoneServico.atualizar(telefone.get(), TelefoneAtualizado);
-    repositorio.save(telefone.get());
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Telefone atualizado com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Telefone não encontrado")
+  })
+  public ResponseEntity<?> atualizarTelefone(@RequestBody Telefone telefoneAtualizado) {
+    Optional<Telefone> telefone = repositorio.findById(telefoneAtualizado.getId());
+    if (telefone.isPresent()) {
+      atualizaTelefoneServico.atualizar(telefone.get(), telefoneAtualizado);
+      repositorio.save(telefone.get());
+      return new ResponseEntity<>(HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
-  @DeleteMapping
+  @DeleteMapping("/telefone/excluir")
   @Operation(summary = "Excluir telefone", description = "Exclui um telefone existente")
-  public void excluirTelefone(@RequestBody Telefone exclusao) {
-    var telefone = repositorio.findById(exclusao.getId());
-    repositorio.delete(telefone.get());
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Telefone excluído com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Telefone não encontrado")
+  })
+  public ResponseEntity<?> excluirTelefone(@RequestBody Telefone exclusao) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    Optional<Telefone> telefone = repositorio.findById(exclusao.getId());
+    if (telefone.isPresent()) {
+      repositorio.delete(telefone.get());
+      status = HttpStatus.OK;
+    }
+    return new ResponseEntity<>(status);
   }
 }

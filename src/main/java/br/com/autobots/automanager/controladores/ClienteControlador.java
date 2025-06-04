@@ -37,23 +37,6 @@ public class ClienteControlador {
   @Autowired
   private AtualizaClienteServico atualizaClienteServico;
 
-  @GetMapping("/cliente/{id}")
-  @Operation(summary = "Obter cliente", description = "Retorna um cliente específico com base no ID fornecido")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Cliente encontrado", content = @Content(schema = @Schema(implementation = Cliente.class))),
-      @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-  })
-  public ResponseEntity<Cliente> obterCliente(@PathVariable long id) {
-    Optional<Cliente> cliente = repositorio.findById(id);
-    if (cliente.isEmpty()) {
-      ResponseEntity<Cliente> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
-    } else {
-      adicionaLinkClienteServico.adicionarLink(cliente.get());
-      return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
-    }
-  }
-
   @GetMapping("/clientes")
   @Operation(summary = "Obter todos os clientes", description = "Retorna uma lista de todos os clientes cadastrados")
   @ApiResponses(value = {
@@ -69,6 +52,23 @@ public class ClienteControlador {
       adicionaLinkClienteServico.adicionarLink(clientes);
       ResponseEntity<List<Cliente>> resposta = new ResponseEntity<>(clientes, HttpStatus.OK);
       return resposta;
+    }
+  }
+
+  @GetMapping("/cliente/{id}")
+  @Operation(summary = "Obter cliente", description = "Retorna um cliente específico com base no ID fornecido")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Cliente encontrado", content = @Content(schema = @Schema(implementation = Cliente.class))),
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+  })
+  public ResponseEntity<Cliente> obterCliente(@PathVariable long id) {
+    Optional<Cliente> cliente = repositorio.findById(id);
+    if (cliente.isEmpty()) {
+      ResponseEntity<Cliente> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return resposta;
+    } else {
+      adicionaLinkClienteServico.adicionarLink(cliente.get());
+      return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
     }
   }
 
@@ -92,29 +92,26 @@ public class ClienteControlador {
   @Operation(summary = "Atualizar cliente", description = "Atualiza as informações de um cliente existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Cliente não encontrado")
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
   })
   public ResponseEntity<?> atualizarCliente(@RequestBody Cliente clienteAtualizacao) {
-    HttpStatus status = HttpStatus.CONFLICT;
     Optional<Cliente> cliente = repositorio.findById(clienteAtualizacao.getId());
     if (cliente.isPresent()) {
       atualizaClienteServico.atualizar(cliente.get(), clienteAtualizacao);
       repositorio.save(cliente.get());
-      status = HttpStatus.OK;
-    } else {
-      status = HttpStatus.BAD_REQUEST;
+      return new ResponseEntity<>(HttpStatus.OK);
     }
-    return new ResponseEntity<>(status);
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
   @DeleteMapping("/cliente/excluir")
   @Operation(summary = "Excluir cliente", description = "Exclui um cliente existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Cliente excluído com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Cliente não encontrado")
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
   })
   public ResponseEntity<?> excluirCliente(@RequestBody Cliente exclusao) {
-    HttpStatus status = HttpStatus.BAD_REQUEST;
+    HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Cliente> cliente = repositorio.findById(exclusao.getId());
     if (cliente.isPresent()) {
       repositorio.delete(cliente.get());

@@ -15,22 +15,41 @@ public class AdicionaLinkEnderecoServico implements AdicionaLinkServico<Endereco
   @Override
   public void adicionarLink(List<Endereco> enderecos) {
     for (Endereco endereco : enderecos) {
-      long id = endereco.getId();
-      Link linkProprio = WebMvcLinkBuilder
-          .linkTo(WebMvcLinkBuilder.methodOn(EnderecoControlador.class).obterEndereco(id))
-          .withSelfRel();
-      endereco.add(linkProprio);
+      adicionarLink(endereco);
     }
   }
 
   @Override
   public void adicionarLink(Endereco endereco) {
-    Link linkProprio = WebMvcLinkBuilder
+    Link linkObter = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(EnderecoControlador.class)
+            .obterEndereco(endereco.getId()))
+        .withRel("obter endereco");
+    Link linkObterTodos = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(EnderecoControlador.class)
             .obterEnderecos())
-        .withRel("enderecos");
-    endereco.add(linkProprio);
+        .withRel("obter todos os enderecos");
+    Link linkCadastrar = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(EnderecoControlador.class)
+            .cadastrarEndereco(null))
+        .withRel("cadastrar endereco");
+    Link linkAtualizar = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(EnderecoControlador.class)
+            .atualizarEndereco(null))
+        .withRel("atualizar endereco");
+    Link linkExcluir = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(EnderecoControlador.class)
+            .excluirEndereco(null))
+        .withRel("excluir endereco");
+    endereco.add(linkObter);
+    endereco.add(linkObterTodos);
+    endereco.add(linkCadastrar);
+    endereco.add(linkAtualizar);
+    endereco.add(linkExcluir);
   }
-
 }

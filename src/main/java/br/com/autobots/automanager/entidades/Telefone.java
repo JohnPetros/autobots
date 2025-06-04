@@ -2,9 +2,12 @@ package br.com.autobots.automanager.entidades;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,4 +32,8 @@ public class Telefone extends RepresentationModel<Endereco> {
 	@Column
 	@Schema(description = "Número do telefone", example = "99999-9999")
 	private String numero;
+
+	@Column(name = "cliente_id")
+	@JsonIgnore
+	private Long clienteId;
 }

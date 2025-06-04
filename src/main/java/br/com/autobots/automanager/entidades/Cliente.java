@@ -10,6 +10,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -43,14 +44,17 @@ public class Cliente extends RepresentationModel<Cliente> {
   private LocalDate dataCadastro;
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de documentos do cliente")
   private List<Documento> documentos = new ArrayList<>();
 
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  @Schema(description = "Endereço do cliente")
+  @OneToOne(optional = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "endereco_id", nullable = true)
   private Endereco endereco;
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de telefones do cliente")
   private List<Telefone> telefones = new ArrayList<>();
+
 }

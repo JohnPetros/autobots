@@ -30,4 +30,6 @@ public class Documento extends RepresentationModel<Cliente> {
   @Schema(description = "Número do documento", example = "1234567890")
   private String numero;
 
+  @Column(name = "cliente_id")
+  private Long clienteId;
 }

@@ -14,7 +14,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import br.com.autobots.automanager.entidades.Documento;
@@ -23,7 +28,6 @@ import br.com.autobots.automanager.servicos.AdicionaLinkDocumentoServico;
 import br.com.autobots.automanager.servicos.AtualizaDocumentoServico;
 
 @RestController
-@RequestMapping("documentos")
 @Tag(name = "Documento", description = "CRUD de documentos")
 public class DocumentoControlador {
   @Autowired
@@ -35,19 +39,31 @@ public class DocumentoControlador {
   @Autowired
   private AtualizaDocumentoServico atualizaDocumentoServico;
 
-  @PostMapping
+  @PostMapping("/documento/cadastrar")
   @Operation(summary = "Cadastrar documento", description = "Cadastra um novo documento")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Documento cadastrado com sucesso"),
+      @ApiResponse(responseCode = "409", description = "Documento já cadastrado")
+  })
   public ResponseEntity<?> cadastrarDocumento(@RequestBody Documento documento) {
     Optional<Documento> documentoExistente = repositorio.findById(documento.getId());
-    if (documentoExistente.isEmpty()) {
-      repositorio.save(documento);
-      return new ResponseEntity<>(HttpStatus.CREATED);
+    if (documentoExistente.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    return new ResponseEntity<>(HttpStatus.CONFLICT);
+    documentoExistente = repositorio.findByNumero(documento.getNumero());
+    if (documentoExistente.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+    repositorio.save(documento);
+    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping
+  @GetMapping("/documentos")
   @Operation(summary = "Obter todos os documentos", description = "Retorna uma lista de todos os documentos cadastrados")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Documentos encontrados", content = @Content(schema = @Schema(implementation = List.class))),
+      @ApiResponse(responseCode = "404", description = "Nenhum documento cadastrado")
+  })
   public ResponseEntity<List<Documento>> obterDocumentos() {
     List<Documento> documentos = repositorio.findAll();
     if (documentos.isEmpty()) {
@@ -60,8 +76,12 @@ public class DocumentoControlador {
     }
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/documento/{id}")
   @Operation(summary = "Obter documento", description = "Retorna um documento específico com base no ID fornecido")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Documento encontrado", content = @Content(schema = @Schema(implementation = Documento.class))),
+      @ApiResponse(responseCode = "404", description = "Documento não encontrado")
+  })
   public ResponseEntity<Documento> obterDocumento(@PathVariable long id) {
     Optional<Documento> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -73,18 +93,35 @@ public class DocumentoControlador {
     }
   }
 
-  @PutMapping
+  @PutMapping("/documento/atualizar")
   @Operation(summary = "Atualizar documento", description = "Atualiza as informações de um documento existente")
-  public void atualizarDocumento(@RequestBody Documento documentoAtualizado) {
-    var documento = repositorio.findById(documentoAtualizado.getId());
-    atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
-    repositorio.save(documento.get());
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Documento atualizado com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Documento não encontrado")
+  })
+  public ResponseEntity<?> atualizarDocumento(@RequestBody Documento documentoAtualizado) {
+    Optional<Documento> documento = repositorio.findById(documentoAtualizado.getId());
+    if (documento.isPresent()) {
+      atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
+      repositorio.save(documento.get());
+      return new ResponseEntity<>(HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
-  @DeleteMapping
+  @DeleteMapping("/documento/excluir")
   @Operation(summary = "Excluir documento", description = "Exclui um documento existente")
-  public void excluirDocumento(@RequestBody Documento exclusao) {
-    var documento = repositorio.findById(exclusao.getId());
-    repositorio.delete(documento.get());
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Documento excluído com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Documento não encontrado")
+  })
+  public ResponseEntity<?> excluirDocumento(@RequestBody Documento exclusao) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    Optional<Documento> documento = repositorio.findById(exclusao.getId());
+    if (documento.isPresent()) {
+      repositorio.delete(documento.get());
+      status = HttpStatus.OK;
+    }
+    return new ResponseEntity<>(status);
   }
 }
