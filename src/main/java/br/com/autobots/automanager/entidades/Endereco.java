@@ -2,8 +2,6 @@ package br.com.autobots.automanager.entidades;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,7 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @NoArgsConstructor
 @Entity(name = "enderecos")
 public class Endereco extends RepresentationModel<Endereco> {
-  @Id()
+  @Id
   @Schema(description = "ID do endereço", example = "1")
   private Long id;
 

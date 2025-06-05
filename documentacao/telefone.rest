@@ -3,7 +3,7 @@ POST http://localhost:8080/telefone/cadastrar
 Content-Type: application/json
 
 {
-  "id": 2,
+  "id": 1,
   "ddd": "12",
   "numero": "999999999"
 }

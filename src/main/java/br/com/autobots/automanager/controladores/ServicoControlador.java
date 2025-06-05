@@ -11,9 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import br.com.autobots.automanager.entidades.Servico;
 import br.com.autobots.automanager.repositorios.ServicoRepositorio;
@@ -21,7 +27,7 @@ import br.com.autobots.automanager.servicos.AdicionaLinkServicoServico;
 import br.com.autobots.automanager.servicos.AtualizaServicoServico;
 
 @RestController
-@RequestMapping
+@Tag(name = "Servico", description = "CRUD de servicos")
 public class ServicoControlador {
   @Autowired
   private ServicoRepositorio repositorio;
@@ -33,16 +39,26 @@ public class ServicoControlador {
   private AtualizaServicoServico atualizaServicoServico;
 
   @PostMapping("/servico/cadastrar")
+  @Operation(summary = "Cadastrar servico", description = "Cadastra um novo servico")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Servico cadastrado com sucesso"),
+      @ApiResponse(responseCode = "409", description = "Servico já cadastrado")
+  })
   public ResponseEntity<?> cadastrarServico(@RequestBody Servico servico) {
-    HttpStatus status = HttpStatus.CONFLICT;
-    if (servico.getId() == null) {
-      repositorio.save(servico);
-      status = HttpStatus.CREATED;
+    Optional<Servico> servicoExistente = repositorio.findById(servico.getId());
+    if (servicoExistente.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    return new ResponseEntity<>(status);
+    repositorio.save(servico);
+    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   @GetMapping("/servicos")
+  @Operation(summary = "Obter todos os servicos", description = "Retorna uma lista de todos os servicos cadastrados")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Servicos encontrados", content = @Content(schema = @Schema(implementation = List.class))),
+      @ApiResponse(responseCode = "404", description = "Nenhum servico cadastrado")
+  })
   public ResponseEntity<List<Servico>> obterServicos() {
     List<Servico> servicos = repositorio.findAll();
     if (servicos.isEmpty()) {
@@ -56,6 +72,11 @@ public class ServicoControlador {
   }
 
   @GetMapping("/servico/{id}")
+  @Operation(summary = "Obter servico", description = "Retorna um servico específico com base no ID fornecido")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Servico encontrado", content = @Content(schema = @Schema(implementation = Servico.class))),
+      @ApiResponse(responseCode = "404", description = "Servico não encontrado")
+  })
   public ResponseEntity<Servico> obterServico(@PathVariable long id) {
     Optional<Servico> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
@@ -68,15 +89,34 @@ public class ServicoControlador {
   }
 
   @PutMapping("/servico/atualizar")
-  public void atualizarServico(@RequestBody Servico servicoAtualizado) {
-    var servico = repositorio.findById(servicoAtualizado.getId());
-    atualizaServicoServico.atualizar(servico.get(), servicoAtualizado);
-    repositorio.save(servico.get());
+  @Operation(summary = "Atualizar servico", description = "Atualiza as informações de um servico existente")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Servico atualizado com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Servico não encontrado")
+  })
+  public ResponseEntity<?> atualizarServico(@RequestBody Servico servicoAtualizado) {
+    Optional<Servico> servico = repositorio.findById(servicoAtualizado.getId());
+    if (servico.isPresent()) {
+      atualizaServicoServico.atualizar(servico.get(), servicoAtualizado);
+      repositorio.save(servico.get());
+      return new ResponseEntity<>(HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
   @DeleteMapping("/servico/excluir")
-  public void excluirServico(@RequestBody Servico exclusao) {
-    var servico = repositorio.findById(exclusao.getId());
-    repositorio.delete(servico.get());
+  @Operation(summary = "Excluir servico", description = "Exclui um servico existente")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Servico excluído com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Servico não encontrado")
+  })
+  public ResponseEntity<?> excluirServico(@RequestBody Servico exclusao) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    Optional<Servico> servico = repositorio.findById(exclusao.getId());
+    if (servico.isPresent()) {
+      repositorio.delete(servico.get());
+      status = HttpStatus.OK;
+    }
+    return new ResponseEntity<>(status);
   }
 }

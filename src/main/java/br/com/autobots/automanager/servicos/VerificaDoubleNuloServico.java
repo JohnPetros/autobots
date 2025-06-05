@@ -1,5 +1,8 @@
 package br.com.autobots.automanager.servicos;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class VerificaDoubleNuloServico {
   public boolean verificar(Double dado) {
     boolean nulo = true;

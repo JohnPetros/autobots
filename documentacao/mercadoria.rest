@@ -1,0 +1,45 @@
+### Cadastrar um novo mercadoria
+POST http://localhost:8080/mercadoria/cadastrar
+Content-Type: application/json
+
+{
+ "id": 1,
+  "ddd": "12",
+  "numero": "999999999"
+}
+
+### Obter todos os mercadorias
+GET http://localhost:8080/mercadorias
+
+### Obter um mercadoria específico
+GET http://localhost:8080/mercadoria/1
+
+### Atualizar um mercadoria
+PUT http://localhost:8080/mercadoria/atualizar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "validade": "2045-01-01",
+  "fabricao": "2012-01-01",
+  "cadastro": "2025-01-01",
+  "nome": "Cera de motor",
+  "quantidade": 20,
+  "valor": 200,
+  "descricao": "Cera de motor 40W10",
+}
+
+### Excluir um mercadoria
+DELETE http://localhost:8080/mercadoria/excluir
+Content-Type: application/json
+
+{
+  "id": 1,
+  "validade": "2045-01-01",
+  "fabricao": "2012-01-01",
+  "cadastro": "2025-01-01",
+  "nome": "Cera de motor",
+  "quantidade": 20,
+  "valor": 200,
+  "descricao": "Cera de motor 40W10",
+}

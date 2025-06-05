@@ -20,8 +20,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "telefones")
-public class Telefone extends RepresentationModel<Endereco> {
-	@Id()
+public class Telefone extends RepresentationModel<Telefone> {
+	@Id
 	@Schema(description = "ID do telefone", example = "1")
 	private Long id;
 

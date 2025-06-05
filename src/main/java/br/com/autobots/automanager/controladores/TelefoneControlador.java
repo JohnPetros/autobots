@@ -45,6 +45,9 @@ public class TelefoneControlador {
       @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
   })
   public ResponseEntity<?> cadastrarTelefone(@RequestBody Telefone telefone) {
+    System.out.println("Número	: " + telefone.getNumero());
+    System.out.println("DDD: " + telefone.getDdd());
+    System.out.println("ID: " + telefone.getId());
     Optional<Telefone> telefoneExistente = repositorio.findById(telefone.getId());
     if (telefoneExistente.isPresent()) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);

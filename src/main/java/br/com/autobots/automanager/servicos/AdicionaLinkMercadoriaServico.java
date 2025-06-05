@@ -1,11 +1,10 @@
 package br.com.autobots.automanager.servicos;
 
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.controladores.MercadoriaControlador;
 import br.com.autobots.automanager.entidades.Mercadoria;
@@ -16,21 +15,41 @@ public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercad
   @Override
   public void adicionarLink(List<Mercadoria> mercadorias) {
     for (Mercadoria mercadoria : mercadorias) {
-      long id = mercadoria.getId();
-      Link linkProprio = WebMvcLinkBuilder
-          .linkTo(WebMvcLinkBuilder.methodOn(MercadoriaControlador.class).obterMercadoria(id))
-          .withSelfRel();
-      mercadoria.add(linkProprio);
+      adicionarLink(mercadoria);
     }
   }
 
   @Override
   public void adicionarLink(Mercadoria mercadoria) {
-    Link linkProprio = WebMvcLinkBuilder
+    Link linkObter = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(MercadoriaControlador.class)
+            .obterMercadoria(mercadoria.getId()))
+        .withRel("obter mercadoria");
+    Link linkObterTodos = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
             .obterMercadorias())
-        .withRel("mercadorias");
-    mercadoria.add(linkProprio);
+        .withRel("obter todos os mercadorias");
+    Link linkCadastrar = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(MercadoriaControlador.class)
+            .cadastrarMercadoria(null))
+        .withRel("cadastrar mercadoria");
+    Link linkAtualizar = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(MercadoriaControlador.class)
+            .atualizarMercadoria(null))
+        .withRel("atualizar mercadoria");
+    Link linkExcluir = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(MercadoriaControlador.class)
+            .excluirMercadoria(null))
+        .withRel("excluir mercadoria");
+    mercadoria.add(linkObter);
+    mercadoria.add(linkObterTodos);
+    mercadoria.add(linkCadastrar);
+    mercadoria.add(linkAtualizar);
+    mercadoria.add(linkExcluir);
   }
 }
