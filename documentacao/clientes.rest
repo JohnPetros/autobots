@@ -1,0 +1,113 @@
+### Cadastrar um novo cliente
+POST http://localhost:8080/cliente/cadastrar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nome": "João da Silva",
+  "nomeSocial": "João da Silva",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
+  "documentos": [
+    {
+      "id": 1,
+      "tipo": "CPF",
+      "numero": "1234567890"
+    }
+  ],
+  "endereco": {
+    "id": 1,
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "telefones": [
+    {
+      "id": 1,
+      "ddd": "11",
+      "numero": "99999-9999"
+    }
+  ]
+}
+
+### Obter todos os clientes
+GET http://localhost:8080/clientes
+
+### Obter um cliente específico
+GET http://localhost:8080/cliente/1
+
+### Atualizar um cliente
+PUT http://localhost:8080/cliente/atualizar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nome": "Rain dos Santos",
+  "nomeSocial": "Rainizinho",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2025-01-01",
+  "documentos": [
+    {
+      "id": 1,
+      "tipo": "CPF",
+      "numero": "1234567890"
+    }
+  ],
+  "endereco": {
+    "id": 1,
+    "estado": "RJ",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "telefones": [
+    {
+      "id": 1,
+      "ddd": "11",
+      "numero": "99999-9999"
+    }
+  ]
+}
+
+### Excluir um cliente
+DELETE http://localhost:8080/cliente/excluir
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nome": "Raim dos Santos",
+  "nomeSocial": "Raimizinho",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2025-01-01",
+  "documentos": [
+    {
+      "id": 1,
+      "tipo": "CPF",
+      "numero": "1234567890"
+    }
+  ],
+  "cliente": {
+    "id": 1,
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "telefones": [
+    {
+      "id": 1,
+      "ddd": "11",
+      "numero": "99999-9999"
+    }
+  ]
+}

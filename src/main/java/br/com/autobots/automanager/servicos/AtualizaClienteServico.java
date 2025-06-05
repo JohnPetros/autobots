@@ -40,5 +40,4 @@ public class AtualizaClienteServico {
       cliente.setDataNascimento(clienteAtualizado.getDataNascimento());
     }
   }
-
 }

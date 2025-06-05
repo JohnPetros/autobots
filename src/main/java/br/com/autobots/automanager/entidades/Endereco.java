@@ -2,15 +2,16 @@ package br.com.autobots.automanager.entidades;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @Setter
@@ -19,21 +20,34 @@ import lombok.Setter;
 @Entity(name = "enderecos")
 public class Endereco extends RepresentationModel<Endereco> {
   @Id()
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Schema(description = "ID do endereço", example = "1")
   private Long id;
-  @Column(nullable = true)
-  private String estado;
-  @Column(nullable = false)
-  private String cidade;
-  @Column(nullable = true)
-  private String bairro;
-  @Column(nullable = false)
-  private String rua;
-  @Column(nullable = false)
-  private String numero;
-  @Column(nullable = true)
-  private String codigoPostal;
-  @Column(unique = false, nullable = true)
-  private String informacoesAdicionais;
 
+  @Column(nullable = true)
+  @Schema(description = "Estado do endereço", example = "SP")
+  private String estado;
+
+  @Column(nullable = false)
+  @Schema(description = "Cidade do endereço", example = "São Paulo")
+  private String cidade;
+
+  @Column(nullable = true)
+  @Schema(description = "Bairro do endereço", example = "Jardim Paulista")
+  private String bairro;
+
+  @Column(nullable = false)
+  @Schema(description = "Rua do endereço", example = "Rua das Flores")
+  private String rua;
+
+  @Column(nullable = false)
+  @Schema(description = "Número do endereço", example = "123")
+  private String numero;
+
+  @Column(nullable = true)
+  @Schema(description = "Código postal do endereço", example = "04101-300")
+  private String codigoPostal;
+
+  @Column(unique = false, nullable = true)
+  @Schema(description = "Informações adicionais do endereço", example = "Apto 101")
+  private String informacoesAdicionais;
 }

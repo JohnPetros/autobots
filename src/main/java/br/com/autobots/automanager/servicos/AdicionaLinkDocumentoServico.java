@@ -15,22 +15,41 @@ public class AdicionaLinkDocumentoServico implements AdicionaLinkServico<Documen
   @Override
   public void adicionarLink(List<Documento> documentos) {
     for (Documento documento : documentos) {
-      long id = documento.getId();
-      Link linkProprio = WebMvcLinkBuilder
-          .linkTo(WebMvcLinkBuilder.methodOn(DocumentoControlador.class).obterDocumento(id))
-          .withSelfRel();
-      documento.add(linkProprio);
+      adicionarLink(documento);
     }
   }
 
   @Override
   public void adicionarLink(Documento documento) {
-    Link linkProprio = WebMvcLinkBuilder
+    Link linkObter = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(DocumentoControlador.class)
+            .obterDocumento(documento.getId()))
+        .withRel("obter documento");
+    Link linkObterTodos = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(DocumentoControlador.class)
             .obterDocumentos())
-        .withRel("documentos");
-    documento.add(linkProprio);
+        .withRel("obter todos os documentos");
+    Link linkCadastrar = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(DocumentoControlador.class)
+            .cadastrarDocumento(null))
+        .withRel("cadastrar documento");
+    Link linkAtualizar = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(DocumentoControlador.class)
+            .atualizarDocumento(null))
+        .withRel("atualizar documento");
+    Link linkExcluir = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder
+            .methodOn(DocumentoControlador.class)
+            .excluirDocumento(null))
+        .withRel("excluir documento");
+    documento.add(linkObter);
+    documento.add(linkObterTodos);
+    documento.add(linkCadastrar);
+    documento.add(linkAtualizar);
+    documento.add(linkExcluir);
   }
-
 }

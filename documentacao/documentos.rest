@@ -1,0 +1,35 @@
+### Cadastrar um novo documento
+POST http://localhost:8080/documento/cadastrar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "tipo": "CPF",
+  "numero": "1234567898"
+}
+
+### Obter todos os documentos
+GET http://localhost:8080/documentos
+
+### Obter um documento específico
+GET http://localhost:8080/documento/1
+
+### Atualizar um documento
+PUT http://localhost:8080/documento/atualizar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "tipo": "CNPJ",
+  "numero": "8987654321"
+}
+
+### Excluir um documento
+DELETE http://localhost:8080/documento/excluir
+Content-Type: application/json
+
+{
+  "id": 1,
+  "tipo": "CNPJ",
+  "numero": "8987654321"
+}
