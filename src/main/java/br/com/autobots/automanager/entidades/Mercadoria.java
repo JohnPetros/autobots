@@ -1,6 +1,6 @@
 package br.com.autobots.automanager.entidades;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.hateoas.RepresentationModel;
 
@@ -25,15 +25,15 @@ public class Mercadoria extends RepresentationModel<Mercadoria> {
 
   @Column(nullable = false)
   @Schema(description = "Data de validade da mercadoria", example = "2025-01-01", required = true)
-  private Date validade;
+  private LocalDate validade;
 
   @Column(nullable = false)
   @Schema(description = "Data de fabricação da mercadoria", example = "2025-01-01", required = true)
-  private Date fabricao;
+  private LocalDate fabricao;
 
   @Column(nullable = false)
   @Schema(description = "Data de cadastro da mercadoria", example = "2025-01-01", required = true)
-  private Date cadastro;
+  private LocalDate cadastro;
 
   @Column(nullable = false)
   @Schema(description = "Nome da mercadoria", example = "Óleo de motor", required = true)
@@ -50,4 +50,5 @@ public class Mercadoria extends RepresentationModel<Mercadoria> {
   @Column()
   @Schema(description = "Descrição da mercadoria", example = "Óleo de motor 10W40", required = true)
   private String descricao;
+
 }

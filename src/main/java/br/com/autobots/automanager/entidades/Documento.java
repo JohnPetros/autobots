@@ -2,6 +2,7 @@ package br.com.autobots.automanager.entidades;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import br.com.autobots.automanager.enums.TipoDocumento;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -24,7 +25,7 @@ public class Documento extends RepresentationModel<Cliente> {
 
   @Column
   @Schema(description = "Tipo do documento", example = "CPF")
-  private String tipo;
+  private TipoDocumento tipo;
 
   @Column(unique = true)
   @Schema(description = "Número do documento", example = "1234567890")

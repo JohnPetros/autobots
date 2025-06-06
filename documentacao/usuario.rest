@@ -1,0 +1,223 @@
+### Cadastrar um novo cliente
+POST http://localhost:8080/usuario/cadastrar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nome": "João da Silva",
+  "nomeSocial": "João da Silva",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
+  "credencialUsuarioSenha": {
+    "id": 1,
+    "criacao": "2025-01-01",
+    "ultimoAcesso": "2025-01-01",
+    "inativo": false,
+    "nomeUsuario": "joao",
+    "senha": "123456"
+  },
+  "credencialCodigoBarra": {
+    "id": 2,
+    "criacao": "2025-01-01",
+    "ultimoAcesso": "2025-01-01",
+    "inativo": false,
+    "codigo": 123456
+  },
+  "documentos": [
+    {
+      "id": 1,
+      "tipo": "CPF",
+      "numero": "1234567890"
+    }
+  ],
+  "emails": [
+    {
+      "id": 1,
+      "endereco": "joao@gmail.com"
+    }
+  ],
+  "endereco": {
+    "id": 1,
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "CLIENTE",
+  "telefones": [
+    {
+      "id": 1,
+      "ddd": "11",
+      "numero": "99999-9999"
+    }
+  ],
+  "veiculos": [
+    {
+      "id": 1,
+      "tipo": "HATCH",
+      "modelo": "Gol",
+      "placa": "ABC-1234"
+    }
+  ]
+}
+
+### Cadastrar um novo funcionário
+POST http://localhost:8080/usuario/cadastrar
+Content-Type: application/json
+
+{
+  "id": 2,
+  "nome": "Gersoon da Penha",
+  "nomeSocial": "Gersoon da Penha",
+  "dataNascimento": "1980-01-01",
+  "dataCadastro": "2025-01-01",
+  "credencialUsuarioSenha": {
+    "id": 3,
+    "criacao": "2025-01-01",
+    "ultimoAcesso": "2025-01-01",
+    "inativo": false,
+    "nomeUsuario": "gerson",
+    "senha": "654321"
+  },
+  "credencialCodigoBarra": {
+    "id": 4,
+    "criacao": "2025-01-01",
+    "ultimoAcesso": "2025-01-01",
+    "inativo": false,
+    "codigo": 654321
+  },
+  "documentos": [
+    {
+      "id": 2,
+      "tipo": "CPF",
+      "numero": "0987654321"
+    }
+  ],
+  "emails": [
+    {
+      "id": 2,
+      "endereco": "gerson@gmail.com"
+    }
+  ],
+  "endereco": {
+    "id": 2,
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "CLIENTE",
+  "telefones": [
+    {
+      "id": 2,
+      "ddd": "11",
+      "numero": "99999-9999"
+    }
+  ]
+}
+
+### Obter todos os usuarios
+GET http://localhost:8080/usuarios
+
+### Obter um usuario específico
+GET http://localhost:8080/usuario/1
+
+### Atualizar um usuario
+PUT http://localhost:8080/usuario/atualizar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nome": "Raim dos Santos",
+  "nomeSocial": "Raimizinho",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2025-01-01",
+  "credencialUsuarioSenha": {
+      "id": 1,
+      "criacao": "2025-01-01",
+      "ultimoAcesso": "2025-01-01",
+      "inativo": false,
+      "nomeUsuario": "joao",
+      "senha": "123456"
+    },
+  "credencialCodigoBarra": {
+    "id": 1,
+    "criacao": "2025-01-01",
+    "ultimoAcesso": "2025-01-01",
+    "inativo": false,
+    "codigo": 123456
+  },
+  "documentos": [
+    {
+      "id": 1,
+      "tipo": "CPF",
+      "numero": "1234567890"
+    }
+  ],
+  "emails": [
+    {
+      "id": 1,
+      "endereco": "joao@gmail.com"
+    }
+  ],
+  "endereco": {
+    "id": 1,
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "FUNCIONARIO",
+  "telefones": [
+    {
+      "id": 1,
+      "ddd": "11",
+      "numero": "99999-9999"
+    }
+  ]
+}
+
+### Excluir um usuario
+DELETE http://localhost:8080/usuario/excluir
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nome": "Raim dos Santos",
+  "nomeSocial": "Raimizinho",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2025-01-01",
+  "documentos": [
+    {
+      "id": 1,
+      "tipo": "CPF",
+      "numero": "1234567890"
+    }
+  ],
+  "usuario": {
+    "id": 1,
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "telefones": [
+    {
+      "id": 1,
+      "ddd": "11",
+      "numero": "99999-9999"
+    }
+  ]
+}

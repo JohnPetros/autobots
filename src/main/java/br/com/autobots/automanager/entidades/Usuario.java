@@ -3,6 +3,10 @@ package br.com.autobots.automanager.entidades;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.autobots.automanager.enums.PerfilUsuario;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,16 +14,21 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
-@Data
-@EqualsAndHashCode(exclude = { "mercadorias", "vendas", "veiculos" })
+@Getter
+@Setter
 @Entity
-public class Usuario {
+@Table(name = "clientes")
+public class Usuario extends RepresentationModel<Cliente> {
   @Id
   @Schema(description = "ID do usuário", example = "1")
   private Long id;
@@ -32,34 +41,51 @@ public class Usuario {
   @Schema(description = "Nome social do usuário", example = "João")
   private String nomeSocial;
 
-  @ElementCollection(fetch = FetchType.EAGER)
-  @Schema(description = "Perfis do usuário", example = "ADMIN, USER")
-  private List<PerfilUsuario> perfis = new ArrayList<>();
+  @Enumerated(EnumType.STRING)
+  @Schema(description = "Perfil do usuário", example = "FUNCIONARIO")
+  private PerfilUsuario perfil;
 
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @Schema(description = "Telefones do usuário", example = "11999999999")
-  private List<Telefone> telefones = new ArrayList<>();
-
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  @Schema(description = "Endereço do usuário", example = "Rua das Flores, 123")
-  private Endereco endereco;
-
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @Schema(description = "Documentos do usuário", example = "CPF, RG")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "cliente_id")
+  @Schema(description = "Lista de documentos do usuário")
   private List<Documento> documentos = new ArrayList<>();
 
+  @OneToOne(optional = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "endereco_id", nullable = true)
+  private Endereco endereco;
+
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "cliente_id")
+  @Schema(description = "Lista de telefones do usuário")
+  private List<Telefone> telefones = new ArrayList<>();
+
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JoinColumn(name = "cliente_id")
+  @Schema(description = "Lista de emails do usuário")
   private List<Email> emails = new ArrayList<>();
 
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private List<Credencial> credenciais = new ArrayList<>();
+  @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @Schema(description = "Credencial de usuário e senha")
+  private CredencialUsuarioSenha credencialUsuarioSenha;
+
+  @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @Schema(description = "Credencial de código de barras")
+  private CredencialCodigoBarra credencialCodigoBarra;
 
   @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+  @JoinColumn(name = "cliente_id")
+  @JsonIgnore
+  @Schema(description = "Lista de mercadorias do usuário")
   private List<Mercadoria> mercadorias = new ArrayList<>();
 
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-  private List<Venda> vendas = new ArrayList<>();
+  @JoinColumn(name = "cliente_id")
+  @Schema(description = "Lista de veículos do usuário")
+  private List<Veiculo> veiculos = new ArrayList<>();
 
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-  private List<Veiculo> veiculos = new ArrayList<>();
+  @JoinColumn(name = "cliente_id")
+  @Schema(description = "Lista de vendas do usuário")
+  private List<Venda> vendas = new ArrayList<>();
+
 }

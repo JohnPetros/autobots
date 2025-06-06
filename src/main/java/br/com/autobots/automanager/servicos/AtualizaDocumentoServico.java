@@ -14,7 +14,7 @@ public class AtualizaDocumentoServico {
 
   public void atualizar(Documento documento, Documento atualizacao) {
     if (atualizacao != null) {
-      if (!verificaStringServico.verificar(atualizacao.getTipo())) {
+      if (atualizacao.getTipo() != null) {
         documento.setTipo(atualizacao.getTipo());
       }
       if (!verificaStringServico.verificar(atualizacao.getNumero())) {

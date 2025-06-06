@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import br.com.autobots.automanager.entidades.Mercadoria;
-import br.com.autobots.automanager.entidades.Telefone;
 import br.com.autobots.automanager.repositorios.MercadoriaRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkMercadoriaServico;
 import br.com.autobots.automanager.servicos.AtualizaMercadoriaServico;
@@ -46,20 +45,11 @@ public class MercadoriaControlador {
       @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
   })
   public ResponseEntity<?> cadastrarMercadoria(@RequestBody Mercadoria mercadoria) {
-    System.out.println("Mercadoria controlador");
-    System.out.println("Nome: " + mercadoria.getNome());
-    System.out.println("Quantidade: " + mercadoria.getQuantidade());
-    System.out.println("Valor: " + mercadoria.getValor());
-    System.out.println("Descrição: " + mercadoria.getDescricao());
-    System.out.println("Validade: " + mercadoria.getValidade());
-    System.out.println("Fabricação: " + mercadoria.getFabricao());
-    System.out.println("Cadastro: " + mercadoria.getCadastro());
-    // Optional<Mercadoria> mercadoriaExistente =
-    // repositorio.findById(mercadoria.getId());
-    // if (mercadoriaExistente.isPresent()) {
-    // return new ResponseEntity<>(HttpStatus.CONFLICT);
-    // }
-    // repositorio.save(mercadoria);
+    Optional<Mercadoria> mercadoriaExistente = repositorio.findById(mercadoria.getId());
+    if (mercadoriaExistente.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+    repositorio.save(mercadoria);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 

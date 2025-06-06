@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Entity(name = "veiculos")
 public class Veiculo extends RepresentationModel<Veiculo> {
   @Id
   @Schema(description = "ID do veículo", example = "1")
@@ -46,4 +46,5 @@ public class Veiculo extends RepresentationModel<Veiculo> {
 
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   private List<Venda> vendas = new ArrayList<>();
+
 }

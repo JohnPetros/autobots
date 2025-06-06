@@ -1,21 +1,43 @@
 package br.com.autobots.automanager.servicos;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.entidades.Servico;
 
 @Service
 public class AtualizaServicoServico {
+  @Autowired
+  private VerificaStringNuloServico verificaStringServico;
 
-  public void atualizar(Servico servico, Servico servicoAtualizado) {
-    if (servicoAtualizado.getNome() != null) {
-      servicoAtualizado.setNome(servicoAtualizado.getNome());
+  @Autowired
+  private VerificaDoubleNuloServico verificaDoubleServico;
+
+  public void atualizar(Servico servico, Servico atualizacao) {
+    if (atualizacao != null) {
+      if (!verificaStringServico.verificar(atualizacao.getNome())) {
+        servico.setNome(atualizacao.getNome());
+      }
+      if (!verificaDoubleServico.verificar(atualizacao.getValor())) {
+        servico.setValor(atualizacao.getValor());
+      }
+      if (!verificaStringServico.verificar(atualizacao.getDescricao())) {
+        servico.setDescricao(atualizacao.getDescricao());
+      }
     }
-    if (servicoAtualizado.getValor() > 0) {
-      servico.setValor(servicoAtualizado.getValor());
-    }
-    if (servicoAtualizado.getDescricao() != null) {
-      servico.setDescricao(servicoAtualizado.getDescricao());
+  }
+
+  public void atualizar(List<Servico> servicos, List<Servico> atualizacoes) {
+    for (Servico atualizacao : atualizacoes) {
+      for (Servico servico : servicos) {
+        if (atualizacao.getId() != null) {
+          if (atualizacao.getId() == servico.getId()) {
+            atualizar(servico, atualizacao);
+          }
+        }
+      }
     }
   }
 }

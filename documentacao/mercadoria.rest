@@ -3,9 +3,14 @@ POST http://localhost:8080/mercadoria/cadastrar
 Content-Type: application/json
 
 {
- "id": 1,
-  "ddd": "12",
-  "numero": "999999999"
+  "id": 1,
+  "validade": "2025-01-01",
+  "fabricao": "2025-01-01",
+  "cadastro": "2025-01-01",
+  "nome": "Óleo de motor",
+  "quantidade": 10,
+  "valor": 100,
+  "descricao": "Óleo de motor 10W40"
 }
 
 ### Obter todos os mercadorias
@@ -26,7 +31,7 @@ Content-Type: application/json
   "nome": "Cera de motor",
   "quantidade": 20,
   "valor": 200,
-  "descricao": "Cera de motor 40W10",
+  "descricao": "Cera de motor 40W10"
 }
 
 ### Excluir um mercadoria
@@ -41,5 +46,5 @@ Content-Type: application/json
   "nome": "Cera de motor",
   "quantidade": 20,
   "valor": 200,
-  "descricao": "Cera de motor 40W10",
+  "descricao": "Cera de motor 40W10"
 }

@@ -1,0 +1,42 @@
+### Cadastrar um novo veiculo
+POST http://localhost:8080/veiculo/cadastrar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "tipo": "HATCH",
+  "modelo": "Gol",
+  "placa": "ABC-1234"
+}
+
+### Obter todos os veiculos
+GET http://localhost:8080/veiculos
+
+### Obter um veiculo específico
+GET http://localhost:8080/veiculo/1
+
+### Atualizar um veiculo
+PUT http://localhost:8080/veiculo/atualizar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "tipo": "SEDA",
+  "modelo": "Civic",
+  "placa": "XYZ-9876"
+}
+
+### Excluir um veiculo
+DELETE http://localhost:8080/veiculo/excluir
+Content-Type: application/json
+
+{
+  "id": 1,
+  "validade": "2045-01-01",
+  "fabricao": "2012-01-01",
+  "cadastro": "2025-01-01",
+  "nome": "Cera de motor",
+  "quantidade": 20,
+  "valor": 200,
+  "descricao": "Cera de motor 40W10"
+}

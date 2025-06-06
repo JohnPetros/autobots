@@ -23,7 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import br.com.autobots.automanager.entidades.Endereco;
-import br.com.autobots.automanager.repositorios.ClienteRepositorio;
+import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
 import br.com.autobots.automanager.repositorios.EnderecoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkEnderecoServico;
 import br.com.autobots.automanager.servicos.AtualizaEnderecoServico;
@@ -35,7 +35,7 @@ public class EnderecoControlador {
   private EnderecoRepositorio enderecoRepositorio;
 
   @Autowired
-  private ClienteRepositorio clienteRepositorio;
+  private UsuarioRepositorio usuarioRepositorio;
 
   @Autowired
   private AdicionaLinkEnderecoServico adicionaLinkEnderecoServico;
@@ -119,10 +119,10 @@ public class EnderecoControlador {
     HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Endereco> endereco = enderecoRepositorio.findById(exclusao.getId());
     if (endereco.isPresent()) {
-      var cliente = clienteRepositorio.findByEndereco(endereco.get());
-      if (cliente.isPresent()) {
-        cliente.get().setEndereco(null);
-        clienteRepositorio.save(cliente.get());
+      var usuario = usuarioRepositorio.findByEndereco(endereco.get());
+      if (usuario.isPresent()) {
+        usuario.get().setEndereco(null);
+        usuarioRepositorio.save(usuario.get());
       }
       enderecoRepositorio.delete(endereco.get());
       status = HttpStatus.OK;
