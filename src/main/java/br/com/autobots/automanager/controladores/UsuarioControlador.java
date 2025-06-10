@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.autobots.automanager.entidades.Usuario;
 import br.com.autobots.automanager.servicos.AdicionaLinkUsuarioServico;
 import br.com.autobots.automanager.servicos.AtualizaUsuarioServico;
+import br.com.autobots.automanager.servicos.ValidaUsuarioServico;
 import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class UsuarioControlador {
   @Autowired
   private UsuarioRepositorio repositorio;
+
+  @Autowired
+  private ValidaUsuarioServico validaUsuarioServico;
 
   @Autowired
   private AdicionaLinkUsuarioServico adicionaLinkUsuarioServico;
@@ -81,8 +85,7 @@ public class UsuarioControlador {
   })
   public ResponseEntity<?> cadastrarUsuario(@RequestBody Usuario usuario) {
     HttpStatus status = HttpStatus.CONFLICT;
-    Optional<Usuario> usuarioExistente = repositorio.findById(usuario.getId());
-    if (usuarioExistente.isEmpty()) {
+    if (validaUsuarioServico.validar(usuario)) {
       repositorio.save(usuario);
       status = HttpStatus.CREATED;
     }

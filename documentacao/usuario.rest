@@ -3,13 +3,11 @@ POST http://localhost:8080/usuario/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
   "nome": "João da Silva",
   "nomeSocial": "João da Silva",
   "dataNascimento": "1990-01-01",
   "dataCadastro": "2000-01-01",
   "credencialUsuarioSenha": {
-    "id": 1,
     "criacao": "2025-01-01",
     "ultimoAcesso": "2025-01-01",
     "inativo": false,
@@ -17,7 +15,6 @@ Content-Type: application/json
     "senha": "123456"
   },
   "credencialCodigoBarra": {
-    "id": 2,
     "criacao": "2025-01-01",
     "ultimoAcesso": "2025-01-01",
     "inativo": false,
@@ -25,19 +22,16 @@ Content-Type: application/json
   },
   "documentos": [
     {
-      "id": 1,
       "tipo": "CPF",
       "numero": "1234567890"
     }
   ],
   "emails": [
     {
-      "id": 1,
       "endereco": "joao@gmail.com"
     }
   ],
   "endereco": {
-    "id": 1,
     "estado": "SP",
     "cidade": "São Paulo",
     "bairro": "Jardim Paulista",
@@ -49,14 +43,12 @@ Content-Type: application/json
   "perfil": "CLIENTE",
   "telefones": [
     {
-      "id": 1,
       "ddd": "11",
       "numero": "99999-9999"
     }
   ],
   "veiculos": [
     {
-      "id": 1,
       "tipo": "HATCH",
       "modelo": "Gol",
       "placa": "ABC-1234"

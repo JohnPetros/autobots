@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import br.com.autobots.automanager.entidades.Endereco;
 import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
+import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.EnderecoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkEnderecoServico;
 import br.com.autobots.automanager.servicos.AtualizaEnderecoServico;
@@ -38,6 +39,9 @@ public class EnderecoControlador {
   private UsuarioRepositorio usuarioRepositorio;
 
   @Autowired
+  private EmpresaRepositorio empresaRepositorio;
+
+  @Autowired
   private AdicionaLinkEnderecoServico adicionaLinkEnderecoServico;
 
   @Autowired
@@ -50,11 +54,10 @@ public class EnderecoControlador {
       @ApiResponse(responseCode = "409", description = "Endereco já cadastrado")
   })
   public ResponseEntity<?> cadastrarEndereco(@RequestBody Endereco endereco) {
-    Optional<Endereco> enderecoExistente = enderecoRepositorio.findById(endereco.getId());
-    if (enderecoExistente.isPresent()) {
+    if (endereco.getId() != null) {
+      enderecoRepositorio.save(endereco);
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    enderecoRepositorio.save(endereco);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -123,6 +126,11 @@ public class EnderecoControlador {
       if (usuario.isPresent()) {
         usuario.get().setEndereco(null);
         usuarioRepositorio.save(usuario.get());
+      }
+      var empresa = empresaRepositorio.findByEndereco(endereco.get());
+      if (empresa.isPresent()) {
+        empresa.get().setEndereco(null);
+        empresaRepositorio.save(empresa.get());
       }
       enderecoRepositorio.delete(endereco.get());
       status = HttpStatus.OK;
