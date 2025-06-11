@@ -9,10 +9,17 @@ public class AtualizaCredencialUsuarioSenhaServico {
   public void atualizar(
       CredencialUsuarioSenha credencialUsuarioSenha,
       CredencialUsuarioSenha credencialUsuarioSenhaAtualizada) {
-    credencialUsuarioSenha.setNomeUsuario(credencialUsuarioSenhaAtualizada.getNomeUsuario());
-    credencialUsuarioSenha.setSenha(credencialUsuarioSenhaAtualizada.getSenha());
-    credencialUsuarioSenha.setCriacao(credencialUsuarioSenhaAtualizada.getCriacao());
-    credencialUsuarioSenha.setUltimoAcesso(credencialUsuarioSenhaAtualizada.getUltimoAcesso());
-    credencialUsuarioSenha.setInativo(credencialUsuarioSenhaAtualizada.isInativo());
+    if (credencialUsuarioSenhaAtualizada == null) {
+      return;
+    }
+    if (credencialUsuarioSenhaAtualizada.getNomeUsuario() != null) {
+      credencialUsuarioSenha.setNomeUsuario(credencialUsuarioSenhaAtualizada.getNomeUsuario());
+    }
+    if (credencialUsuarioSenhaAtualizada.getSenha() != null) {
+      credencialUsuarioSenha.setSenha(credencialUsuarioSenhaAtualizada.getSenha());
+    }
+    if (credencialUsuarioSenhaAtualizada.getCriacao() != null) {
+      credencialUsuarioSenha.setCriacao(credencialUsuarioSenhaAtualizada.getCriacao());
+    }
   }
 }

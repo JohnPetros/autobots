@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Getter
 @Setter
@@ -34,7 +35,8 @@ public class Servico extends RepresentationModel<Servico> {
   @Column(nullable = false)
   @Schema(description = "Valor do serviço", example = "100.00")
   @NotNull(message = "Valor é obrigatório")
-  private double valor;
+  @Positive(message = "Valor deve ser maior que 0")
+  private Double valor;
 
   @Column
   @Schema(description = "Descrição do serviço", example = "Troca de óleo do motor")

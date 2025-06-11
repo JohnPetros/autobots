@@ -18,11 +18,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Endereco;
+import br.com.autobots.automanager.entidades.Usuario;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
 import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.EnderecoRepositorio;
@@ -53,11 +57,8 @@ public class EnderecoControlador {
       @ApiResponse(responseCode = "201", description = "Endereco cadastrado com sucesso"),
       @ApiResponse(responseCode = "409", description = "Endereco já cadastrado")
   })
-  public ResponseEntity<?> cadastrarEndereco(@RequestBody Endereco endereco) {
-    if (endereco.getId() != null) {
-      enderecoRepositorio.save(endereco);
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
+  public ResponseEntity<?> cadastrarEndereco(@RequestBody @Valid Endereco endereco) {
+    enderecoRepositorio.save(endereco);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -70,8 +71,7 @@ public class EnderecoControlador {
   public ResponseEntity<List<Endereco>> obterEnderecos() {
     List<Endereco> enderecos = enderecoRepositorio.findAll();
     if (enderecos.isEmpty()) {
-      ResponseEntity<List<Endereco>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Nenhum endereco cadastrado");
     } else {
       adicionaLinkEnderecoServico.adicionarLink(enderecos);
       ResponseEntity<List<Endereco>> resposta = new ResponseEntity<>(enderecos, HttpStatus.OK);
@@ -86,13 +86,13 @@ public class EnderecoControlador {
       @ApiResponse(responseCode = "404", description = "Endereco não encontrado")
   })
   public ResponseEntity<Endereco> obterEndereco(@PathVariable long id) {
-    Optional<Endereco> cliente = enderecoRepositorio.findById(id);
-    if (cliente.isEmpty()) {
+    Optional<Endereco> endereco = enderecoRepositorio.findById(id);
+    if (endereco.isEmpty()) {
       ResponseEntity<Endereco> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
       return resposta;
     } else {
-      adicionaLinkEnderecoServico.adicionarLink(cliente.get());
-      return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
+      adicionaLinkEnderecoServico.adicionarLink(endereco.get());
+      return ResponseEntity.status(HttpStatus.OK).body(endereco.get());
     }
   }
 
@@ -104,12 +104,12 @@ public class EnderecoControlador {
   })
   public ResponseEntity<?> atualizarEndereco(@RequestBody Endereco enderecoAtualizado) {
     Optional<Endereco> endereco = enderecoRepositorio.findById(enderecoAtualizado.getId());
-    if (endereco.isPresent()) {
-      atualizaEnderecoServico.atualizar(endereco.get(), enderecoAtualizado);
-      enderecoRepositorio.save(endereco.get());
-      return new ResponseEntity<>(HttpStatus.OK);
+    if (endereco.isEmpty()) {
+      throw new NaoEncontradoExcecao("Endereco não encontrado");
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    atualizaEnderecoServico.atualizar(endereco.get(), enderecoAtualizado);
+    enderecoRepositorio.save(endereco.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping("/endereco/excluir")
@@ -119,23 +119,22 @@ public class EnderecoControlador {
       @ApiResponse(responseCode = "404", description = "Endereco não encontrado")
   })
   public ResponseEntity<?> excluirEndereco(@RequestBody Endereco exclusao) {
-    HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Endereco> endereco = enderecoRepositorio.findById(exclusao.getId());
     if (endereco.isPresent()) {
-      var usuario = usuarioRepositorio.findByEndereco(endereco.get());
+      Optional<Usuario> usuario = usuarioRepositorio.findByEndereco(endereco.get());
       if (usuario.isPresent()) {
         usuario.get().setEndereco(null);
         usuarioRepositorio.save(usuario.get());
       }
-      var empresa = empresaRepositorio.findByEndereco(endereco.get());
+      Optional<Empresa> empresa = empresaRepositorio.findByEndereco(endereco.get());
       if (empresa.isPresent()) {
         empresa.get().setEndereco(null);
         empresaRepositorio.save(empresa.get());
       }
       enderecoRepositorio.delete(endereco.get());
-      status = HttpStatus.OK;
+      return new ResponseEntity<>(HttpStatus.OK);
     }
-    return new ResponseEntity<>(status);
+    throw new NaoEncontradoExcecao("Endereco não encontrado");
   }
 
 }

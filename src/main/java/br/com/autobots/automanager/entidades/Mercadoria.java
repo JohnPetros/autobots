@@ -3,6 +3,9 @@ package br.com.autobots.automanager.entidades;
 import java.time.LocalDate;
 
 import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,9 +14,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,18 +39,23 @@ public class Mercadoria extends RepresentationModel<Mercadoria> {
   @Schema(description = "Data de validade da mercadoria", example = "2025-01-01", required = true)
   @NotNull(message = "Data de validade da mercadoria é obrigatória")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  @Future(message = "A data de validade deve ser no futuro")
   private LocalDate validade;
 
   @Column(nullable = false)
   @Schema(description = "Data de fabricação da mercadoria", example = "2025-01-01", required = true)
   @NotNull(message = "Data de fabricação da mercadoria é obrigatória")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  @Past(message = "A data de cadastro deve ser no passado")
   private LocalDate fabricao;
 
   @Column(nullable = false)
   @Schema(description = "Data de cadastro da mercadoria", example = "2025-01-01", required = true)
   @NotNull(message = "Data de cadastro da mercadoria é obrigatória")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @JsonFormat(pattern = "yyyy-MM-dd")
   private LocalDate cadastro;
 
   @Column(nullable = false)

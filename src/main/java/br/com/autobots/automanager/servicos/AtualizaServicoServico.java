@@ -12,15 +12,12 @@ public class AtualizaServicoServico {
   @Autowired
   private VerificaStringNuloServico verificaStringServico;
 
-  @Autowired
-  private VerificaDoubleNuloServico verificaDoubleServico;
-
   public void atualizar(Servico servico, Servico atualizacao) {
     if (atualizacao != null) {
       if (!verificaStringServico.verificar(atualizacao.getNome())) {
         servico.setNome(atualizacao.getNome());
       }
-      if (!verificaDoubleServico.verificar(atualizacao.getValor())) {
+      if (atualizacao.getValor() != null) {
         servico.setValor(atualizacao.getValor());
       }
       if (!verificaStringServico.verificar(atualizacao.getDescricao())) {

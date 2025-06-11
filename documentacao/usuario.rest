@@ -50,7 +50,8 @@ Content-Type: application/json
       "modelo": "Gol",
       "placa": "ABC-1234"
     }
-  ]
+  ],
+  "inativo": false
 }
 
 ### Cadastrar um novo funcionário
@@ -69,7 +70,6 @@ Content-Type: application/json
   "credencialCodigoBarra": {
     "criacao": "2025-01-01",
     "ultimoAcesso": "2025-01-01",
-    "inativo": false,
     "codigo": 654321
   },
   "documentos": [
@@ -98,7 +98,8 @@ Content-Type: application/json
       "ddd": "91",
       "numero": "987654321"
     }
-  ]
+  ],
+  "inativo": false
 }
 
 ### Obter todos os usuarios
@@ -113,56 +114,39 @@ Content-Type: application/json
 
 {
   "id": 1,
-  "nome": "Raim dos Santos",
-  "nomeSocial": "Raimizinho",
+  "nome": "Raiam dos Santos",
+  "nomeSocial": "Raiamizinho",
   "dataNascimento": "1990-01-01",
-  "dataCadastro": "2025-01-01",
-  "credencialUsuarioSenha": {
-      "id": 1,
-      "criacao": "2025-01-01",
-      "ultimoAcesso": "2025-01-01",
-      "inativo": false,
-      "nomeUsuario": "joao",
-      "senha": "123456"
-    },
-  "credencialCodigoBarra": {
-    "id": 1,
-    "criacao": "2025-01-01",
-    "ultimoAcesso": "2025-01-01",
-    "inativo": false,
-    "codigo": 123456
-  },
-  "documentos": [
-    {
-      "id": 1,
-      "tipo": "CPF",
-      "numero": "1234567890"
-    }
-  ],
+  "dataCadastro": "2000-01-01",
   "emails": [
     {
-      "id": 1,
       "endereco": "joao@gmail.com"
     }
   ],
   "endereco": {
-    "id": 1,
-    "estado": "SP",
-    "cidade": "São Paulo",
-    "bairro": "Jardim Paulista",
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "bairro": "Copacabana",
     "rua": "Rua das Flores",
     "numero": "123",
     "codigoPostal": "04101-300",
     "informacoesAdicionais": "Apto 101"
   },
-  "perfil": "FUNCIONARIO",
+  "perfil": "CLIENTE",
   "telefones": [
     {
-      "id": 1,
       "ddd": "11",
-      "numero": "99999-9999"
+      "numero": "123456789"
     }
-  ]
+  ],
+  "veiculos": [
+    {
+      "tipo": "HATCH",
+      "modelo": "Gol",
+      "placa": "ABC-1234"
+    }
+  ],
+  "inativo": true
 }
 
 ### Excluir um usuario

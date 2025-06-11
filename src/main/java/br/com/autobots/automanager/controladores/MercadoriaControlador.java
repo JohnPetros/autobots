@@ -20,8 +20,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Mercadoria;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.MercadoriaRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkMercadoriaServico;
 import br.com.autobots.automanager.servicos.AtualizaMercadoriaServico;
@@ -44,11 +45,7 @@ public class MercadoriaControlador {
       @ApiResponse(responseCode = "201", description = "Telefone cadastrado com sucesso"),
       @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
   })
-  public ResponseEntity<?> cadastrarMercadoria(@RequestBody Mercadoria mercadoria) {
-    Optional<Mercadoria> mercadoriaExistente = repositorio.findById(mercadoria.getId());
-    if (mercadoriaExistente.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
+  public ResponseEntity<?> cadastrarMercadoria(@RequestBody @Valid Mercadoria mercadoria) {
     repositorio.save(mercadoria);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -62,8 +59,7 @@ public class MercadoriaControlador {
   public ResponseEntity<List<Mercadoria>> obterMercadorias() {
     List<Mercadoria> mercadorias = repositorio.findAll();
     if (mercadorias.isEmpty()) {
-      ResponseEntity<List<Mercadoria>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Nenhum mercadoria cadastrada");
     } else {
       adicionaLinkMercadoriaServico.adicionarLink(mercadorias);
       ResponseEntity<List<Mercadoria>> resposta = new ResponseEntity<>(mercadorias, HttpStatus.OK);
@@ -96,12 +92,12 @@ public class MercadoriaControlador {
   })
   public ResponseEntity<?> atualizarMercadoria(@RequestBody Mercadoria mercadoriaAtualizado) {
     Optional<Mercadoria> mercadoria = repositorio.findById(mercadoriaAtualizado.getId());
-    if (mercadoria.isPresent()) {
-      atualizaMercadoriaServico.atualizar(mercadoria.get(), mercadoriaAtualizado);
-      repositorio.save(mercadoria.get());
-      return new ResponseEntity<>(HttpStatus.OK);
+    if (mercadoria.isEmpty()) {
+      throw new NaoEncontradoExcecao("Mercadoria não encontrada");
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    atualizaMercadoriaServico.atualizar(mercadoria.get(), mercadoriaAtualizado);
+    repositorio.save(mercadoria.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping("/mercadoria/excluir")
@@ -111,12 +107,11 @@ public class MercadoriaControlador {
       @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada")
   })
   public ResponseEntity<?> excluirMercadoria(@RequestBody Mercadoria exclusao) {
-    HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Mercadoria> mercadoria = repositorio.findById(exclusao.getId());
-    if (mercadoria.isPresent()) {
-      repositorio.delete(mercadoria.get());
-      status = HttpStatus.OK;
+    if (mercadoria.isEmpty()) {
+      throw new NaoEncontradoExcecao("Mercadoria não encontrada");
     }
-    return new ResponseEntity<>(status);
+    repositorio.delete(mercadoria.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

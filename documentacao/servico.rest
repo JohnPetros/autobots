@@ -3,9 +3,8 @@ POST http://localhost:8080/servico/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
   "nome": "Troca de óleo",
-  "valor": 100,
+  "valor": 120,
   "descricao": "Troca de óleo do motor"
 }
 
@@ -32,11 +31,7 @@ Content-Type: application/json
 
 {
   "id": 1,
-  "validade": "2045-01-01",
-  "fabricao": "2012-01-01",
-  "cadastro": "2025-01-01",
-  "nome": "Cera de motor",
-  "quantidade": 20,
-  "valor": 200,
-  "descricao": "Cera de motor 40W10"
+  "nome": "Alinhamento e balanceamento",
+  "valor": 150,
+  "descricao": "Serviço de alinhamento e balanceamento das rodas"
 }

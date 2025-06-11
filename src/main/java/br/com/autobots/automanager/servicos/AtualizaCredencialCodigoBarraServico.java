@@ -9,9 +9,15 @@ public class AtualizaCredencialCodigoBarraServico {
   public void atualizar(
       CredencialCodigoBarra credencialCodigoBarra,
       CredencialCodigoBarra credencialCodigoBarraAtualizada) {
-    credencialCodigoBarra.setCodigo(credencialCodigoBarraAtualizada.getCodigo());
-    credencialCodigoBarra.setCriacao(credencialCodigoBarraAtualizada.getCriacao());
-    credencialCodigoBarra.setUltimoAcesso(credencialCodigoBarraAtualizada.getUltimoAcesso());
-    credencialCodigoBarra.setInativo(credencialCodigoBarraAtualizada.isInativo());
+    if (credencialCodigoBarraAtualizada == null) {
+      return;
+    }
+
+    if (credencialCodigoBarraAtualizada.getCodigo() != null) {
+      credencialCodigoBarra.setCodigo(credencialCodigoBarraAtualizada.getCodigo());
+    }
+    if (credencialCodigoBarraAtualizada.getCriacao() != null) {
+      credencialCodigoBarra.setCriacao(credencialCodigoBarraAtualizada.getCriacao());
+    }
   }
 }

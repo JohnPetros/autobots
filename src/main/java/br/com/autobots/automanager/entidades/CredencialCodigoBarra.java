@@ -12,5 +12,5 @@ import lombok.EqualsAndHashCode;
 public class CredencialCodigoBarra extends Credencial {
   @Column(nullable = false, unique = true)
   @NotNull(message = "Código de barras é obrigatório")
-  private long codigo;
+  private Long codigo;
 }

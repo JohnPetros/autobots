@@ -21,10 +21,4 @@ public class Credencial {
 
   @Column(nullable = false)
   private LocalDate criacao = LocalDate.now();
-
-  @Column
-  private LocalDate ultimoAcesso;
-
-  @Column(nullable = false)
-  private boolean inativo;
 }

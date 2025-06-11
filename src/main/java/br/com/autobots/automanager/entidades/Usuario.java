@@ -1,5 +1,6 @@
 package br.com.autobots.automanager.entidades;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,16 +54,22 @@ public class Usuario extends RepresentationModel<Usuario> {
   @NotNull(message = "Perfil é obrigatório")
   private PerfilUsuario perfil;
 
+  @OneToOne(optional = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "endereco_id", nullable = true)
+  @NotNull(message = "Endereço é obrigatório")
+  private Endereco endereco;
+
+  @Column(nullable = false)
+  private Boolean inativo;
+
+  @Column(nullable = true)
+  private LocalDate ultimoAcesso = LocalDate.now();
+
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
   @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de documentos do usuário")
   @NotEmpty(message = "Documentos são obrigatórios")
   private List<Documento> documentos = new ArrayList<>();
-
-  @OneToOne(optional = true, cascade = CascadeType.ALL)
-  @JoinColumn(name = "endereco_id", nullable = true)
-  @NotNull(message = "Endereço é obrigatório")
-  private Endereco endereco;
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
   @JoinColumn(name = "cliente_id")

@@ -3,7 +3,6 @@ POST http://localhost:8080/endereco/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
   "estado": "SP",
   "cidade": "São Paulo",
   "bairro": "Jardim Paulista",

@@ -19,6 +19,7 @@ import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.servicos.AdicionaLinkUsuarioServico;
 import br.com.autobots.automanager.servicos.AtualizaUsuarioServico;
 import br.com.autobots.automanager.servicos.ValidaUsuarioServico;
+import br.com.autobots.automanager.repositorios.EmailRepositorio;
 import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,7 +71,7 @@ public class UsuarioControlador {
   public ResponseEntity<Usuario> obterUsuario(@PathVariable long id) {
     Optional<Usuario> usuario = repositorio.findById(id);
     if (usuario.isEmpty()) {
-      throw new NaoEncontradoExcecao("Usuario não encontrado");
+      throw new NaoEncontradoExcecao("Usuário não encontrado");
     } else {
       adicionaLinkUsuarioServico.adicionarLink(usuario.get());
       return ResponseEntity.status(HttpStatus.OK).body(usuario.get());
@@ -81,9 +82,9 @@ public class UsuarioControlador {
   @Operation(summary = "Cadastrar usuario", description = "Cadastra um novo usuario")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Usuario cadastrado com sucesso"),
-      @ApiResponse(responseCode = "302", description = "Usuario já cadastrado com esse nome de usuário"),
-      @ApiResponse(responseCode = "302", description = "Usuario já cadastrado com essa código de barras"),
-      @ApiResponse(responseCode = "302", description = "Documento já cadastrado"),
+      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com esse nome de usuário"),
+      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com essa código de barras"),
+      @ApiResponse(responseCode = "409", description = "Documento já cadastrado"),
       @ApiResponse(responseCode = "409", description = "Usuario já cadastrado")
   })
   public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid Usuario usuario) {
@@ -95,15 +96,18 @@ public class UsuarioControlador {
   @PutMapping("/usuario/atualizar")
   @Operation(summary = "Atualizar usuario", description = "Atualiza as informações de um usuario existente")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Usuario atualizado com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
+      @ApiResponse(responseCode = "201", description = "Usuario cadastrado com sucesso"),
+      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com esse nome de usuário"),
+      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com essa código de barras"),
+      @ApiResponse(responseCode = "409", description = "Documento já cadastrado"),
+      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado")
   })
   public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuarioAtualizacao) {
     Optional<Usuario> usuario = repositorio.findById(usuarioAtualizacao.getId());
     if (usuario.isEmpty()) {
       throw new NaoEncontradoExcecao("Usuario não encontrado");
     }
-
+    validaUsuarioServico.validar(usuarioAtualizacao);
     atualizaUsuarioServico.atualizar(usuario.get(), usuarioAtualizacao);
     repositorio.save(usuario.get());
     return new ResponseEntity<>(HttpStatus.OK);
@@ -120,7 +124,6 @@ public class UsuarioControlador {
     if (usuario.isEmpty()) {
       throw new NaoEncontradoExcecao("Usuario não encontrado");
     }
-
     repositorio.delete(usuario.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }

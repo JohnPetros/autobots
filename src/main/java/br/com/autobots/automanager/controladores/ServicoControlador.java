@@ -20,8 +20,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Servico;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.ServicoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkServicoServico;
 import br.com.autobots.automanager.servicos.AtualizaServicoServico;
@@ -44,11 +45,7 @@ public class ServicoControlador {
       @ApiResponse(responseCode = "201", description = "Servico cadastrado com sucesso"),
       @ApiResponse(responseCode = "409", description = "Servico já cadastrado")
   })
-  public ResponseEntity<?> cadastrarServico(@RequestBody Servico servico) {
-    Optional<Servico> servicoExistente = repositorio.findById(servico.getId());
-    if (servicoExistente.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
+  public ResponseEntity<?> cadastrarServico(@RequestBody @Valid Servico servico) {
     repositorio.save(servico);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -62,8 +59,7 @@ public class ServicoControlador {
   public ResponseEntity<List<Servico>> obterServicos() {
     List<Servico> servicos = repositorio.findAll();
     if (servicos.isEmpty()) {
-      ResponseEntity<List<Servico>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Nenhum servico cadastrado");
     } else {
       adicionaLinkServicoServico.adicionarLink(servicos);
       ResponseEntity<List<Servico>> resposta = new ResponseEntity<>(servicos, HttpStatus.OK);
@@ -96,12 +92,12 @@ public class ServicoControlador {
   })
   public ResponseEntity<?> atualizarServico(@RequestBody Servico servicoAtualizado) {
     Optional<Servico> servico = repositorio.findById(servicoAtualizado.getId());
-    if (servico.isPresent()) {
-      atualizaServicoServico.atualizar(servico.get(), servicoAtualizado);
-      repositorio.save(servico.get());
-      return new ResponseEntity<>(HttpStatus.OK);
+    if (servico.isEmpty()) {
+      throw new NaoEncontradoExcecao("Servico não encontrado");
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    atualizaServicoServico.atualizar(servico.get(), servicoAtualizado);
+    repositorio.save(servico.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping("/servico/excluir")
@@ -111,12 +107,11 @@ public class ServicoControlador {
       @ApiResponse(responseCode = "404", description = "Servico não encontrado")
   })
   public ResponseEntity<?> excluirServico(@RequestBody Servico exclusao) {
-    HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Servico> servico = repositorio.findById(exclusao.getId());
-    if (servico.isPresent()) {
-      repositorio.delete(servico.get());
-      status = HttpStatus.OK;
+    if (servico.isEmpty()) {
+      throw new NaoEncontradoExcecao("Servico não encontrado");
     }
-    return new ResponseEntity<>(status);
+    repositorio.delete(servico.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

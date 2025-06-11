@@ -52,5 +52,11 @@ public class AtualizaUsuarioServico {
     if (usuarioAtualizado.getPerfil() != null) {
       usuario.setPerfil(usuarioAtualizado.getPerfil());
     }
+    if (usuarioAtualizado.getInativo() != null) {
+      usuario.setInativo(usuarioAtualizado.getInativo());
+    }
+    if (usuarioAtualizado.getUltimoAcesso() != null) {
+      usuario.setUltimoAcesso(usuarioAtualizado.getUltimoAcesso());
+    }
   }
 }

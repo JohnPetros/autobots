@@ -3,10 +3,9 @@ POST http://localhost:8080/veiculo/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
-  "tipo": "HATCH",
-  "modelo": "Gol",
-  "placa": "ABC-1234"
+  "tipo": "SEDAN",
+  "modelo": "Civic",
+  "placa": "XYZ-9876"
 }
 
 ### Obter todos os veiculos
@@ -21,8 +20,8 @@ Content-Type: application/json
 
 {
   "id": 1,
-  "tipo": "SEDA",
-  "modelo": "Civic",
+  "tipo": "SEDAN",
+  "modelo": "Honda Civic",
   "placa": "XYZ-9876"
 }
 
@@ -31,12 +30,8 @@ DELETE http://localhost:8080/veiculo/excluir
 Content-Type: application/json
 
 {
-  "id": 1,
-  "validade": "2045-01-01",
-  "fabricao": "2012-01-01",
-  "cadastro": "2025-01-01",
-  "nome": "Cera de motor",
-  "quantidade": 20,
-  "valor": 200,
-  "descricao": "Cera de motor 40W10"
+  "id": 2,
+  "tipo": "SEDAN",
+  "modelo": "Honda Civic",
+  "placa": "XYZ-9876"
 }

@@ -35,8 +35,8 @@ public class Telefone extends RepresentationModel<Telefone> {
 	@Pattern(regexp = "\\d{2}", message = "DDD deve conter 2 dígitos")
 	private String ddd;
 
-	@Column
-	@Schema(description = "Número do telefone", example = "99999-9999")
+	@Column(unique = true)
+	@Schema(description = "Número do telefone", example = "999999999")
 	@NotBlank(message = "Número é obrigatório")
 	@Pattern(regexp = "\\d{9}", message = "Número deve conter 9 dígitos")
 	private String numero;

@@ -20,11 +20,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Documento;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.DocumentoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkDocumentoServico;
 import br.com.autobots.automanager.servicos.AtualizaDocumentoServico;
+import br.com.autobots.automanager.servicos.ValidaDocumentoServico;
 
 @RestController
 @Tag(name = "Documento", description = "CRUD de documentos")
@@ -38,21 +40,17 @@ public class DocumentoControlador {
   @Autowired
   private AtualizaDocumentoServico atualizaDocumentoServico;
 
+  @Autowired
+  private ValidaDocumentoServico validaDocumentoServico;
+
   @PostMapping("/documento/cadastrar")
   @Operation(summary = "Cadastrar documento", description = "Cadastra um novo documento")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Documento cadastrado com sucesso"),
       @ApiResponse(responseCode = "409", description = "Documento já cadastrado")
   })
-  public ResponseEntity<?> cadastrarDocumento(@RequestBody Documento documento) {
-    Optional<Documento> documentoExistente = repositorio.findById(documento.getId());
-    if (documentoExistente.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
-    documentoExistente = repositorio.findByNumero(documento.getNumero());
-    if (documentoExistente.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
+  public ResponseEntity<?> cadastrarDocumento(@RequestBody @Valid Documento documento) {
+    validaDocumentoServico.validar(documento);
     repositorio.save(documento);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -66,8 +64,7 @@ public class DocumentoControlador {
   public ResponseEntity<List<Documento>> obterDocumentos() {
     List<Documento> documentos = repositorio.findAll();
     if (documentos.isEmpty()) {
-      ResponseEntity<List<Documento>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Nenhum documento cadastrado");
     } else {
       adicionaLinkDocumentoServico.adicionarLink(documentos);
       ResponseEntity<List<Documento>> resposta = new ResponseEntity<>(documentos, HttpStatus.OK);
@@ -100,12 +97,13 @@ public class DocumentoControlador {
   })
   public ResponseEntity<?> atualizarDocumento(@RequestBody Documento documentoAtualizado) {
     Optional<Documento> documento = repositorio.findById(documentoAtualizado.getId());
-    if (documento.isPresent()) {
-      atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
-      repositorio.save(documento.get());
-      return new ResponseEntity<>(HttpStatus.OK);
+    if (documento.isEmpty()) {
+      throw new NaoEncontradoExcecao("Documento não encontrado");
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    validaDocumentoServico.validar(documentoAtualizado);
+    atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
+    repositorio.save(documento.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping("/documento/excluir")
@@ -115,12 +113,11 @@ public class DocumentoControlador {
       @ApiResponse(responseCode = "404", description = "Documento não encontrado")
   })
   public ResponseEntity<?> excluirDocumento(@RequestBody Documento exclusao) {
-    HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Documento> documento = repositorio.findById(exclusao.getId());
-    if (documento.isPresent()) {
-      repositorio.delete(documento.get());
-      status = HttpStatus.OK;
+    if (documento.isEmpty()) {
+      throw new NaoEncontradoExcecao("Documento não encontrado");
     }
-    return new ResponseEntity<>(status);
+    repositorio.delete(documento.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

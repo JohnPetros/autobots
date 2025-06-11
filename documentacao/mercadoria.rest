@@ -3,8 +3,7 @@ POST http://localhost:8080/mercadoria/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
-  "validade": "2025-01-01",
+  "validade": "2030-01-01",
   "fabricao": "2025-01-01",
   "cadastro": "2025-01-01",
   "nome": "Óleo de motor",

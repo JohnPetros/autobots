@@ -3,9 +3,8 @@ POST http://localhost:8080/documento/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
   "tipo": "CPF",
-  "numero": "1234567898"
+  "numero": "12345678912"
 }
 
 ### Obter todos os documentos
@@ -21,7 +20,7 @@ Content-Type: application/json
 {
   "id": 1,
   "tipo": "CNPJ",
-  "numero": "8987654321"
+  "numero": "09876543210987"
 }
 
 ### Excluir um documento

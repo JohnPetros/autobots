@@ -36,7 +36,6 @@ PUT http://localhost:8080/documento/atualizar
 Content-Type: application/json
 
 {
-  "id": 1,
   "tipo": "CNPJ",
   "numero": "8987654321"
 }

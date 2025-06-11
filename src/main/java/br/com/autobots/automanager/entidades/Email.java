@@ -8,13 +8,13 @@ import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
-@Entity
+@Entity(name = "emails")
 public class Email {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   @jakarta.validation.constraints.Email(message = "Endereço de email inválido")
   private String endereco;
 }

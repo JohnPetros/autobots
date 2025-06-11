@@ -20,11 +20,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Telefone;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.TelefoneRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkTelefoneServico;
 import br.com.autobots.automanager.servicos.AtualizaTelefoneServico;
+import br.com.autobots.automanager.servicos.ValidaTelefoneServico;
 
 @RestController
 @Tag(name = "Telefone", description = "CRUD de telefones")
@@ -38,20 +40,17 @@ public class TelefoneControlador {
   @Autowired
   private AtualizaTelefoneServico atualizaTelefoneServico;
 
+  @Autowired
+  private ValidaTelefoneServico validaTelefoneServico;
+
   @PostMapping("/telefone/cadastrar")
   @Operation(summary = "Cadastrar telefone", description = "Cadastra um novo telefone")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Telefone cadastrado com sucesso"),
-      @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
+      @ApiResponse(responseCode = "409", description = "Telefone com DDD e número já cadastrado")
   })
-  public ResponseEntity<?> cadastrarTelefone(@RequestBody Telefone telefone) {
-    System.out.println("Número	: " + telefone.getNumero());
-    System.out.println("DDD: " + telefone.getDdd());
-    System.out.println("ID: " + telefone.getId());
-    Optional<Telefone> telefoneExistente = repositorio.findById(telefone.getId());
-    if (telefoneExistente.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
+  public ResponseEntity<?> cadastrarTelefone(@RequestBody @Valid Telefone telefone) {
+    validaTelefoneServico.validar(telefone);
     repositorio.save(telefone);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -65,8 +64,7 @@ public class TelefoneControlador {
   public ResponseEntity<List<Telefone>> obterTelefones() {
     List<Telefone> telefones = repositorio.findAll();
     if (telefones.isEmpty()) {
-      ResponseEntity<List<Telefone>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Nenhum telefone cadastrado");
     } else {
       adicionaLinkTelefoneServico.adicionarLink(telefones);
       ResponseEntity<List<Telefone>> resposta = new ResponseEntity<>(telefones, HttpStatus.OK);
@@ -99,12 +97,13 @@ public class TelefoneControlador {
   })
   public ResponseEntity<?> atualizarTelefone(@RequestBody Telefone telefoneAtualizado) {
     Optional<Telefone> telefone = repositorio.findById(telefoneAtualizado.getId());
-    if (telefone.isPresent()) {
-      atualizaTelefoneServico.atualizar(telefone.get(), telefoneAtualizado);
-      repositorio.save(telefone.get());
-      return new ResponseEntity<>(HttpStatus.OK);
+    if (telefone.isEmpty()) {
+      throw new NaoEncontradoExcecao("Telefone não encontrado");
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    validaTelefoneServico.validar(telefoneAtualizado);
+    atualizaTelefoneServico.atualizar(telefone.get(), telefoneAtualizado);
+    repositorio.save(telefone.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping("/telefone/excluir")
@@ -114,12 +113,11 @@ public class TelefoneControlador {
       @ApiResponse(responseCode = "404", description = "Telefone não encontrado")
   })
   public ResponseEntity<?> excluirTelefone(@RequestBody Telefone exclusao) {
-    HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Telefone> telefone = repositorio.findById(exclusao.getId());
-    if (telefone.isPresent()) {
-      repositorio.delete(telefone.get());
-      status = HttpStatus.OK;
+    if (telefone.isEmpty()) {
+      throw new NaoEncontradoExcecao("Telefone não encontrado");
     }
-    return new ResponseEntity<>(status);
+    repositorio.delete(telefone.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }
