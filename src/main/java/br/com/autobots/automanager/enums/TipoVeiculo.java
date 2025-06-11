@@ -2,7 +2,7 @@ package br.com.autobots.automanager.enums;
 
 public enum TipoVeiculo {
   HATCH,
-  SEDA,
+  SEDAN,
   SUV,
   PICKUP,
   SW

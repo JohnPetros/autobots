@@ -14,8 +14,6 @@ import br.com.autobots.automanager.entidades.Endereco;
 public interface UsuarioRepositorio extends JpaRepository<Usuario, Long> {
   Optional<Usuario> findByEndereco(Endereco endereco);
 
-  Optional<Usuario> findByCredencialUsuarioSenha(CredencialUsuarioSenha credencialUsuarioSenha);
-
   Optional<Usuario> findByCredencialCodigoBarra(CredencialCodigoBarra credencialCodigoBarra);
 
   Optional<Usuario> findByDocumentos(List<Documento> documentos);

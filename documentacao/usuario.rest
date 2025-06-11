@@ -8,9 +8,6 @@ Content-Type: application/json
   "dataNascimento": "1990-01-01",
   "dataCadastro": "2000-01-01",
   "credencialUsuarioSenha": {
-    "criacao": "2025-01-01",
-    "ultimoAcesso": "2025-01-01",
-    "inativo": false,
     "nomeUsuario": "joao",
     "senha": "123456"
   },
@@ -44,7 +41,7 @@ Content-Type: application/json
   "telefones": [
     {
       "ddd": "11",
-      "numero": "99999-9999"
+      "numero": "123456789"
     }
   ],
   "veiculos": [
@@ -61,21 +58,15 @@ POST http://localhost:8080/usuario/cadastrar
 Content-Type: application/json
 
 {
-  "id": 2,
-  "nome": "Gersoon da Penha",
-  "nomeSocial": "Gersoon da Penha",
-  "dataNascimento": "1980-01-01",
-  "dataCadastro": "2025-01-01",
+  "nome": "Gerson da Penha",
+  "nomeSocial": "Gerson Paysandu",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
   "credencialUsuarioSenha": {
-    "id": 3,
-    "criacao": "2025-01-01",
-    "ultimoAcesso": "2025-01-01",
-    "inativo": false,
-    "nomeUsuario": "gerson",
-    "senha": "654321"
+    "nomeUsuario": "penha",
+    "senha": "123456"
   },
   "credencialCodigoBarra": {
-    "id": 4,
     "criacao": "2025-01-01",
     "ultimoAcesso": "2025-01-01",
     "inativo": false,
@@ -83,33 +74,29 @@ Content-Type: application/json
   },
   "documentos": [
     {
-      "id": 2,
       "tipo": "CPF",
-      "numero": "0987654321"
+      "numero": "987654321"
     }
   ],
   "emails": [
     {
-      "id": 2,
-      "endereco": "gerson@gmail.com"
+      "endereco": "penha@gmail.com"
     }
   ],
   "endereco": {
-    "id": 2,
-    "estado": "SP",
-    "cidade": "São Paulo",
-    "bairro": "Jardim Paulista",
-    "rua": "Rua das Flores",
+    "estado": "PA",
+    "cidade": "Belém",
+    "bairro": "Barreiro",
+    "rua": "Rua dos Penha",
     "numero": "123",
     "codigoPostal": "04101-300",
     "informacoesAdicionais": "Apto 101"
   },
-  "perfil": "CLIENTE",
+  "perfil": "FUNCIONARIO",
   "telefones": [
     {
-      "id": 2,
-      "ddd": "11",
-      "numero": "99999-9999"
+      "ddd": "91",
+      "numero": "987654321"
     }
   ]
 }

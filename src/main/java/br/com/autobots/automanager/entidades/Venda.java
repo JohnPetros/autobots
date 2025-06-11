@@ -11,10 +11,14 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,23 +31,28 @@ import lombok.Setter;
 @Entity(name = "vendas")
 public class Venda extends RepresentationModel<Venda> {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Schema(description = "ID da venda", example = "1")
   private Long id;
 
   @Column(nullable = false)
   @Schema(description = "Data de cadastro da venda", example = "2025-01-01")
+  @NotNull(message = "Data de cadastro da venda é obrigatória")
   private Date cadastro;
 
   @Column(nullable = false, unique = true)
   @Schema(description = "Identificação da venda", example = "1234567890")
+  @NotBlank(message = "Identificação da venda é obrigatória")
   private String identificacao;
 
   @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @Schema(description = "Cliente da venda")
+  @NotNull(message = "Cliente da venda é obrigatório")
   private Usuario cliente;
 
   @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @Schema(description = "Funcionário da venda")
+  @NotNull(message = "Funcionário da venda é obrigatório")
   private Usuario funcionario;
 
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })

@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import br.com.autobots.automanager.enums.PerfilUsuario;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,12 +24,15 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "clientes")
-public class Usuario extends RepresentationModel<Cliente> {
+public class Usuario extends RepresentationModel<Usuario> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Schema(description = "ID do usuário", example = "1")
@@ -38,41 +40,50 @@ public class Usuario extends RepresentationModel<Cliente> {
 
   @Column(nullable = false)
   @Schema(description = "Nome do usuário", example = "João da Silva")
+  @NotBlank(message = "Nome é obrigatório")
   private String nome;
 
   @Column
   @Schema(description = "Nome social do usuário", example = "João")
+  @NotBlank(message = "Nome social é obrigatório")
   private String nomeSocial;
 
   @Enumerated(EnumType.STRING)
   @Schema(description = "Perfil do usuário", example = "FUNCIONARIO")
+  @NotNull(message = "Perfil é obrigatório")
   private PerfilUsuario perfil;
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
   @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de documentos do usuário")
+  @NotEmpty(message = "Documentos são obrigatórios")
   private List<Documento> documentos = new ArrayList<>();
 
   @OneToOne(optional = true, cascade = CascadeType.ALL)
   @JoinColumn(name = "endereco_id", nullable = true)
+  @NotNull(message = "Endereço é obrigatório")
   private Endereco endereco;
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
   @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de telefones do usuário")
+  @NotEmpty(message = "Telefones são obrigatórios")
   private List<Telefone> telefones = new ArrayList<>();
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de emails do usuário")
+  @NotEmpty(message = "Emails são obrigatórios")
   private List<Email> emails = new ArrayList<>();
 
   @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @Schema(description = "Credencial de usuário e senha")
+  @NotNull(message = "Credencial de usuário e senha é obrigatória")
   private CredencialUsuarioSenha credencialUsuarioSenha;
 
   @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @Schema(description = "Credencial de código de barras")
+  @NotNull(message = "Credencial de código de barras é obrigatória")
   private CredencialCodigoBarra credencialCodigoBarra;
 
   @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)

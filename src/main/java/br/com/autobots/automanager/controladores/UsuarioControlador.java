@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.automanager.entidades.Usuario;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.servicos.AdicionaLinkUsuarioServico;
 import br.com.autobots.automanager.servicos.AtualizaUsuarioServico;
 import br.com.autobots.automanager.servicos.ValidaUsuarioServico;
@@ -24,6 +25,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -51,8 +53,7 @@ public class UsuarioControlador {
   public ResponseEntity<List<Usuario>> obterUsuarios() {
     List<Usuario> usuarios = repositorio.findAll();
     if (usuarios.isEmpty()) {
-      ResponseEntity<List<Usuario>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Nenhum usuario cadastrado");
     } else {
       adicionaLinkUsuarioServico.adicionarLink(usuarios);
       ResponseEntity<List<Usuario>> resposta = new ResponseEntity<>(usuarios, HttpStatus.OK);
@@ -69,8 +70,7 @@ public class UsuarioControlador {
   public ResponseEntity<Usuario> obterUsuario(@PathVariable long id) {
     Optional<Usuario> usuario = repositorio.findById(id);
     if (usuario.isEmpty()) {
-      ResponseEntity<Usuario> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Usuario não encontrado");
     } else {
       adicionaLinkUsuarioServico.adicionarLink(usuario.get());
       return ResponseEntity.status(HttpStatus.OK).body(usuario.get());
@@ -81,15 +81,15 @@ public class UsuarioControlador {
   @Operation(summary = "Cadastrar usuario", description = "Cadastra um novo usuario")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Usuario cadastrado com sucesso"),
+      @ApiResponse(responseCode = "302", description = "Usuario já cadastrado com esse nome de usuário"),
+      @ApiResponse(responseCode = "302", description = "Usuario já cadastrado com essa código de barras"),
+      @ApiResponse(responseCode = "302", description = "Documento já cadastrado"),
       @ApiResponse(responseCode = "409", description = "Usuario já cadastrado")
   })
-  public ResponseEntity<?> cadastrarUsuario(@RequestBody Usuario usuario) {
-    HttpStatus status = HttpStatus.CONFLICT;
-    if (validaUsuarioServico.validar(usuario)) {
-      repositorio.save(usuario);
-      status = HttpStatus.CREATED;
-    }
-    return new ResponseEntity<>(status);
+  public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid Usuario usuario) {
+    validaUsuarioServico.validar(usuario);
+    repositorio.save(usuario);
+    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   @PutMapping("/usuario/atualizar")
@@ -100,12 +100,13 @@ public class UsuarioControlador {
   })
   public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuarioAtualizacao) {
     Optional<Usuario> usuario = repositorio.findById(usuarioAtualizacao.getId());
-    if (usuario.isPresent()) {
-      atualizaUsuarioServico.atualizar(usuario.get(), usuarioAtualizacao);
-      repositorio.save(usuario.get());
-      return new ResponseEntity<>(HttpStatus.OK);
+    if (usuario.isEmpty()) {
+      throw new NaoEncontradoExcecao("Usuario não encontrado");
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    atualizaUsuarioServico.atualizar(usuario.get(), usuarioAtualizacao);
+    repositorio.save(usuario.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping("/usuario/excluir")
@@ -115,13 +116,13 @@ public class UsuarioControlador {
       @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
   })
   public ResponseEntity<?> excluirUsuario(@RequestBody Usuario exclusao) {
-    HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Usuario> usuario = repositorio.findById(exclusao.getId());
-    if (usuario.isPresent()) {
-      repositorio.delete(usuario.get());
-      status = HttpStatus.OK;
+    if (usuario.isEmpty()) {
+      throw new NaoEncontradoExcecao("Usuario não encontrado");
     }
-    return new ResponseEntity<>(status);
+
+    repositorio.delete(usuario.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
 }

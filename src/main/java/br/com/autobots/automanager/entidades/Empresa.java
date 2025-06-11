@@ -15,6 +15,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,21 +30,27 @@ public class Empresa extends RepresentationModel<Empresa> {
   private Long id;
 
   @Column(nullable = false)
+  @NotBlank(message = "Razão social é obrigatória")
   private String razaoSocial;
 
   @Column
+  @NotBlank(message = "Nome fantasia é obrigatório")
   private String nomeFantasia;
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @NotEmpty(message = "Usuários são obrigatórios")
   private List<Telefone> telefones = new ArrayList<>();
 
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @NotNull(message = "Endereço é obrigatório")
   private Endereco endereco;
 
   @Column(nullable = false)
+  @NotNull(message = "Data de cadastro é obrigatória")
   private Date cadastro;
 
   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @NotEmpty(message = "Usuários são obrigatórios")
   private List<Usuario> usuarios = new ArrayList<>();
 
   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

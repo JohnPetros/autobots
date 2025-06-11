@@ -25,6 +25,7 @@ import br.com.autobots.automanager.entidades.Veiculo;
 import br.com.autobots.automanager.repositorios.VeiculoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkVeiculoServico;
 import br.com.autobots.automanager.servicos.AtualizaVeiculoServico;
+import br.com.autobots.automanager.servicos.ValidaVeiculoServico;
 
 @RestController
 @Tag(name = "Veiculo", description = "CRUD de veiculos")
@@ -38,17 +39,19 @@ public class VeiculoControlador {
   @Autowired
   private AtualizaVeiculoServico atualizaVeiculoServico;
 
+  @Autowired
+  private ValidaVeiculoServico validaVeiculoServico;
+
   @PostMapping("/veiculo/cadastrar")
   @Operation(summary = "Cadastrar veiculo", description = "Cadastra um novo veiculo")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Veiculo cadastrado com sucesso"),
+      @ApiResponse(responseCode = "302", description = "Veiculo já cadastrado"),
+      @ApiResponse(responseCode = "302", description = "Veiculo já cadastrado com a placa"),
       @ApiResponse(responseCode = "409", description = "Veiculo já cadastrado")
   })
   public ResponseEntity<?> cadastrarVeiculo(@RequestBody Veiculo veiculo) {
-    Optional<Veiculo> veiculoExistente = repositorio.findById(veiculo.getId());
-    if (veiculoExistente.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
+    validaVeiculoServico.validar(veiculo);
     repositorio.save(veiculo);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
