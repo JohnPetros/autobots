@@ -1,10 +1,13 @@
 package br.com.autobots.automanager.entidades;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,6 +21,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,10 +51,11 @@ public class Empresa extends RepresentationModel<Empresa> {
 
   @Column(nullable = false)
   @NotNull(message = "Data de cadastro é obrigatória")
-  private Date cadastro;
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  private LocalDate cadastro;
 
   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  @NotEmpty(message = "Usuários são obrigatórios")
   private List<Usuario> usuarios = new ArrayList<>();
 
   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

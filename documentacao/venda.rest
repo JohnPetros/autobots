@@ -3,25 +3,22 @@ POST http://localhost:8080/venda/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
   "cadastro": "2025-01-01",
-  "identificacao": "1234567890",
+  "identificacao": "1234567899",
   "cliente": {
     "id": 1
   },
   "funcionario": {
-    "id": 1
+    "id": 2
   },
-  "mercadorias": [
-    {
-      "id": 1
-    }
-  ],
   "servicos": [
     {
       "id": 1
     }
-  ]
+  ],
+  "veiculo": {
+    "id": 1
+  }
 }
 
 ### Obter todas as vendas
@@ -42,7 +39,7 @@ Content-Type: application/json
     "id": 1
   },
   "funcionario": {
-    "id": 1
+    "id": 2
   },
   "mercadorias": [
     {
@@ -51,9 +48,12 @@ Content-Type: application/json
   ],
   "servicos": [
     {
-      "id": 1
+      "id": 2
     }
-  ]
+  ],
+  "veiculo": {
+    "id": 2
+  }
 }
 
 ### Excluir uma venda

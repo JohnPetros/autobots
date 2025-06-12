@@ -1,14 +1,19 @@
 package br.com.autobots.automanager.servicos;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.entidades.Mercadoria;
 import br.com.autobots.automanager.entidades.Servico;
 import br.com.autobots.automanager.entidades.Venda;
+import br.com.autobots.automanager.enums.PerfilUsuario;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.MercadoriaRepositorio;
 import br.com.autobots.automanager.repositorios.ServicoRepositorio;
 import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
+import br.com.autobots.automanager.repositorios.VeiculoRepositorio;
 
 @Service
 public class ValidaVendaServico {
@@ -21,29 +26,62 @@ public class ValidaVendaServico {
   @Autowired
   private ServicoRepositorio servicoRepositorio;
 
-  public boolean validar(Venda venda) {
-    var cliente = usuarioRepositorio.findById(venda.getCliente().getId());
-    System.out.println("usuarioExistente: " + usuarioRepositorio);
-    if (cliente.isEmpty()) {
-      return false;
-    }
+  @Autowired
+  private VeiculoRepositorio veiculoRepositorio;
 
-    for (Mercadoria mercadoria : venda.getMercadorias()) {
-      var mercadoriaExistente = mercadoriaRepositorio.findById(mercadoria.getId());
-      System.out.println("mercadoriaExistente: " + mercadoriaExistente);
-      if (mercadoriaExistente.isEmpty()) {
-        return false;
+  public void validar(Venda venda) {
+    if (venda.getCliente() != null) {
+      var cliente = usuarioRepositorio.findByIdAndPerfil(venda.getCliente().getId(), PerfilUsuario.CLIENTE);
+      if (cliente.isEmpty()) {
+        throw new NaoEncontradoExcecao("Cliente não encontrado");
       }
+      venda.setCliente(cliente.get());
     }
 
-    for (Servico servico : venda.getServicos()) {
-      var servicoExistente = servicoRepositorio.findById(servico.getId());
-      System.out.println("servicoExistente: " + servicoExistente);
-      if (servicoExistente.isEmpty()) {
-        return false;
+    if (venda.getFuncionario() != null) {
+      var funcionario = usuarioRepositorio.findByIdAndPerfil(venda.getFuncionario().getId(), PerfilUsuario.FUNCIONARIO);
+      if (funcionario.isEmpty()) {
+        throw new NaoEncontradoExcecao("Funcionário não encontrado");
       }
+      venda.setFuncionario(funcionario.get());
     }
 
-    return true;
+    if (venda.getMercadorias() != null) {
+      var mercadorias = new ArrayList<Mercadoria>();
+      for (Mercadoria mercadoria : venda.getMercadorias()) {
+        if (mercadoria.getId() != null) {
+          var mercadoriaExistente = mercadoriaRepositorio.findById(mercadoria.getId());
+          if (mercadoriaExistente.isEmpty()) {
+            throw new NaoEncontradoExcecao("Mercadoria não encontrada");
+          }
+          mercadorias.add(mercadoriaExistente.get());
+        }
+      }
+      venda.setMercadorias(mercadorias);
+    }
+
+    if (venda.getServicos() != null) {
+      var servicos = new ArrayList<Servico>();
+      for (Servico servico : venda.getServicos()) {
+        if (servico.getId() != null) {
+          var servicoExistente = servicoRepositorio.findById(servico.getId());
+          if (servicoExistente.isEmpty()) {
+            throw new NaoEncontradoExcecao("Serviço não encontrado");
+          }
+          servicos.add(servicoExistente.get());
+        }
+      }
+      venda.setServicos(servicos);
+    }
+
+    System.out.println(venda.getServicos().get(0).getId());
+
+    if (venda.getVeiculo() != null) {
+      var veiculo = veiculoRepositorio.findById(venda.getVeiculo().getId());
+      if (veiculo.isEmpty()) {
+        throw new NaoEncontradoExcecao("Veículo não encontrado");
+      }
+      venda.setVeiculo(veiculo.get());
+    }
   }
 }

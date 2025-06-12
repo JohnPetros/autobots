@@ -2,6 +2,10 @@ package br.com.autobots.automanager.entidades;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,5 +24,7 @@ public class Credencial {
   private Long id;
 
   @Column(nullable = false)
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @JsonFormat(pattern = "yyyy-MM-dd")
   private LocalDate criacao = LocalDate.now();
 }

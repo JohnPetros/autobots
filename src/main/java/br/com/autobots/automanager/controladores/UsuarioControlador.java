@@ -19,7 +19,6 @@ import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.servicos.AdicionaLinkUsuarioServico;
 import br.com.autobots.automanager.servicos.AtualizaUsuarioServico;
 import br.com.autobots.automanager.servicos.ValidaUsuarioServico;
-import br.com.autobots.automanager.repositorios.EmailRepositorio;
 import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
 
 import io.swagger.v3.oas.annotations.Operation;

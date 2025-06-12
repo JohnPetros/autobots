@@ -20,8 +20,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Venda;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.VendaRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkVendaServico;
 import br.com.autobots.automanager.servicos.AtualizaVendaServico;
@@ -46,17 +47,12 @@ public class VendaControlador {
   @Operation(summary = "Cadastrar venda", description = "Cadastra um novo venda")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Venda cadastrado com sucesso"),
-      @ApiResponse(responseCode = "422", description = "Venda não pode ser cadastrada"),
-      @ApiResponse(responseCode = "409", description = "Venda já cadastrado")
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+      @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada"),
+      @ApiResponse(responseCode = "404", description = "Serviço não encontrado")
   })
-  public ResponseEntity<?> cadastrarVenda(@RequestBody Venda venda) {
-    var vendaExistente = repositorio.findById(venda.getId());
-    if (vendaExistente.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
-    if (!validaVendaServico.validar(venda)) {
-      return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-    }
+  public ResponseEntity<?> cadastrarVenda(@RequestBody @Valid Venda venda) {
+    validaVendaServico.validar(venda);
     repositorio.save(venda);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -70,8 +66,7 @@ public class VendaControlador {
   public ResponseEntity<List<Venda>> obterVendas() {
     List<Venda> vendas = repositorio.findAll();
     if (vendas.isEmpty()) {
-      ResponseEntity<List<Venda>> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Nenhum venda cadastrado");
     } else {
       adicionaLinkVendaServico.adicionarLink(vendas);
       ResponseEntity<List<Venda>> resposta = new ResponseEntity<>(vendas, HttpStatus.OK);
@@ -86,13 +81,12 @@ public class VendaControlador {
       @ApiResponse(responseCode = "404", description = "Venda não encontrado")
   })
   public ResponseEntity<Venda> obterVenda(@PathVariable long id) {
-    Optional<Venda> cliente = repositorio.findById(id);
-    if (cliente.isEmpty()) {
-      ResponseEntity<Venda> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+    Optional<Venda> venda = repositorio.findById(id);
+    if (venda.isEmpty()) {
+      throw new NaoEncontradoExcecao("Venda não encontrada");
     } else {
-      adicionaLinkVendaServico.adicionarLink(cliente.get());
-      return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
+      adicionaLinkVendaServico.adicionarLink(venda.get());
+      return ResponseEntity.status(HttpStatus.OK).body(venda.get());
     }
   }
 
@@ -105,15 +99,13 @@ public class VendaControlador {
   })
   public ResponseEntity<?> atualizarVenda(@RequestBody Venda vendaAtualizado) {
     Optional<Venda> venda = repositorio.findById(vendaAtualizado.getId());
-    if (venda.isPresent()) {
-      if (!validaVendaServico.validar(vendaAtualizado)) {
-        return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-      }
-      atualizaVendaServico.atualizar(venda.get(), vendaAtualizado);
-      repositorio.save(venda.get());
-      return new ResponseEntity<>(HttpStatus.OK);
+    if (venda.isEmpty()) {
+      throw new NaoEncontradoExcecao("Venda não encontrada");
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    atualizaVendaServico.atualizar(venda.get(), vendaAtualizado);
+    validaVendaServico.validar(venda.get());
+    repositorio.save(venda.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping("/venda/excluir")
@@ -123,12 +115,11 @@ public class VendaControlador {
       @ApiResponse(responseCode = "404", description = "Venda não encontrada")
   })
   public ResponseEntity<?> excluirVenda(@RequestBody Venda exclusao) {
-    HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Venda> venda = repositorio.findById(exclusao.getId());
-    if (venda.isPresent()) {
-      repositorio.delete(venda.get());
-      status = HttpStatus.OK;
+    if (venda.isEmpty()) {
+      throw new NaoEncontradoExcecao("Venda não encontrada");
     }
-    return new ResponseEntity<>(status);
+    repositorio.delete(venda.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

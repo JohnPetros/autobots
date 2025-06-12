@@ -21,11 +21,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Mercadoria;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.MercadoriaRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkMercadoriaServico;
 import br.com.autobots.automanager.servicos.AtualizaMercadoriaServico;
+import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 
 @RestController
 @Tag(name = "Mercadoria", description = "CRUD de mercadorias")
@@ -39,14 +41,25 @@ public class MercadoriaControlador {
   @Autowired
   private AtualizaMercadoriaServico atualizaMercadoriaServico;
 
-  @PostMapping("/mercadoria/cadastrar")
+  @Autowired
+  private EmpresaRepositorio empresaRepositorio;
+
+  @PostMapping("/{empresaId}/mercadoria/cadastrar")
   @Operation(summary = "Cadastrar telefone", description = "Cadastra um novo telefone")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Telefone cadastrado com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada"),
       @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
   })
-  public ResponseEntity<?> cadastrarMercadoria(@RequestBody @Valid Mercadoria mercadoria) {
+  public ResponseEntity<?> cadastrarMercadoria(@RequestBody @Valid Mercadoria mercadoria,
+      @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
     repositorio.save(mercadoria);
+    empresa.get().getMercadorias().add(mercadoria);
+    empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 

@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.autobots.automanager.enums.PerfilUsuario;
@@ -63,6 +65,8 @@ public class Usuario extends RepresentationModel<Usuario> {
   private Boolean inativo;
 
   @Column(nullable = true)
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @JsonFormat(pattern = "yyyy-MM-dd")
   private LocalDate ultimoAcesso = LocalDate.now();
 
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
@@ -93,12 +97,6 @@ public class Usuario extends RepresentationModel<Usuario> {
   @NotNull(message = "Credencial de código de barras é obrigatória")
   private CredencialCodigoBarra credencialCodigoBarra;
 
-  @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
-  @JoinColumn(name = "cliente_id")
-  @JsonIgnore
-  @Schema(description = "Lista de mercadorias do usuário")
-  private List<Mercadoria> mercadorias = new ArrayList<>();
-
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de veículos do usuário")
@@ -107,6 +105,7 @@ public class Usuario extends RepresentationModel<Usuario> {
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de vendas do usuário")
+  @JsonIgnore
   private List<Venda> vendas = new ArrayList<>();
 
 }

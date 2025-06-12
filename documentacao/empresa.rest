@@ -3,49 +3,54 @@ POST http://localhost:8080/empresa/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
-  "razaoSocial": "Empresa 1",
-  "nomeFantasia": "Empresa 1",
+  "razaoSocial": "Toyota Motor Corporation",
+  "nomeFantasia": "Toyota",
   "cadastro": "2025-01-01",
   "endereco": {
-    "id": 1,
-    "estado": "SP",
-    "cidade": "São Paulo",
-    "bairro": "Jardim Paulista",
-    "rua": "Rua das Flores",
-    "numero": "123",
-    "codigoPostal": "04101-300",
+    "estado": "Aichi",
+    "cidade": "Toyota City",
+    "bairro": "Toyota District",
+    "rua": "Toyota Street",
+    "numero": "1",
+    "codigoPostal": "471-8571",
     "informacoesAdicionais": "Apto 101"
   },
   "telefones": [
     {
-      "id": 1,
-      "numero": "1234567898"
+      "ddd": "11",
+      "numero": "123654987"
     }
   ]
 }
 
-### Obter todos os documentos
-GET http://localhost:8080/documentos
 
-### Obter um documento específico
-GET http://localhost:8080/documento/1
+### Obter uma empresa específica
+GET http://localhost:8080/empresa/1
 
-### Atualizar um documento
-PUT http://localhost:8080/documento/atualizar
-Content-Type: application/json
-
-{
-  "tipo": "CNPJ",
-  "numero": "8987654321"
-}
-
-### Excluir um documento
-DELETE http://localhost:8080/documento/excluir
+### Atualizar uma empresa
+PUT http://localhost:8080/empresa/atualizar
 Content-Type: application/json
 
 {
   "id": 1,
-  "tipo": "CNPJ",
-  "numero": "8987654321"
+  "razaoSocial": "Volkswagen AG",
+  "nomeFantasia": "Volkswagen",
+  "cadastro": "2025-01-01",
+  "endereco": {
+    "estado": "Lower Saxony",
+    "cidade": "Wolfsburg",
+    "bairro": "Wolfsburg District",
+    "rua": "Wolfsburg Street",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  }
+}
+
+### Excluir uma empresa
+DELETE http://localhost:8080/empresa/excluir
+Content-Type: application/json
+
+{
+  "id": 1
 }

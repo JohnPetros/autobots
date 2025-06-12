@@ -13,14 +13,14 @@ import br.com.autobots.automanager.entidades.Mercadoria;
 public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercadoria> {
 
   @Override
-  public void adicionarLink(List<Mercadoria> mercadorias) {
+  public void adicionarLink(List<Mercadoria> mercadorias, Long empresaId) {
     for (Mercadoria mercadoria : mercadorias) {
-      adicionarLink(mercadoria);
+      adicionarLink(mercadoria, empresaId);
     }
   }
 
   @Override
-  public void adicionarLink(Mercadoria mercadoria) {
+  public void adicionarLink(Mercadoria mercadoria, Long empresaId) {
     Link linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
@@ -34,7 +34,7 @@ public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercad
     Link linkCadastrar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
-            .cadastrarMercadoria(null))
+            .cadastrarMercadoria(null, empresaId))
         .withRel("cadastrar mercadoria");
     Link linkAtualizar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder

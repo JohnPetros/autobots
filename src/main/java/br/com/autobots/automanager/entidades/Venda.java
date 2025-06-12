@@ -1,10 +1,13 @@
 package br.com.autobots.automanager.entidades;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
@@ -19,6 +22,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +42,10 @@ public class Venda extends RepresentationModel<Venda> {
   @Column(nullable = false)
   @Schema(description = "Data de cadastro da venda", example = "2025-01-01")
   @NotNull(message = "Data de cadastro da venda é obrigatória")
-  private Date cadastro;
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  @Past(message = "A data de cadastro deve ser no passado")
+  private LocalDate cadastro;
 
   @Column(nullable = false, unique = true)
   @Schema(description = "Identificação da venda", example = "1234567890")

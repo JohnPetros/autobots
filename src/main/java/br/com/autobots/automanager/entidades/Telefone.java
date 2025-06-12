@@ -29,13 +29,13 @@ public class Telefone extends RepresentationModel<Telefone> {
 	@Schema(description = "ID do telefone", example = "1")
 	private Long id;
 
-	@Column
+	@Column(nullable = false)
 	@Schema(description = "DDD do telefone", example = "11")
 	@NotBlank(message = "DDD é obrigatório")
 	@Pattern(regexp = "\\d{2}", message = "DDD deve conter 2 dígitos")
 	private String ddd;
 
-	@Column(unique = true)
+	@Column(nullable = false)
 	@Schema(description = "Número do telefone", example = "999999999")
 	@NotBlank(message = "Número é obrigatório")
 	@Pattern(regexp = "\\d{9}", message = "Número deve conter 9 dígitos")

@@ -24,9 +24,6 @@ public class AdicionaLinkUsuarioServico implements AdicionaLinkServico<Usuario> 
 	@Autowired
 	private AdicionaLinkVeiculoServico adicionaLinkVeiculoServico;
 
-	@Autowired
-	private AdicionaLinkVendaServico adicionaLinkVendaServico;
-
 	@Override
 	public void adicionarLink(List<Usuario> usuarios) {
 		for (Usuario usuario : usuarios) {
@@ -56,13 +53,18 @@ public class AdicionaLinkUsuarioServico implements AdicionaLinkServico<Usuario> 
 						.methodOn(UsuarioControlador.class)
 						.excluirUsuario(null))
 				.withRel("excluir");
-		adicionaLinkDocumentoServico.adicionarLink(usuario.getDocumentos());
-		adicionaLinkTelefoneServico.adicionarLink(usuario.getTelefones());
+		if (!usuario.getDocumentos().isEmpty()) {
+			adicionaLinkDocumentoServico.adicionarLink(usuario.getDocumentos());
+		}
+		if (!usuario.getTelefones().isEmpty()) {
+			adicionaLinkTelefoneServico.adicionarLink(usuario.getTelefones());
+		}
 		if (usuario.getEndereco() != null) {
 			adicionaLinkEnderecoServico.adicionarLink(usuario.getEndereco());
 		}
-		adicionaLinkVendaServico.adicionarLink(usuario.getVendas());
-		adicionaLinkVeiculoServico.adicionarLink(usuario.getVeiculos());
+		if (!usuario.getVeiculos().isEmpty()) {
+			adicionaLinkVeiculoServico.adicionarLink(usuario.getVeiculos());
+		}
 		usuario.add(linkProprio);
 		usuario.add(linkCadastrar);
 		usuario.add(linkAtualizar);

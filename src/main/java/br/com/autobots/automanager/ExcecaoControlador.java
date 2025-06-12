@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import br.com.autobots.automanager.excecoes.ConflitoExcecao;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.UnexpectedTypeException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

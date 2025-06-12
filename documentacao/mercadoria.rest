@@ -1,5 +1,5 @@
-### Cadastrar um novo mercadoria
-POST http://localhost:8080/mercadoria/cadastrar
+### Cadastrar uma nova mercadoria
+POST http://localhost:8080/1/mercadoria/cadastrar
 Content-Type: application/json
 
 {
@@ -12,13 +12,13 @@ Content-Type: application/json
   "descricao": "Óleo de motor 10W40"
 }
 
-### Obter todos os mercadorias
-GET http://localhost:8080/mercadorias
+### Obter todas as mercadorias
+GET http://localhost:8080/1/mercadorias
 
-### Obter um mercadoria específico
+### Obter uma mercadoria específica
 GET http://localhost:8080/mercadoria/1
 
-### Atualizar um mercadoria
+### Atualizar uma mercadoria
 PUT http://localhost:8080/mercadoria/atualizar
 Content-Type: application/json
 
@@ -33,7 +33,7 @@ Content-Type: application/json
   "descricao": "Cera de motor 40W10"
 }
 
-### Excluir um mercadoria
+### Excluir uma mercadoria
 DELETE http://localhost:8080/mercadoria/excluir
 Content-Type: application/json
 

@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.autobots.automanager.entidades.Usuario;
+import br.com.autobots.automanager.enums.PerfilUsuario;
 import br.com.autobots.automanager.entidades.CredencialCodigoBarra;
-import br.com.autobots.automanager.entidades.CredencialUsuarioSenha;
 import br.com.autobots.automanager.entidades.Documento;
 import br.com.autobots.automanager.entidades.Endereco;
 
@@ -15,6 +15,8 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, Long> {
   Optional<Usuario> findByEndereco(Endereco endereco);
 
   Optional<Usuario> findByCredencialCodigoBarra(CredencialCodigoBarra credencialCodigoBarra);
+
+  Optional<Usuario> findByIdAndPerfil(Long id, PerfilUsuario perfil);
 
   Optional<Usuario> findByDocumentos(List<Documento> documentos);
 }
