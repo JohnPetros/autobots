@@ -26,14 +26,14 @@ public class AdicionaLinkVendaServico implements AdicionaLinkServico<Venda> {
   private AdicionaLinkVeiculoServico adicionaLinkVeiculoServico;
 
   @Override
-  public void adicionarLink(List<Venda> vendas) {
+  public void adicionarLink(List<Venda> vendas, Long empresaId) {
     for (Venda venda : vendas) {
-      adicionarLink(venda);
+      adicionarLink(venda, empresaId);
     }
   }
 
   @Override
-  public void adicionarLink(Venda venda) {
+  public void adicionarLink(Venda venda, Long empresaId) {
     Link linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(VendaControlador.class)
@@ -59,16 +59,16 @@ public class AdicionaLinkVendaServico implements AdicionaLinkServico<Venda> {
             .methodOn(VendaControlador.class)
             .excluirVenda(null))
         .withRel("excluir venda");
-    adicionaLinkUsuarioServico.adicionarLink(venda.getCliente());
-    adicionaLinkUsuarioServico.adicionarLink(venda.getFuncionario());
+    adicionaLinkUsuarioServico.adicionarLink(venda.getCliente(), empresaId);
+    adicionaLinkUsuarioServico.adicionarLink(venda.getFuncionario(), empresaId);
     if (!venda.getMercadorias().isEmpty()) {
-      adicionaLinkMercadoriaServico.adicionarLink(venda.getMercadorias());
+      adicionaLinkMercadoriaServico.adicionarLink(venda.getMercadorias(), empresaId);
     }
     if (!venda.getServicos().isEmpty()) {
-      adicionaLinkServicoServico.adicionarLink(venda.getServicos());
+      adicionaLinkServicoServico.adicionarLink(venda.getServicos(), empresaId);
     }
     if (venda.getVeiculo() != null) {
-      adicionaLinkVeiculoServico.adicionarLink(venda.getVeiculo());
+      adicionaLinkVeiculoServico.adicionarLink(venda.getVeiculo(), empresaId);
     }
     venda.add(linkObter);
     venda.add(linkObterTodos);

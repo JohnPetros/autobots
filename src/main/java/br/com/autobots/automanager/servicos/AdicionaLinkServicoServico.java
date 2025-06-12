@@ -11,14 +11,14 @@ import br.com.autobots.automanager.entidades.Servico;
 @Service
 public class AdicionaLinkServicoServico implements AdicionaLinkServico<Servico> {
   @Override
-  public void adicionarLink(List<Servico> servicos) {
+  public void adicionarLink(List<Servico> servicos, Long empresaId) {
     for (Servico servico : servicos) {
-      adicionarLink(servico);
+      adicionarLink(servico, empresaId);
     }
   }
 
   @Override
-  public void adicionarLink(Servico servico) {
+  public void adicionarLink(Servico servico, Long empresaId) {
     var linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(ServicoControlador.class)

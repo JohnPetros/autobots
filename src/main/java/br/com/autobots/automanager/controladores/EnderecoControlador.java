@@ -73,7 +73,7 @@ public class EnderecoControlador {
     if (enderecos.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum endereco cadastrado");
     } else {
-      adicionaLinkEnderecoServico.adicionarLink(enderecos);
+      adicionaLinkEnderecoServico.adicionarLink(enderecos, null);
       ResponseEntity<List<Endereco>> resposta = new ResponseEntity<>(enderecos, HttpStatus.OK);
       return resposta;
     }
@@ -91,7 +91,7 @@ public class EnderecoControlador {
       ResponseEntity<Endereco> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
       return resposta;
     } else {
-      adicionaLinkEnderecoServico.adicionarLink(endereco.get());
+      adicionaLinkEnderecoServico.adicionarLink(endereco.get(), null);
       return ResponseEntity.status(HttpStatus.OK).body(endereco.get());
     }
   }

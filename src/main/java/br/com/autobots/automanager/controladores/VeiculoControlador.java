@@ -66,36 +66,37 @@ public class VeiculoControlador {
     if (veiculos.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum veiculo cadastrado");
     } else {
-      adicionaLinkVeiculoServico.adicionarLink(veiculos);
+      adicionaLinkVeiculoServico.adicionarLink(veiculos, null);
       ResponseEntity<List<Veiculo>> resposta = new ResponseEntity<>(veiculos, HttpStatus.OK);
       return resposta;
     }
   }
 
-  @GetMapping("/veiculo/{id}")
+  @GetMapping("/{empresaId}/veiculo/{id}")
   @Operation(summary = "Obter veiculo", description = "Retorna um veiculo específico com base no ID fornecido")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Veiculo encontrada", content = @Content(schema = @Schema(implementation = Veiculo.class))),
       @ApiResponse(responseCode = "404", description = "Veiculo não encontrada")
   })
-  public ResponseEntity<Veiculo> obterVeiculo(@PathVariable long id) {
+  public ResponseEntity<Veiculo> obterVeiculo(@PathVariable long id, @PathVariable long empresaId) {
     Optional<Veiculo> veiculo = repositorio.findById(id);
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veículo não encontrado");
     } else {
-      adicionaLinkVeiculoServico.adicionarLink(veiculo.get());
+      adicionaLinkVeiculoServico.adicionarLink(veiculo.get(), empresaId);
       return ResponseEntity.status(HttpStatus.OK).body(veiculo.get());
     }
   }
 
-  @PutMapping("/veiculo/atualizar")
+  @PutMapping("/{empresaId}/veiculo/atualizar")
   @Operation(summary = "Atualizar veiculo", description = "Atualiza as informações de um veiculo existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Veiculo atualizado com sucesso"),
       @ApiResponse(responseCode = "409", description = "Veiculo já cadastrado com a placa"),
       @ApiResponse(responseCode = "404", description = "Veiculo não encontrada")
   })
-  public ResponseEntity<?> atualizarVeiculo(@RequestBody @Valid Veiculo veiculoAtualizado) {
+  public ResponseEntity<?> atualizarVeiculo(@RequestBody @Valid Veiculo veiculoAtualizado,
+      @PathVariable long empresaId) {
     Optional<Veiculo> veiculo = repositorio.findById(veiculoAtualizado.getId());
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veículo não encontrado");
@@ -105,13 +106,13 @@ public class VeiculoControlador {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @DeleteMapping("/veiculo/excluir")
+  @DeleteMapping("/{empresaId}/veiculo/excluir")
   @Operation(summary = "Excluir veiculo", description = "Exclui um veiculo existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Veiculo excluído com sucesso"),
       @ApiResponse(responseCode = "404", description = "Veiculo não encontrada")
   })
-  public ResponseEntity<?> excluirVeiculo(@RequestBody Veiculo exclusao) {
+  public ResponseEntity<?> excluirVeiculo(@RequestBody Veiculo exclusao, @PathVariable long empresaId) {
     Optional<Veiculo> veiculo = repositorio.findById(exclusao.getId());
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veículo não encontrado");

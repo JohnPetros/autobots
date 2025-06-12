@@ -24,12 +24,12 @@ public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercad
     Link linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
-            .obterMercadoria(mercadoria.getId()))
+            .obterMercadoria(mercadoria.getId(), empresaId))
         .withRel("obter mercadoria");
     Link linkObterTodos = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
-            .obterMercadorias())
+            .obterMercadorias(empresaId))
         .withRel("obter todos os mercadorias");
     Link linkCadastrar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
@@ -39,12 +39,12 @@ public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercad
     Link linkAtualizar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
-            .atualizarMercadoria(null))
+            .atualizarMercadoria(null, empresaId))
         .withRel("atualizar mercadoria");
     Link linkExcluir = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
-            .excluirMercadoria(null))
+            .excluirMercadoria(null, empresaId))
         .withRel("excluir mercadoria");
     mercadoria.add(linkObter);
     mercadoria.add(linkObterTodos);

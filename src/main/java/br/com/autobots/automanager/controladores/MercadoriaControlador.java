@@ -63,68 +63,88 @@ public class MercadoriaControlador {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping("/mercadorias")
+  @GetMapping("/{empresaId}/mercadorias")
   @Operation(summary = "Obter todos os mercadorias", description = "Retorna uma lista de todos os mercadorias cadastrados")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Mercadorias encontradas", content = @Content(schema = @Schema(implementation = List.class))),
       @ApiResponse(responseCode = "404", description = "Nenhum mercadoria cadastrado")
   })
-  public ResponseEntity<List<Mercadoria>> obterMercadorias() {
-    List<Mercadoria> mercadorias = repositorio.findAll();
+  public ResponseEntity<List<Mercadoria>> obterMercadorias(@PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    List<Mercadoria> mercadorias = empresa.get().getMercadorias();
     if (mercadorias.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum mercadoria cadastrada");
     } else {
-      adicionaLinkMercadoriaServico.adicionarLink(mercadorias);
+      adicionaLinkMercadoriaServico.adicionarLink(mercadorias, empresaId);
       ResponseEntity<List<Mercadoria>> resposta = new ResponseEntity<>(mercadorias, HttpStatus.OK);
       return resposta;
     }
   }
 
-  @GetMapping("/mercadoria/{id}")
+  @GetMapping("/{empresaId}/mercadoria/{id}")
   @Operation(summary = "Obter mercadoria", description = "Retorna um mercadoria específico com base no ID fornecido")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Mercadoria encontrada", content = @Content(schema = @Schema(implementation = Mercadoria.class))),
       @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada")
   })
-  public ResponseEntity<Mercadoria> obterMercadoria(@PathVariable long id) {
-    Optional<Mercadoria> cliente = repositorio.findById(id);
-    if (cliente.isEmpty()) {
-      ResponseEntity<Mercadoria> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
-    } else {
-      adicionaLinkMercadoriaServico.adicionarLink(cliente.get());
-      return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
+  public ResponseEntity<Mercadoria> obterMercadoria(@PathVariable long id, @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
+    Optional<Mercadoria> mercadoria = repositorio.findById(id);
+    if (mercadoria.isEmpty()) {
+      throw new NaoEncontradoExcecao("Mercadoria não encontrada");
+    }
+    adicionaLinkMercadoriaServico.adicionarLink(mercadoria.get(), empresaId);
+    return ResponseEntity.status(HttpStatus.OK).body(mercadoria.get());
   }
 
-  @PutMapping("/mercadoria/atualizar")
+  @PutMapping("/{empresaId}/mercadoria/atualizar")
   @Operation(summary = "Atualizar mercadoria", description = "Atualiza as informações de um mercadoria existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Mercadoria atualizado com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada")
+      @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
-  public ResponseEntity<?> atualizarMercadoria(@RequestBody Mercadoria mercadoriaAtualizado) {
+  public ResponseEntity<?> atualizarMercadoria(@RequestBody Mercadoria mercadoriaAtualizado,
+      @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
     Optional<Mercadoria> mercadoria = repositorio.findById(mercadoriaAtualizado.getId());
     if (mercadoria.isEmpty()) {
       throw new NaoEncontradoExcecao("Mercadoria não encontrada");
     }
     atualizaMercadoriaServico.atualizar(mercadoria.get(), mercadoriaAtualizado);
     repositorio.save(mercadoria.get());
+    empresa.get().getMercadorias().add(mercadoria.get());
+    empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @DeleteMapping("/mercadoria/excluir")
+  @DeleteMapping("/{empresaId}/mercadoria/excluir")
   @Operation(summary = "Excluir mercadoria", description = "Exclui um mercadoria existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Mercadoria excluído com sucesso"),
       @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada")
   })
-  public ResponseEntity<?> excluirMercadoria(@RequestBody Mercadoria exclusao) {
+  public ResponseEntity<?> excluirMercadoria(@RequestBody Mercadoria exclusao, @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
     Optional<Mercadoria> mercadoria = repositorio.findById(exclusao.getId());
     if (mercadoria.isEmpty()) {
       throw new NaoEncontradoExcecao("Mercadoria não encontrada");
     }
     repositorio.delete(mercadoria.get());
+    empresa.get().getMercadorias().remove(mercadoria.get());
+    empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }

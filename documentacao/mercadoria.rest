@@ -16,10 +16,10 @@ Content-Type: application/json
 GET http://localhost:8080/1/mercadorias
 
 ### Obter uma mercadoria específica
-GET http://localhost:8080/mercadoria/1
+GET http://localhost:8080/1/mercadoria/1
 
 ### Atualizar uma mercadoria
-PUT http://localhost:8080/mercadoria/atualizar
+PUT http://localhost:8080/1/mercadoria/atualizar
 Content-Type: application/json
 
 {
@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 
 ### Excluir uma mercadoria
-DELETE http://localhost:8080/mercadoria/excluir
+DELETE http://localhost:8080/1/mercadoria/excluir
 Content-Type: application/json
 
 {

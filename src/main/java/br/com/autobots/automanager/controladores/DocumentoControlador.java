@@ -66,7 +66,7 @@ public class DocumentoControlador {
     if (documentos.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum documento cadastrado");
     } else {
-      adicionaLinkDocumentoServico.adicionarLink(documentos);
+      adicionaLinkDocumentoServico.adicionarLink(documentos, null);
       ResponseEntity<List<Documento>> resposta = new ResponseEntity<>(documentos, HttpStatus.OK);
       return resposta;
     }
@@ -84,7 +84,7 @@ public class DocumentoControlador {
       ResponseEntity<Documento> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
       return resposta;
     } else {
-      adicionaLinkDocumentoServico.adicionarLink(cliente.get());
+      adicionaLinkDocumentoServico.adicionarLink(cliente.get(), null);
       return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
     }
   }

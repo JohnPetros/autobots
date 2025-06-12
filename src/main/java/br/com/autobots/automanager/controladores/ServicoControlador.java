@@ -61,7 +61,7 @@ public class ServicoControlador {
     if (servicos.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum servico cadastrado");
     } else {
-      adicionaLinkServicoServico.adicionarLink(servicos);
+      adicionaLinkServicoServico.adicionarLink(servicos, null);
       ResponseEntity<List<Servico>> resposta = new ResponseEntity<>(servicos, HttpStatus.OK);
       return resposta;
     }
@@ -79,7 +79,7 @@ public class ServicoControlador {
       ResponseEntity<Servico> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
       return resposta;
     } else {
-      adicionaLinkServicoServico.adicionarLink(cliente.get());
+      adicionaLinkServicoServico.adicionarLink(cliente.get(), null);
       return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
     }
   }

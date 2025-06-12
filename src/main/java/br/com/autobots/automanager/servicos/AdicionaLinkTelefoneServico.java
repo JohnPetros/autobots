@@ -13,14 +13,14 @@ import br.com.autobots.automanager.entidades.Telefone;
 public class AdicionaLinkTelefoneServico implements AdicionaLinkServico<Telefone> {
 
   @Override
-  public void adicionarLink(List<Telefone> telefones) {
+  public void adicionarLink(List<Telefone> telefones, Long empresaId) {
     for (Telefone telefone : telefones) {
-      adicionarLink(telefone);
+      adicionarLink(telefone, empresaId);
     }
   }
 
   @Override
-  public void adicionarLink(Telefone telefone) {
+  public void adicionarLink(Telefone telefone, Long empresaId) {
     Link linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(TelefoneControlador.class)

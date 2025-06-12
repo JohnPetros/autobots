@@ -68,36 +68,36 @@ public class VendaControlador {
     if (vendas.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum venda cadastrado");
     } else {
-      adicionaLinkVendaServico.adicionarLink(vendas);
+      adicionaLinkVendaServico.adicionarLink(vendas, null);
       ResponseEntity<List<Venda>> resposta = new ResponseEntity<>(vendas, HttpStatus.OK);
       return resposta;
     }
   }
 
-  @GetMapping("/venda/{id}")
+  @GetMapping("/{empresaId}/venda/{id}")
   @Operation(summary = "Obter venda", description = "Retorna um venda específico com base no ID fornecido")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Venda encontrado", content = @Content(schema = @Schema(implementation = Venda.class))),
       @ApiResponse(responseCode = "404", description = "Venda não encontrado")
   })
-  public ResponseEntity<Venda> obterVenda(@PathVariable long id) {
+  public ResponseEntity<Venda> obterVenda(@PathVariable long id, @PathVariable long empresaId) {
     Optional<Venda> venda = repositorio.findById(id);
     if (venda.isEmpty()) {
       throw new NaoEncontradoExcecao("Venda não encontrada");
     } else {
-      adicionaLinkVendaServico.adicionarLink(venda.get());
+      adicionaLinkVendaServico.adicionarLink(venda.get(), empresaId);
       return ResponseEntity.status(HttpStatus.OK).body(venda.get());
     }
   }
 
-  @PutMapping("/venda/atualizar")
+  @PutMapping("/{empresaId}/venda/atualizar")
   @Operation(summary = "Atualizar venda", description = "Atualiza as informações de um venda existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Venda atualizada com sucesso"),
       @ApiResponse(responseCode = "422", description = "Venda não pode ser atualizada"),
       @ApiResponse(responseCode = "404", description = "Venda não encontrada")
   })
-  public ResponseEntity<?> atualizarVenda(@RequestBody Venda vendaAtualizado) {
+  public ResponseEntity<?> atualizarVenda(@RequestBody Venda vendaAtualizado, @PathVariable long empresaId) {
     Optional<Venda> venda = repositorio.findById(vendaAtualizado.getId());
     if (venda.isEmpty()) {
       throw new NaoEncontradoExcecao("Venda não encontrada");
@@ -108,13 +108,13 @@ public class VendaControlador {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @DeleteMapping("/venda/excluir")
+  @DeleteMapping("/{empresaId}/venda/excluir")
   @Operation(summary = "Excluir venda", description = "Exclui um venda existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Venda excluída com sucesso"),
       @ApiResponse(responseCode = "404", description = "Venda não encontrada")
   })
-  public ResponseEntity<?> excluirVenda(@RequestBody Venda exclusao) {
+  public ResponseEntity<?> excluirVenda(@RequestBody Venda exclusao, @PathVariable long empresaId) {
     Optional<Venda> venda = repositorio.findById(exclusao.getId());
     if (venda.isEmpty()) {
       throw new NaoEncontradoExcecao("Venda não encontrada");

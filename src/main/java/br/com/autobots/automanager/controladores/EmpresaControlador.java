@@ -62,7 +62,7 @@ public class EmpresaControlador {
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     } else {
-      adicionaLinkEmpresaServico.adicionarLink(empresa.get());
+      adicionaLinkEmpresaServico.adicionarLink(empresa.get(), empresa.get().getId());
       ResponseEntity<Empresa> resposta = new ResponseEntity<>(empresa.get(), HttpStatus.OK);
       return resposta;
     }

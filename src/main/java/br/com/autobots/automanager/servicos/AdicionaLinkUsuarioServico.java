@@ -25,45 +25,45 @@ public class AdicionaLinkUsuarioServico implements AdicionaLinkServico<Usuario> 
 	private AdicionaLinkVeiculoServico adicionaLinkVeiculoServico;
 
 	@Override
-	public void adicionarLink(List<Usuario> usuarios) {
+	public void adicionarLink(List<Usuario> usuarios, Long empresaId) {
 		for (Usuario usuario : usuarios) {
-			adicionarLink(usuario);
+			adicionarLink(usuario, empresaId);
 		}
 	}
 
 	@Override
-	public void adicionarLink(Usuario usuario) {
+	public void adicionarLink(Usuario usuario, Long empresaId) {
 		Link linkProprio = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(UsuarioControlador.class)
-						.obterUsuarios())
+						.obterUsuarios(empresaId))
 				.withRel("obter-todos");
 		Link linkCadastrar = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(UsuarioControlador.class)
-						.cadastrarUsuario(null))
+						.cadastrarUsuario(null, empresaId))
 				.withRel("cadastrar");
 		Link linkAtualizar = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(UsuarioControlador.class)
-						.atualizarUsuario(null))
+						.atualizarUsuario(null, empresaId))
 				.withRel("atualizar");
 		Link linkExcluir = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(UsuarioControlador.class)
-						.excluirUsuario(null))
+						.excluirUsuario(null, empresaId))
 				.withRel("excluir");
 		if (!usuario.getDocumentos().isEmpty()) {
-			adicionaLinkDocumentoServico.adicionarLink(usuario.getDocumentos());
+			adicionaLinkDocumentoServico.adicionarLink(usuario.getDocumentos(), empresaId);
 		}
 		if (!usuario.getTelefones().isEmpty()) {
-			adicionaLinkTelefoneServico.adicionarLink(usuario.getTelefones());
+			adicionaLinkTelefoneServico.adicionarLink(usuario.getTelefones(), empresaId);
 		}
 		if (usuario.getEndereco() != null) {
-			adicionaLinkEnderecoServico.adicionarLink(usuario.getEndereco());
+			adicionaLinkEnderecoServico.adicionarLink(usuario.getEndereco(), empresaId);
 		}
 		if (!usuario.getVeiculos().isEmpty()) {
-			adicionaLinkVeiculoServico.adicionarLink(usuario.getVeiculos());
+			adicionaLinkVeiculoServico.adicionarLink(usuario.getVeiculos(), empresaId);
 		}
 		usuario.add(linkProprio);
 		usuario.add(linkCadastrar);

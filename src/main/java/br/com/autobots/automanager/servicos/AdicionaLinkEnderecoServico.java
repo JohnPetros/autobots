@@ -13,14 +13,14 @@ import br.com.autobots.automanager.entidades.Endereco;
 public class AdicionaLinkEnderecoServico implements AdicionaLinkServico<Endereco> {
 
   @Override
-  public void adicionarLink(List<Endereco> enderecos) {
+  public void adicionarLink(List<Endereco> enderecos, Long empresaId) {
     for (Endereco endereco : enderecos) {
-      adicionarLink(endereco);
+      adicionarLink(endereco, empresaId);
     }
   }
 
   @Override
-  public void adicionarLink(Endereco endereco) {
+  public void adicionarLink(Endereco endereco, Long empresaId) {
     Link linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(EnderecoControlador.class)

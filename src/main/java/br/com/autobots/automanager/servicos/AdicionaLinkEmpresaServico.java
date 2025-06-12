@@ -30,14 +30,14 @@ public class AdicionaLinkEmpresaServico implements AdicionaLinkServico<Empresa> 
   private AdicionaLinkVendaServico adicionaLinkVendaServico;
 
   @Override
-  public void adicionarLink(List<Empresa> empresas) {
+  public void adicionarLink(List<Empresa> empresas, Long empresaId) {
     for (Empresa empresa : empresas) {
-      adicionarLink(empresa);
+      adicionarLink(empresa, empresa.getId());
     }
   }
 
   @Override
-  public void adicionarLink(Empresa empresa) {
+  public void adicionarLink(Empresa empresa, Long empresaId) {
     var linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(EmpresaControlador.class)
@@ -58,19 +58,19 @@ public class AdicionaLinkEmpresaServico implements AdicionaLinkServico<Empresa> 
             .methodOn(EmpresaControlador.class)
             .excluirEmpresa(null))
         .withRel("excluir empresa");
-    adicionaLinkTelefoneServico.adicionarLink(empresa.getTelefones());
-    adicionaLinkEnderecoServico.adicionarLink(empresa.getEndereco());
+    adicionaLinkTelefoneServico.adicionarLink(empresa.getTelefones(), empresa.getId());
+    adicionaLinkEnderecoServico.adicionarLink(empresa.getEndereco(), empresa.getId());
     if (!empresa.getMercadorias().isEmpty()) {
-      adicionaLinkMercadoriaServico.adicionarLink(empresa.getMercadorias());
+      adicionaLinkMercadoriaServico.adicionarLink(empresa.getMercadorias(), empresa.getId());
     }
     if (!empresa.getServicos().isEmpty()) {
-      adicionaLinkServicoServico.adicionarLink(empresa.getServicos());
+      adicionaLinkServicoServico.adicionarLink(empresa.getServicos(), empresa.getId());
     }
     if (!empresa.getUsuarios().isEmpty()) {
-      adicionaLinkUsuarioServico.adicionarLink(empresa.getUsuarios());
+      adicionaLinkUsuarioServico.adicionarLink(empresa.getUsuarios(), empresa.getId());
     }
     if (!empresa.getVendas().isEmpty()) {
-      adicionaLinkVendaServico.adicionarLink(empresa.getVendas());
+      adicionaLinkVendaServico.adicionarLink(empresa.getVendas(), empresa.getId());
     }
     empresa.add(linkObter);
     empresa.add(linkCadastrar);
