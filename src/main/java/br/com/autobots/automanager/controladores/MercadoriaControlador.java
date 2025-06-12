@@ -33,7 +33,7 @@ import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 @Tag(name = "Mercadoria", description = "CRUD de mercadorias")
 public class MercadoriaControlador {
   @Autowired
-  private MercadoriaRepositorio repositorio;
+  private MercadoriaRepositorio mercadoriaRepositorio;
 
   @Autowired
   private AdicionaLinkMercadoriaServico adicionaLinkMercadoriaServico;
@@ -51,13 +51,14 @@ public class MercadoriaControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada"),
       @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
   })
-  public ResponseEntity<?> cadastrarMercadoria(@RequestBody @Valid Mercadoria mercadoria,
+  public ResponseEntity<?> cadastrarMercadoria(
+      @RequestBody @Valid Mercadoria mercadoria,
       @PathVariable long empresaId) {
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
-    repositorio.save(mercadoria);
+    mercadoriaRepositorio.save(mercadoria);
     empresa.get().getMercadorias().add(mercadoria);
     empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.CREATED);
@@ -95,7 +96,7 @@ public class MercadoriaControlador {
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
-    Optional<Mercadoria> mercadoria = repositorio.findById(id);
+    Optional<Mercadoria> mercadoria = mercadoriaRepositorio.findById(id);
     if (mercadoria.isEmpty()) {
       throw new NaoEncontradoExcecao("Mercadoria não encontrada");
     }
@@ -110,20 +111,19 @@ public class MercadoriaControlador {
       @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada"),
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
-  public ResponseEntity<?> atualizarMercadoria(@RequestBody Mercadoria mercadoriaAtualizado,
+  public ResponseEntity<?> atualizarMercadoria(
+      @RequestBody Mercadoria mercadoriaAtualizado,
       @PathVariable long empresaId) {
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
-    Optional<Mercadoria> mercadoria = repositorio.findById(mercadoriaAtualizado.getId());
+    Optional<Mercadoria> mercadoria = mercadoriaRepositorio.findById(mercadoriaAtualizado.getId());
     if (mercadoria.isEmpty()) {
       throw new NaoEncontradoExcecao("Mercadoria não encontrada");
     }
     atualizaMercadoriaServico.atualizar(mercadoria.get(), mercadoriaAtualizado);
-    repositorio.save(mercadoria.get());
-    empresa.get().getMercadorias().add(mercadoria.get());
-    empresaRepositorio.save(empresa.get());
+    mercadoriaRepositorio.save(mercadoria.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -133,18 +133,20 @@ public class MercadoriaControlador {
       @ApiResponse(responseCode = "200", description = "Mercadoria excluído com sucesso"),
       @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada")
   })
-  public ResponseEntity<?> excluirMercadoria(@RequestBody Mercadoria exclusao, @PathVariable long empresaId) {
+  public ResponseEntity<?> excluirMercadoria(
+      @RequestBody Mercadoria exclusao,
+      @PathVariable long empresaId) {
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
-    Optional<Mercadoria> mercadoria = repositorio.findById(exclusao.getId());
+    Optional<Mercadoria> mercadoria = mercadoriaRepositorio.findById(exclusao.getId());
     if (mercadoria.isEmpty()) {
       throw new NaoEncontradoExcecao("Mercadoria não encontrada");
     }
-    repositorio.delete(mercadoria.get());
     empresa.get().getMercadorias().remove(mercadoria.get());
     empresaRepositorio.save(empresa.get());
+    mercadoriaRepositorio.delete(mercadoria.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }

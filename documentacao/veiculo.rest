@@ -1,5 +1,5 @@
 ### Cadastrar um novo veiculo
-POST http://localhost:8080/veiculo/cadastrar
+POST http://localhost:8080/1/veiculo/cadastrar
 Content-Type: application/json
 
 {
@@ -9,13 +9,13 @@ Content-Type: application/json
 }
 
 ### Obter todos os veiculos
-GET http://localhost:8080/veiculos
+GET http://localhost:8080/1/veiculos
 
 ### Obter um veiculo específico
-GET http://localhost:8080/veiculo/1
+GET http://localhost:8080/1/veiculo/1
 
 ### Atualizar um veiculo
-PUT http://localhost:8080/veiculo/atualizar
+PUT http://localhost:8080/1/veiculo/atualizar
 Content-Type: application/json
 
 {
@@ -26,11 +26,11 @@ Content-Type: application/json
 }
 
 ### Excluir um veiculo
-DELETE http://localhost:8080/veiculo/excluir
+DELETE http://localhost:8080/1/veiculo/excluir
 Content-Type: application/json
 
 {
-  "id": 2,
+  "id": 1,
   "tipo": "SEDAN",
   "modelo": "Honda Civic",
   "placa": "XYZ-9876"

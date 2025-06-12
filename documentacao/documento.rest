@@ -1,12 +1,3 @@
-### Cadastrar um novo documento
-POST http://localhost:8080/documento/cadastrar
-Content-Type: application/json
-
-{
-  "tipo": "CPF",
-  "numero": "12345678912"
-}
-
 ### Obter todos os documentos
 GET http://localhost:8080/documentos
 

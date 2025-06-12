@@ -24,27 +24,27 @@ public class AdicionaLinkTelefoneServico implements AdicionaLinkServico<Telefone
     Link linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(TelefoneControlador.class)
-            .obterTelefone(telefone.getId()))
+            .obterTelefone(telefone.getId(), empresaId))
         .withRel("obter telefone");
     Link linkObterTodos = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(TelefoneControlador.class)
-            .obterTelefones())
+            .obterTelefones(empresaId))
         .withRel("obter todos os telefones");
     Link linkCadastrar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(TelefoneControlador.class)
-            .cadastrarTelefone(null))
+            .cadastrarTelefone(null, empresaId))
         .withRel("cadastrar telefone");
     Link linkAtualizar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(TelefoneControlador.class)
-            .atualizarTelefone(null))
+            .atualizarTelefone(null, empresaId))
         .withRel("atualizar telefone");
     Link linkExcluir = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(TelefoneControlador.class)
-            .excluirTelefone(null))
+            .excluirTelefone(null, empresaId))
         .withRel("excluir telefone");
     telefone.add(linkObter);
     telefone.add(linkObterTodos);

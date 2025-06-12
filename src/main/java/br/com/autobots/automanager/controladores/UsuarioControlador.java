@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.automanager.entidades.Usuario;
@@ -23,6 +22,8 @@ import br.com.autobots.automanager.servicos.ValidaUsuarioServico;
 import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
 import br.com.autobots.automanager.entidades.Empresa;
+import br.com.autobots.automanager.repositorios.CredencialCodigoBarraRepositorio;
+import br.com.autobots.automanager.repositorios.CredencialUsuarioSenhaRepositorio;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -42,6 +43,12 @@ public class UsuarioControlador {
   private EmpresaRepositorio empresaRepositorio;
 
   @Autowired
+  private CredencialUsuarioSenhaRepositorio credencialUsuarioSenhaRepositorio;
+
+  @Autowired
+  private CredencialCodigoBarraRepositorio credencialCodigoBarraRepositorio;
+
+  @Autowired
   private ValidaUsuarioServico validaUsuarioServico;
 
   @Autowired
@@ -50,11 +57,12 @@ public class UsuarioControlador {
   @Autowired
   private AtualizaUsuarioServico atualizaUsuarioServico;
 
-  @GetMapping("/usuarios")
+  @GetMapping("/{empresaId}/usuarios")
   @Operation(summary = "Obter todos os usuarios", description = "Retorna uma lista de todos os usuarios cadastrados")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Usuarios encontrados", content = @Content(schema = @Schema(implementation = List.class))),
-      @ApiResponse(responseCode = "404", description = "Nenhum usuario cadastrado")
+      @ApiResponse(responseCode = "404", description = "Nenhum usuario cadastrado"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<List<Usuario>> obterUsuarios(@PathVariable long empresaId) {
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
@@ -71,11 +79,12 @@ public class UsuarioControlador {
     }
   }
 
-  @GetMapping("/usuario/{id}")
+  @GetMapping("/{empresaId}/usuario/{id}")
   @Operation(summary = "Obter usuario", description = "Retorna um usuario específico com base no ID fornecido")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(schema = @Schema(implementation = Usuario.class))),
-      @ApiResponse(responseCode = "404", description = "Usuario não encontrado")
+      @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<Usuario> obterUsuario(@PathVariable long id, @PathVariable long empresaId) {
     Optional<Usuario> usuario = usuarioRepositorio.findById(id);
@@ -152,7 +161,10 @@ public class UsuarioControlador {
     if (usuario.isEmpty()) {
       throw new NaoEncontradoExcecao("Usuario não encontrado");
     }
+
     usuarioRepositorio.delete(usuario.get());
+    credencialUsuarioSenhaRepositorio.delete(usuario.get().getCredencialUsuarioSenha());
+    credencialCodigoBarraRepositorio.delete(usuario.get().getCredencialCodigoBarra());
     empresa.get().getUsuarios().remove(usuario.get());
     empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.OK);

@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,17 +16,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Endereco;
-import br.com.autobots.automanager.entidades.Usuario;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
-import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
-import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.EnderecoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkEnderecoServico;
 import br.com.autobots.automanager.servicos.AtualizaEnderecoServico;
@@ -40,27 +33,10 @@ public class EnderecoControlador {
   private EnderecoRepositorio enderecoRepositorio;
 
   @Autowired
-  private UsuarioRepositorio usuarioRepositorio;
-
-  @Autowired
-  private EmpresaRepositorio empresaRepositorio;
-
-  @Autowired
   private AdicionaLinkEnderecoServico adicionaLinkEnderecoServico;
 
   @Autowired
   private AtualizaEnderecoServico atualizaEnderecoServico;
-
-  @PostMapping("/endereco/cadastrar")
-  @Operation(summary = "Cadastrar endereco", description = "Cadastra um novo endereco")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "Endereco cadastrado com sucesso"),
-      @ApiResponse(responseCode = "409", description = "Endereco já cadastrado")
-  })
-  public ResponseEntity<?> cadastrarEndereco(@RequestBody @Valid Endereco endereco) {
-    enderecoRepositorio.save(endereco);
-    return new ResponseEntity<>(HttpStatus.CREATED);
-  }
 
   @GetMapping("/enderecos")
   @Operation(summary = "Obter todos os enderecos", description = "Retorna uma lista de todos os enderecos cadastrados")
@@ -111,30 +87,4 @@ public class EnderecoControlador {
     enderecoRepositorio.save(endereco.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
-
-  @DeleteMapping("/endereco/excluir")
-  @Operation(summary = "Excluir endereco", description = "Exclui um endereco existente")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Endereco excluído com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Endereco não encontrado")
-  })
-  public ResponseEntity<?> excluirEndereco(@RequestBody Endereco exclusao) {
-    Optional<Endereco> endereco = enderecoRepositorio.findById(exclusao.getId());
-    if (endereco.isPresent()) {
-      Optional<Usuario> usuario = usuarioRepositorio.findByEndereco(endereco.get());
-      if (usuario.isPresent()) {
-        usuario.get().setEndereco(null);
-        usuarioRepositorio.save(usuario.get());
-      }
-      Optional<Empresa> empresa = empresaRepositorio.findByEndereco(endereco.get());
-      if (empresa.isPresent()) {
-        empresa.get().setEndereco(null);
-        empresaRepositorio.save(empresa.get());
-      }
-      enderecoRepositorio.delete(endereco.get());
-      return new ResponseEntity<>(HttpStatus.OK);
-    }
-    throw new NaoEncontradoExcecao("Endereco não encontrado");
-  }
-
 }

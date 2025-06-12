@@ -1,5 +1,5 @@
 ### Cadastrar um novo telefone
-POST http://localhost:8080/telefone/cadastrar
+POST http://localhost:8080/1/telefone/cadastrar
 Content-Type: application/json
 
 {
@@ -8,13 +8,13 @@ Content-Type: application/json
 }
 
 ### Obter todos os telefones
-GET http://localhost:8080/telefones
+GET http://localhost:8080/1/telefones
 
 ### Obter um telefone específico
-GET http://localhost:8080/telefone/1
+GET http://localhost:8080/1/telefone/1
 
 ### Atualizar um telefone
-PUT http://localhost:8080/telefone/atualizar
+PUT http://localhost:8080/1/telefone/atualizar
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 
 ### Excluir um telefone
-DELETE http://localhost:8080/telefone/excluir
+DELETE http://localhost:8080/1/telefone/excluir
 Content-Type: application/json
 
 {

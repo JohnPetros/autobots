@@ -65,5 +65,8 @@ public class Empresa extends RepresentationModel<Empresa> {
   private List<Servico> servicos = new ArrayList<>();
 
   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private List<Veiculo> veiculos = new ArrayList<>();
+
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Venda> vendas = new ArrayList<>();
 }

@@ -20,7 +20,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Documento;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.DocumentoRepositorio;
@@ -42,18 +41,6 @@ public class DocumentoControlador {
 
   @Autowired
   private ValidaDocumentoServico validaDocumentoServico;
-
-  @PostMapping("/documento/cadastrar")
-  @Operation(summary = "Cadastrar documento", description = "Cadastra um novo documento")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "Documento cadastrado com sucesso"),
-      @ApiResponse(responseCode = "409", description = "Documento já cadastrado")
-  })
-  public ResponseEntity<?> cadastrarDocumento(@RequestBody @Valid Documento documento) {
-    validaDocumentoServico.validar(documento);
-    repositorio.save(documento);
-    return new ResponseEntity<>(HttpStatus.CREATED);
-  }
 
   @GetMapping("/documentos")
   @Operation(summary = "Obter todos os documentos", description = "Retorna uma lista de todos os documentos cadastrados")
@@ -81,8 +68,7 @@ public class DocumentoControlador {
   public ResponseEntity<Documento> obterDocumento(@PathVariable long id) {
     Optional<Documento> cliente = repositorio.findById(id);
     if (cliente.isEmpty()) {
-      ResponseEntity<Documento> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
+      throw new NaoEncontradoExcecao("Documento não encontrado");
     } else {
       adicionaLinkDocumentoServico.adicionarLink(cliente.get(), null);
       return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
@@ -103,21 +89,6 @@ public class DocumentoControlador {
     validaDocumentoServico.validar(documentoAtualizado);
     atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
     repositorio.save(documento.get());
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-
-  @DeleteMapping("/documento/excluir")
-  @Operation(summary = "Excluir documento", description = "Exclui um documento existente")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Documento excluído com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Documento não encontrado")
-  })
-  public ResponseEntity<?> excluirDocumento(@RequestBody Documento exclusao) {
-    Optional<Documento> documento = repositorio.findById(exclusao.getId());
-    if (documento.isEmpty()) {
-      throw new NaoEncontradoExcecao("Documento não encontrado");
-    }
-    repositorio.delete(documento.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }

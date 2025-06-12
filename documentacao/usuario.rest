@@ -1,5 +1,5 @@
 ### Cadastrar um novo cliente
-POST http://localhost:8080/usuario/cadastrar
+POST http://localhost:8080/1/usuario/cadastrar
 Content-Type: application/json
 
 {
@@ -56,7 +56,7 @@ Content-Type: application/json
 }
 
 ### Cadastrar um novo funcionário
-POST http://localhost:8080/usuario/cadastrar
+POST http://localhost:8080/1/usuario/cadastrar
 Content-Type: application/json
 
 {
@@ -105,13 +105,13 @@ Content-Type: application/json
 }
 
 ### Obter todos os usuarios
-GET http://localhost:8080/usuarios
+GET http://localhost:8080/1/usuarios
 
 ### Obter um usuario específico
-GET http://localhost:8080/usuario/1
+GET http://localhost:8080/1/usuario/1
 
 ### Atualizar um usuario
-PUT http://localhost:8080/usuario/atualizar
+PUT http://localhost:8080/1/usuario/atualizar
 Content-Type: application/json
 
 {
@@ -122,7 +122,7 @@ Content-Type: application/json
   "dataCadastro": "2000-01-01",
   "emails": [
     {
-      "endereco": "joao@gmail.com"
+      "endereco": "raim@gmail.com"
     }
   ],
   "endereco": {
@@ -152,7 +152,7 @@ Content-Type: application/json
 }
 
 ### Excluir um usuario
-DELETE http://localhost:8080/usuario/excluir
+DELETE http://localhost:8080/1/usuario/excluir
 Content-Type: application/json
 
 {

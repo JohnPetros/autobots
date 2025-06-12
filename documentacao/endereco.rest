@@ -1,17 +1,3 @@
-### Cadastrar um novo endereco
-POST http://localhost:8080/endereco/cadastrar
-Content-Type: application/json
-
-{
-  "estado": "SP",
-  "cidade": "São Paulo",
-  "bairro": "Jardim Paulista",
-  "rua": "Rua das Flores",
-  "numero": "123",
-  "codigoPostal": "04101-300",
-  "informacoesAdicionais": "Apto 101"
-}
-
 ### Obter todos os enderecos
 GET http://localhost:8080/enderecos
 
@@ -20,21 +6,6 @@ GET http://localhost:8080/endereco/1
 
 ### Atualizar um endereco
 PUT http://localhost:8080/endereco/atualizar
-Content-Type: application/json
-
-{
-  "id": 1,
-  "estado": "RJ",
-  "cidade": "Rio de Janeiro",
-  "bairro": "Copacabana",
-  "rua": "Rua Barata Ribeiro",
-  "numero": "123",
-  "codigoPostal": "22040-000",
-  "informacoesAdicionais": "Apto 101"
-}
-
-### Excluir um endereco
-DELETE http://localhost:8080/endereco/excluir
 Content-Type: application/json
 
 {

@@ -22,27 +22,27 @@ public class AdicionaLinkServicoServico implements AdicionaLinkServico<Servico> 
     var linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(ServicoControlador.class)
-            .obterServico(servico.getId()))
+            .obterServico(servico.getId(), empresaId))
         .withRel("obter servico");
     var linkObterTodos = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(ServicoControlador.class)
-            .obterServicos())
+            .obterServicos(empresaId))
         .withRel("obter todos os servicos");
     var linkCadastrar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(ServicoControlador.class)
-            .cadastrarServico(null))
+            .cadastrarServico(null, empresaId))
         .withRel("cadastrar servico");
     var linkAtualizar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(ServicoControlador.class)
-            .atualizarServico(null))
+            .atualizarServico(null, empresaId))
         .withRel("atualizar servico");
     var linkExcluir = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(ServicoControlador.class)
-            .excluirServico(null))
+            .excluirServico(null, empresaId))
         .withRel("excluir servico");
     servico.add(linkObter);
     servico.add(linkObterTodos);

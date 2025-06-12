@@ -1,5 +1,5 @@
 ### Cadastrar um novo serviço
-POST http://localhost:8080/servico/cadastrar
+POST http://localhost:8080/1/servico/cadastrar
 Content-Type: application/json
 
 {
@@ -9,13 +9,13 @@ Content-Type: application/json
 }
 
 ### Obter todos os serviços
-GET http://localhost:8080/servicos
+GET http://localhost:8080/1/servicos
 
 ### Obter um serviço específico
-GET http://localhost:8080/servico/1
+GET http://localhost:8080/1/servico/1
 
 ### Atualizar um serviço
-PUT http://localhost:8080/servico/atualizar
+PUT http://localhost:8080/1/servico/atualizar
 Content-Type: application/json
 
 {
@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ### Excluir um servico
-DELETE http://localhost:8080/servico/excluir
+DELETE http://localhost:8080/1/servico/excluir
 Content-Type: application/json
 
 {

@@ -21,8 +21,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Veiculo;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.VeiculoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkVeiculoServico;
 import br.com.autobots.automanager.servicos.AtualizaVeiculoServico;
@@ -32,7 +34,10 @@ import br.com.autobots.automanager.servicos.ValidaVeiculoServico;
 @Tag(name = "Veiculo", description = "CRUD de veiculos")
 public class VeiculoControlador {
   @Autowired
-  private VeiculoRepositorio repositorio;
+  private VeiculoRepositorio veiculoRepositorio;
+
+  @Autowired
+  private EmpresaRepositorio empresaRepositorio;
 
   @Autowired
   private AdicionaLinkVeiculoServico adicionaLinkVeiculoServico;
@@ -43,30 +48,42 @@ public class VeiculoControlador {
   @Autowired
   private ValidaVeiculoServico validaVeiculoServico;
 
-  @PostMapping("/veiculo/cadastrar")
+  @PostMapping("/{empresaId}/veiculo/cadastrar")
   @Operation(summary = "Cadastrar veiculo", description = "Cadastra um novo veiculo")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Veiculo cadastrado com sucesso"),
       @ApiResponse(responseCode = "409", description = "Veiculo já cadastrado com a placa"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
-  public ResponseEntity<?> cadastrarVeiculo(@RequestBody @Valid Veiculo veiculo) {
+  public ResponseEntity<?> cadastrarVeiculo(@RequestBody @Valid Veiculo veiculo, @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
     validaVeiculoServico.validar(veiculo);
-    repositorio.save(veiculo);
+    veiculoRepositorio.save(veiculo);
+    empresa.get().getVeiculos().add(veiculo);
+    empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping("/veiculos")
+  @GetMapping("/{empresaId}/veiculos")
   @Operation(summary = "Obter todos os veiculos", description = "Retorna uma lista de todos os veiculos cadastrados")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Veiculos encontradas", content = @Content(schema = @Schema(implementation = List.class))),
-      @ApiResponse(responseCode = "404", description = "Nenhum veiculo cadastrado")
+      @ApiResponse(responseCode = "404", description = "Nenhum veiculo cadastrado"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
-  public ResponseEntity<List<Veiculo>> obterVeiculos() {
-    List<Veiculo> veiculos = repositorio.findAll();
+  public ResponseEntity<List<Veiculo>> obterVeiculos(@PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    List<Veiculo> veiculos = empresa.get().getVeiculos();
     if (veiculos.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum veiculo cadastrado");
     } else {
-      adicionaLinkVeiculoServico.adicionarLink(veiculos, null);
+      adicionaLinkVeiculoServico.adicionarLink(veiculos, empresaId);
       ResponseEntity<List<Veiculo>> resposta = new ResponseEntity<>(veiculos, HttpStatus.OK);
       return resposta;
     }
@@ -76,10 +93,15 @@ public class VeiculoControlador {
   @Operation(summary = "Obter veiculo", description = "Retorna um veiculo específico com base no ID fornecido")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Veiculo encontrada", content = @Content(schema = @Schema(implementation = Veiculo.class))),
-      @ApiResponse(responseCode = "404", description = "Veiculo não encontrada")
+      @ApiResponse(responseCode = "404", description = "Veiculo não encontrada"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<Veiculo> obterVeiculo(@PathVariable long id, @PathVariable long empresaId) {
-    Optional<Veiculo> veiculo = repositorio.findById(id);
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    Optional<Veiculo> veiculo = veiculoRepositorio.findById(id);
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veículo não encontrado");
     } else {
@@ -93,16 +115,22 @@ public class VeiculoControlador {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Veiculo atualizado com sucesso"),
       @ApiResponse(responseCode = "409", description = "Veiculo já cadastrado com a placa"),
-      @ApiResponse(responseCode = "404", description = "Veiculo não encontrada")
+      @ApiResponse(responseCode = "404", description = "Veiculo não encontrada"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
-  public ResponseEntity<?> atualizarVeiculo(@RequestBody @Valid Veiculo veiculoAtualizado,
+  public ResponseEntity<?> atualizarVeiculo(
+      @RequestBody @Valid Veiculo veiculoAtualizado,
       @PathVariable long empresaId) {
-    Optional<Veiculo> veiculo = repositorio.findById(veiculoAtualizado.getId());
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    Optional<Veiculo> veiculo = veiculoRepositorio.findById(veiculoAtualizado.getId());
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veículo não encontrado");
     }
     atualizaVeiculoServico.atualizar(veiculo.get(), veiculoAtualizado);
-    repositorio.save(veiculo.get());
+    veiculoRepositorio.save(veiculo.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -110,14 +138,21 @@ public class VeiculoControlador {
   @Operation(summary = "Excluir veiculo", description = "Exclui um veiculo existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Veiculo excluído com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Veiculo não encontrada")
+      @ApiResponse(responseCode = "404", description = "Veiculo não encontrada"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<?> excluirVeiculo(@RequestBody Veiculo exclusao, @PathVariable long empresaId) {
-    Optional<Veiculo> veiculo = repositorio.findById(exclusao.getId());
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    Optional<Veiculo> veiculo = veiculoRepositorio.findById(exclusao.getId());
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veículo não encontrado");
     }
-    repositorio.delete(veiculo.get());
+    empresa.get().getVeiculos().remove(veiculo.get());
+    empresaRepositorio.save(empresa.get());
+    veiculoRepositorio.delete(veiculo.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }

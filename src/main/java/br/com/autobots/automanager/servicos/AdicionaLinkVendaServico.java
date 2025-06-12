@@ -37,7 +37,7 @@ public class AdicionaLinkVendaServico implements AdicionaLinkServico<Venda> {
     Link linkObter = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(VendaControlador.class)
-            .obterVenda(venda.getId()))
+            .obterVenda(venda.getId(), empresaId))
         .withRel("obter venda");
     Link linkObterTodos = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder

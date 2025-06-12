@@ -21,8 +21,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Servico;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.ServicoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkServicoServico;
 import br.com.autobots.automanager.servicos.AtualizaServicoServico;
@@ -31,7 +33,7 @@ import br.com.autobots.automanager.servicos.AtualizaServicoServico;
 @Tag(name = "Servico", description = "CRUD de servicos")
 public class ServicoControlador {
   @Autowired
-  private ServicoRepositorio repositorio;
+  private ServicoRepositorio servicoRepositorio;
 
   @Autowired
   private AdicionaLinkServicoServico adicionaLinkServicoServico;
@@ -39,79 +41,110 @@ public class ServicoControlador {
   @Autowired
   private AtualizaServicoServico atualizaServicoServico;
 
-  @PostMapping("/servico/cadastrar")
+  @Autowired
+  private EmpresaRepositorio empresaRepositorio;
+
+  @PostMapping("/{empresaId}/servico/cadastrar")
   @Operation(summary = "Cadastrar servico", description = "Cadastra um novo servico")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Servico cadastrado com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada"),
       @ApiResponse(responseCode = "409", description = "Servico já cadastrado")
   })
-  public ResponseEntity<?> cadastrarServico(@RequestBody @Valid Servico servico) {
-    repositorio.save(servico);
+  public ResponseEntity<?> cadastrarServico(@RequestBody @Valid Servico servico, @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    servicoRepositorio.save(servico);
+    empresa.get().getServicos().add(servico);
+    empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping("/servicos")
+  @GetMapping("/{empresaId}/servicos")
   @Operation(summary = "Obter todos os servicos", description = "Retorna uma lista de todos os servicos cadastrados")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Servicos encontrados", content = @Content(schema = @Schema(implementation = List.class))),
       @ApiResponse(responseCode = "404", description = "Nenhum servico cadastrado")
   })
-  public ResponseEntity<List<Servico>> obterServicos() {
-    List<Servico> servicos = repositorio.findAll();
+  public ResponseEntity<List<Servico>> obterServicos(@PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    List<Servico> servicos = empresa.get().getServicos();
     if (servicos.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum servico cadastrado");
     } else {
-      adicionaLinkServicoServico.adicionarLink(servicos, null);
+      adicionaLinkServicoServico.adicionarLink(servicos, empresaId);
       ResponseEntity<List<Servico>> resposta = new ResponseEntity<>(servicos, HttpStatus.OK);
       return resposta;
     }
   }
 
-  @GetMapping("/servico/{id}")
+  @GetMapping("/{empresaId}/servico/{id}")
   @Operation(summary = "Obter servico", description = "Retorna um servico específico com base no ID fornecido")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Servico encontrado", content = @Content(schema = @Schema(implementation = Servico.class))),
       @ApiResponse(responseCode = "404", description = "Servico não encontrado")
   })
-  public ResponseEntity<Servico> obterServico(@PathVariable long id) {
-    Optional<Servico> cliente = repositorio.findById(id);
-    if (cliente.isEmpty()) {
-      ResponseEntity<Servico> resposta = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      return resposta;
-    } else {
-      adicionaLinkServicoServico.adicionarLink(cliente.get(), null);
-      return ResponseEntity.status(HttpStatus.OK).body(cliente.get());
+  public ResponseEntity<Servico> obterServico(@PathVariable long id, @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
+    Optional<Servico> servico = servicoRepositorio.findById(id);
+    if (servico.isEmpty()) {
+      throw new NaoEncontradoExcecao("Servico não encontrado");
+    }
+    adicionaLinkServicoServico.adicionarLink(servico.get(), empresaId);
+    return ResponseEntity.status(HttpStatus.OK).body(servico.get());
   }
 
-  @PutMapping("/servico/atualizar")
+  @PutMapping("/{empresaId}/servico/atualizar")
   @Operation(summary = "Atualizar servico", description = "Atualiza as informações de um servico existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Servico atualizado com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Servico não encontrado")
+      @ApiResponse(responseCode = "404", description = "Servico não encontrado"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
-  public ResponseEntity<?> atualizarServico(@RequestBody Servico servicoAtualizado) {
-    Optional<Servico> servico = repositorio.findById(servicoAtualizado.getId());
+  public ResponseEntity<?> atualizarServico(
+      @RequestBody Servico servicoAtualizado,
+      @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    Optional<Servico> servico = servicoRepositorio.findById(servicoAtualizado.getId());
     if (servico.isEmpty()) {
       throw new NaoEncontradoExcecao("Servico não encontrado");
     }
     atualizaServicoServico.atualizar(servico.get(), servicoAtualizado);
-    repositorio.save(servico.get());
+    servicoRepositorio.save(servico.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @DeleteMapping("/servico/excluir")
+  @DeleteMapping("/{empresaId}/servico/excluir")
   @Operation(summary = "Excluir servico", description = "Exclui um servico existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Servico excluído com sucesso"),
       @ApiResponse(responseCode = "404", description = "Servico não encontrado")
   })
-  public ResponseEntity<?> excluirServico(@RequestBody Servico exclusao) {
-    Optional<Servico> servico = repositorio.findById(exclusao.getId());
+  public ResponseEntity<?> excluirServico(
+      @RequestBody Servico exclusao,
+      @PathVariable long empresaId) {
+    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    Optional<Servico> servico = servicoRepositorio.findById(exclusao.getId());
     if (servico.isEmpty()) {
       throw new NaoEncontradoExcecao("Servico não encontrado");
     }
-    repositorio.delete(servico.get());
+    empresa.get().getServicos().remove(servico.get());
+    empresaRepositorio.save(empresa.get());
+    servicoRepositorio.delete(servico.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
