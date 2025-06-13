@@ -13,13 +13,13 @@ public class AtualizaEmpresaServico {
   @Autowired
   private AtualizaEnderecoServico atualizaEnderoServico;
 
-  @Autowired
-  private AtualizaTelefoneServico atualizaTelefoneServico;
-
   public void atualizar(Empresa empresa, Empresa empresaAtualizado) {
     atualizarDados(empresa, empresaAtualizado);
     atualizaEnderoServico.atualizar(empresa.getEndereco(), empresaAtualizado.getEndereco());
-    atualizaTelefoneServico.atualizar(empresa.getTelefones(), empresaAtualizado.getTelefones());
+    if (empresaAtualizado.getTelefones() != null) {
+      empresa.getTelefones().clear();
+      empresa.getTelefones().addAll(empresaAtualizado.getTelefones());
+    }
   }
 
   public void atualizarDados(Empresa empresa, Empresa atualizacao) {

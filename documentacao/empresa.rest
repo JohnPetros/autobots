@@ -44,7 +44,13 @@ Content-Type: application/json
     "numero": "123",
     "codigoPostal": "04101-300",
     "informacoesAdicionais": "Apto 101"
-  }
+  },
+  "telefones": [
+    {
+      "ddd": "21",
+      "numero": "123654987" 
+    }
+  ]
 }
 
 ### Excluir uma empresa
