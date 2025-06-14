@@ -18,9 +18,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
@@ -49,7 +47,6 @@ public class Venda extends RepresentationModel<Venda> {
 
   @Column(nullable = false, unique = true)
   @Schema(description = "Identificação da venda", example = "1234567890")
-  @NotBlank(message = "Identificação da venda é obrigatória")
   private String identificacao;
 
   @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
@@ -58,19 +55,23 @@ public class Venda extends RepresentationModel<Venda> {
   private Usuario cliente;
 
   @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-  @Schema(description = "Funcionário da venda")
-  @NotNull(message = "Funcionário da venda é obrigatório")
-  private Usuario funcionario;
+  @Schema(description = "Vendedor da venda")
+  @NotNull(message = "Vendedor da venda é obrigatório")
+  private Usuario vendedor;
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+  @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @Schema(description = "Mercadorias da venda")
   private List<Mercadoria> mercadorias = new ArrayList<>();
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+  @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @Schema(description = "Serviços da venda")
   private List<Servico> servicos = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+  @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @Schema(description = "Veículo da venda")
   private Veiculo veiculo;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @Schema(description = "Empresa da venda")
+  private Empresa empresa;
 }

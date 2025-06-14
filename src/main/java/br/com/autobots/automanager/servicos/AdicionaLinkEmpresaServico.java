@@ -12,12 +12,6 @@ import br.com.autobots.automanager.entidades.Empresa;
 @Service
 public class AdicionaLinkEmpresaServico implements AdicionaLinkServico<Empresa> {
   @Autowired
-  private AdicionaLinkTelefoneServico adicionaLinkTelefoneServico;
-
-  @Autowired
-  private AdicionaLinkEnderecoServico adicionaLinkEnderecoServico;
-
-  @Autowired
   private AdicionaLinkMercadoriaServico adicionaLinkMercadoriaServico;
 
   @Autowired
@@ -58,8 +52,6 @@ public class AdicionaLinkEmpresaServico implements AdicionaLinkServico<Empresa> 
             .methodOn(EmpresaControlador.class)
             .excluirEmpresa(null))
         .withRel("excluir empresa");
-    adicionaLinkTelefoneServico.adicionarLink(empresa.getTelefones(), empresa.getId());
-    adicionaLinkEnderecoServico.adicionarLink(empresa.getEndereco(), empresa.getId());
     if (!empresa.getMercadorias().isEmpty()) {
       adicionaLinkMercadoriaServico.adicionarLink(empresa.getMercadorias(), empresa.getId());
     }

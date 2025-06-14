@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,7 @@ public class MercadoriaControlador {
   @Autowired
   private EmpresaRepositorio empresaRepositorio;
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
   @PostMapping("/{empresaId}/mercadoria/cadastrar")
   @Operation(summary = "Cadastrar telefone", description = "Cadastra um novo telefone")
   @ApiResponses(value = {
@@ -64,6 +66,7 @@ public class MercadoriaControlador {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
   @GetMapping("/{empresaId}/mercadorias")
   @Operation(summary = "Obter todos os mercadorias", description = "Retorna uma lista de todos os mercadorias cadastrados")
   @ApiResponses(value = {
@@ -85,6 +88,7 @@ public class MercadoriaControlador {
     }
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
   @GetMapping("/{empresaId}/mercadoria/{id}")
   @Operation(summary = "Obter mercadoria", description = "Retorna um mercadoria específico com base no ID fornecido")
   @ApiResponses(value = {
@@ -104,6 +108,7 @@ public class MercadoriaControlador {
     return ResponseEntity.status(HttpStatus.OK).body(mercadoria.get());
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
   @PutMapping("/{empresaId}/mercadoria/atualizar")
   @Operation(summary = "Atualizar mercadoria", description = "Atualiza as informações de um mercadoria existente")
   @ApiResponses(value = {
@@ -127,6 +132,7 @@ public class MercadoriaControlador {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
   @DeleteMapping("/{empresaId}/mercadoria/excluir")
   @Operation(summary = "Excluir mercadoria", description = "Exclui um mercadoria existente")
   @ApiResponses(value = {

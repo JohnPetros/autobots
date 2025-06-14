@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,7 @@ public class ServicoControlador {
   @Autowired
   private EmpresaRepositorio empresaRepositorio;
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
   @PostMapping("/{empresaId}/servico/cadastrar")
   @Operation(summary = "Cadastrar servico", description = "Cadastra um novo servico")
   @ApiResponses(value = {
@@ -62,6 +64,7 @@ public class ServicoControlador {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
   @GetMapping("/{empresaId}/servicos")
   @Operation(summary = "Obter todos os servicos", description = "Retorna uma lista de todos os servicos cadastrados")
   @ApiResponses(value = {
@@ -83,6 +86,7 @@ public class ServicoControlador {
     }
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
   @GetMapping("/{empresaId}/servico/{id}")
   @Operation(summary = "Obter servico", description = "Retorna um servico específico com base no ID fornecido")
   @ApiResponses(value = {
@@ -102,6 +106,7 @@ public class ServicoControlador {
     return ResponseEntity.status(HttpStatus.OK).body(servico.get());
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
   @PutMapping("/{empresaId}/servico/atualizar")
   @Operation(summary = "Atualizar servico", description = "Atualiza as informações de um servico existente")
   @ApiResponses(value = {
@@ -125,6 +130,7 @@ public class ServicoControlador {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
   @DeleteMapping("/{empresaId}/servico/excluir")
   @Operation(summary = "Excluir servico", description = "Exclui um servico existente")
   @ApiResponses(value = {

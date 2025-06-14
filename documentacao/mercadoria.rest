@@ -1,6 +1,18 @@
+# @name login
+POST http://localhost:8080/autenticacao/login
+Content-Type: application/json
+
+{
+  "nomeUsuario": "admin-usuario",
+  "senha": "123456"
+}
+
+@JWT = {{login.response.body.token}}
+
 ### Cadastrar uma nova mercadoria
 POST http://localhost:8080/1/mercadoria/cadastrar
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
   "validade": "2030-01-01",
@@ -14,13 +26,16 @@ Content-Type: application/json
 
 ### Obter todas as mercadorias
 GET http://localhost:8080/1/mercadorias
+Authorization: Bearer {{JWT}}
 
 ### Obter uma mercadoria específica
 GET http://localhost:8080/1/mercadoria/1
+Authorization: Bearer {{JWT}}
 
 ### Atualizar uma mercadoria
 PUT http://localhost:8080/1/mercadoria/atualizar
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
   "id": 1,
@@ -36,14 +51,8 @@ Content-Type: application/json
 ### Excluir uma mercadoria
 DELETE http://localhost:8080/1/mercadoria/excluir
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
-  "id": 1,
-  "validade": "2045-01-01",
-  "fabricao": "2012-01-01",
-  "cadastro": "2025-01-01",
-  "nome": "Cera de motor",
-  "quantidade": 20,
-  "valor": 200,
-  "descricao": "Cera de motor 40W10"
+  "id": 1
 }

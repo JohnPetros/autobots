@@ -22,9 +22,6 @@ public class AdicionaLinkVendaServico implements AdicionaLinkServico<Venda> {
   @Autowired
   private AdicionaLinkServicoServico adicionaLinkServicoServico;
 
-  @Autowired
-  private AdicionaLinkVeiculoServico adicionaLinkVeiculoServico;
-
   @Override
   public void adicionarLink(List<Venda> vendas, Long empresaId) {
     for (Venda venda : vendas) {
@@ -60,15 +57,12 @@ public class AdicionaLinkVendaServico implements AdicionaLinkServico<Venda> {
             .excluirVenda(null, empresaId))
         .withRel("excluir venda");
     adicionaLinkUsuarioServico.adicionarLink(venda.getCliente(), empresaId);
-    adicionaLinkUsuarioServico.adicionarLink(venda.getFuncionario(), empresaId);
+    adicionaLinkUsuarioServico.adicionarLink(venda.getVendedor(), empresaId);
     if (!venda.getMercadorias().isEmpty()) {
       adicionaLinkMercadoriaServico.adicionarLink(venda.getMercadorias(), empresaId);
     }
     if (!venda.getServicos().isEmpty()) {
       adicionaLinkServicoServico.adicionarLink(venda.getServicos(), empresaId);
-    }
-    if (venda.getVeiculo() != null) {
-      adicionaLinkVeiculoServico.adicionarLink(venda.getVeiculo(), empresaId);
     }
     venda.add(linkObter);
     venda.add(linkObterTodos);

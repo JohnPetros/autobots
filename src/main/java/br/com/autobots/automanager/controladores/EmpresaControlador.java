@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ public class EmpresaControlador {
   @Autowired
   private AtualizaEmpresaServico atualizaEmpresaServico;
 
+  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/empresa/cadastrar")
   @Operation(summary = "Cadastrar empresa", description = "Cadastra um novo empresa")
   @ApiResponses(value = {
@@ -51,6 +53,7 @@ public class EmpresaControlador {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping("/empresa/{id}")
   @Operation(summary = "Obter empresa", description = "Retorna um empresa específico com base no ID fornecido")
   @ApiResponses(value = {
@@ -68,6 +71,7 @@ public class EmpresaControlador {
     }
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/empresa/atualizar")
   @Operation(summary = "Atualizar empresa", description = "Atualiza as informações de um empresa existente")
   @ApiResponses(value = {
@@ -84,6 +88,7 @@ public class EmpresaControlador {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/empresa/excluir")
   @Operation(summary = "Excluir empresa", description = "Exclui um empresa existente")
   @ApiResponses(value = {

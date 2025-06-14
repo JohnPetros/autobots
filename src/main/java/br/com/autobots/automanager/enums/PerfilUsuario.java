@@ -1,7 +1,8 @@
 package br.com.autobots.automanager.enums;
 
 public enum PerfilUsuario {
+  ADMIN,
   CLIENTE,
-  FUNCIONARIO,
-  FORNECEDOR
+  GERENTE,
+  VENDEDOR
 }

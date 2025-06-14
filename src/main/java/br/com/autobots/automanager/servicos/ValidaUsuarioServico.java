@@ -5,16 +5,12 @@ import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.entidades.Usuario;
 import br.com.autobots.automanager.excecoes.ConflitoExcecao;
-import br.com.autobots.automanager.repositorios.CredencialCodigoBarraRepositorio;
-import br.com.autobots.automanager.repositorios.CredencialUsuarioSenhaRepositorio;
+import br.com.autobots.automanager.repositorios.CredencialRepositorio;
 
 @Service
 public class ValidaUsuarioServico {
   @Autowired
-  private CredencialUsuarioSenhaRepositorio credencialUsuarioSenhaRepositorio;
-
-  @Autowired
-  private CredencialCodigoBarraRepositorio credencialCodigoBarraRepositorio;
+  private CredencialRepositorio credencialRepositorio;
 
   @Autowired
   private ValidaDocumentoServico validaDocumentoServico;
@@ -35,12 +31,12 @@ public class ValidaUsuarioServico {
   }
 
   private void validarCredencialUsuarioSenha(Usuario usuario) {
-    if (usuario.getCredencialUsuarioSenha() == null) {
+    if (usuario.getCredencial() == null) {
       return;
     }
 
-    var usuarioExistente = credencialUsuarioSenhaRepositorio
-        .findByNomeUsuario(usuario.getCredencialUsuarioSenha().getNomeUsuario());
+    var usuarioExistente = credencialRepositorio
+        .findByNomeUsuario(usuario.getCredencial().getNomeUsuario());
 
     if (usuarioExistente.isPresent()) {
       throw new ConflitoExcecao("Usuario já cadastrado com esse nome de usuário");
@@ -48,12 +44,12 @@ public class ValidaUsuarioServico {
   }
 
   private void validarCredencialCodigoBarra(Usuario usuario) {
-    if (usuario.getCredencialCodigoBarra() == null) {
+    if (usuario.getCredencial() == null) {
       return;
     }
 
-    var usuarioExistente = credencialCodigoBarraRepositorio
-        .findByCodigo(usuario.getCredencialCodigoBarra().getCodigo());
+    var usuarioExistente = credencialRepositorio
+        .findByNomeUsuario(usuario.getCredencial().getNomeUsuario());
 
     if (usuarioExistente.isPresent()) {
       throw new ConflitoExcecao("Usuario já cadastrado com esse código de barras");

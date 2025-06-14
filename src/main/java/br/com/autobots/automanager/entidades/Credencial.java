@@ -1,11 +1,5 @@
 package br.com.autobots.automanager.entidades;
 
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
@@ -23,8 +18,11 @@ public class Credencial {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false, unique = true)
+  @NotBlank(message = "Nome de usuário é obrigatório")
+  private String nomeUsuario;
+
   @Column(nullable = false)
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
-  @JsonFormat(pattern = "yyyy-MM-dd")
-  private LocalDate criacao = LocalDate.now();
+  @NotBlank(message = "Senha é obrigatória")
+  private String senha;
 }

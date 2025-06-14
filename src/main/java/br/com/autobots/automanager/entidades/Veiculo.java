@@ -59,7 +59,8 @@ public class Veiculo extends RepresentationModel<Veiculo> {
   @JsonIgnore
   private Usuario proprietario;
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+  @OneToMany(mappedBy = "veiculo", fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+      CascadeType.REFRESH })
   @JsonIgnore
   private List<Venda> vendas = new ArrayList<>();
 

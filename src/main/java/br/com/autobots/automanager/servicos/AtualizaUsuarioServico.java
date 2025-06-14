@@ -1,9 +1,17 @@
 package br.com.autobots.automanager.servicos;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.entidades.Usuario;
+import br.com.autobots.automanager.enums.PerfilUsuario;
+import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.automanager.excecoes.UsuarioNaoAutorizadoExcecao;
+import br.com.autobots.automanager.provedores.AutenticacaoProvedor;
+import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
+import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
 
 @Service
 public class AtualizaUsuarioServico {
@@ -14,13 +22,52 @@ public class AtualizaUsuarioServico {
   private AtualizaEnderecoServico atualizaEnderoServico;
 
   @Autowired
-  private AtualizaCredencialUsuarioSenhaServico atualizaCredencialUsuarioSenhaServico;
+  private AtualizaCredencialServico atualizaCredencialServico;
 
   @Autowired
-  private AtualizaCredencialCodigoBarraServico atualizaCredencialCodigoBarraServico;
+  private ValidaUsuarioServico validaUsuarioServico;
 
-  public void atualizar(Usuario usuario, Usuario usuarioAtualizado) {
-    atualizarDados(usuario, usuarioAtualizado);
+  @Autowired
+  private EmpresaRepositorio empresaRepositorio;
+
+  @Autowired
+  private UsuarioRepositorio usuarioRepositorio;
+
+  @Autowired
+  private AutenticacaoProvedor autenticacaoProvedor;
+
+  public void atualizar(long empresaId, Usuario usuarioAtualizado) {
+    var empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    var usuario = usuarioRepositorio.findById(usuarioAtualizado.getId());
+    if (usuario.isEmpty()) {
+      throw new NaoEncontradoExcecao("Usuario não encontrado");
+    }
+
+    switch (autenticacaoProvedor.getUsuario().getPerfil()) {
+      case VENDEDOR:
+        if (usuario.get().getPerfil() != PerfilUsuario.CLIENTE) {
+          throw new UsuarioNaoAutorizadoExcecao();
+        }
+        break;
+      case GERENTE:
+        if (usuario.get().getPerfil() == PerfilUsuario.ADMIN) {
+          throw new UsuarioNaoAutorizadoExcecao();
+        }
+        break;
+      default:
+        break;
+    }
+
+    validaUsuarioServico.validar(usuarioAtualizado);
+    atualizarUsuario(usuario.get(), usuarioAtualizado);
+    usuarioRepositorio.save(usuario.get());
+  }
+
+  private void atualizarUsuario(Usuario usuario, Usuario usuarioAtualizado) {
+    atualizarUsuarioDados(usuario, usuarioAtualizado);
     if (usuarioAtualizado.getEmails() != null) {
       usuario.getEmails().clear();
       usuario.getEmails().addAll(usuarioAtualizado.getEmails());
@@ -38,15 +85,12 @@ public class AtualizaUsuarioServico {
       usuario.getVeiculos().addAll(usuarioAtualizado.getVeiculos());
     }
     atualizaEnderoServico.atualizar(usuario.getEndereco(), usuarioAtualizado.getEndereco());
-    atualizaCredencialUsuarioSenhaServico.atualizar(
-        usuario.getCredencialUsuarioSenha(),
-        usuarioAtualizado.getCredencialUsuarioSenha());
-    atualizaCredencialCodigoBarraServico.atualizar(
-        usuario.getCredencialCodigoBarra(),
-        usuarioAtualizado.getCredencialCodigoBarra());
+    atualizaCredencialServico.atualizar(
+        usuario.getCredencial(),
+        usuarioAtualizado.getCredencial());
   }
 
-  private void atualizarDados(Usuario usuario, Usuario usuarioAtualizado) {
+  private void atualizarUsuarioDados(Usuario usuario, Usuario usuarioAtualizado) {
     if (!verificaStringServico.verificar(usuarioAtualizado.getNome())) {
       usuario.setNome(usuarioAtualizado.getNome());
     }

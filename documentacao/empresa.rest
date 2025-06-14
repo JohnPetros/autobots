@@ -1,6 +1,7 @@
 ### Cadastrar uma nova empresa
 POST http://localhost:8080/empresa/cadastrar
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
   "razaoSocial": "Toyota Motor Corporation",
@@ -18,7 +19,7 @@ Content-Type: application/json
   "telefones": [
     {
       "ddd": "11",
-      "numero": "123654987" 
+      "numero": "123654987"
     }
   ]
 }
@@ -26,10 +27,12 @@ Content-Type: application/json
 
 ### Obter uma empresa específica
 GET http://localhost:8080/empresa/1
+Authorization: Bearer {{JWT}}
 
 ### Atualizar uma empresa
 PUT http://localhost:8080/empresa/atualizar
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
   "id": 1,
@@ -56,6 +59,7 @@ Content-Type: application/json
 ### Excluir uma empresa
 DELETE http://localhost:8080/empresa/excluir
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
   "id": 1

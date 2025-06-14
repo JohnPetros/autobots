@@ -20,8 +20,8 @@ public class AtualizaVendaServico {
       if (atualizacao.getCliente() != null) {
         venda.setCliente(atualizacao.getCliente());
       }
-      if (atualizacao.getFuncionario() != null) {
-        venda.setFuncionario(atualizacao.getFuncionario());
+      if (atualizacao.getVendedor() != null) {
+        venda.setVendedor(atualizacao.getVendedor());
       }
       if (atualizacao.getMercadorias() != null) {
         venda.setMercadorias(atualizacao.getMercadorias());

@@ -38,12 +38,12 @@ public class ValidaVendaServico {
       venda.setCliente(cliente.get());
     }
 
-    if (venda.getFuncionario() != null) {
-      var funcionario = usuarioRepositorio.findByIdAndPerfil(venda.getFuncionario().getId(), PerfilUsuario.FUNCIONARIO);
-      if (funcionario.isEmpty()) {
-        throw new NaoEncontradoExcecao("Funcionário não encontrado");
+    if (venda.getVendedor() != null) {
+      var vendedor = usuarioRepositorio.findByIdAndPerfil(venda.getVendedor().getId(), PerfilUsuario.VENDEDOR);
+      if (vendedor.isEmpty()) {
+        throw new NaoEncontradoExcecao("Vendedor não encontrado");
       }
-      venda.setFuncionario(funcionario.get());
+      venda.setVendedor(vendedor.get());
     }
 
     if (venda.getMercadorias() != null) {
@@ -74,8 +74,6 @@ public class ValidaVendaServico {
       venda.setServicos(servicos);
     }
 
-    System.out.println(venda.getServicos().get(0).getId());
-
     if (venda.getVeiculo() != null) {
       var veiculo = veiculoRepositorio.findById(venda.getVeiculo().getId());
       if (veiculo.isEmpty()) {
@@ -84,4 +82,5 @@ public class ValidaVendaServico {
       venda.setVeiculo(veiculo.get());
     }
   }
+
 }

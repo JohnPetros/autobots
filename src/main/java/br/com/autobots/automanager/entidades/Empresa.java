@@ -3,12 +3,14 @@ package br.com.autobots.automanager.entidades;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import br.com.autobots.automanager.enums.PerfilUsuario;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,6 +69,39 @@ public class Empresa extends RepresentationModel<Empresa> {
   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Veiculo> veiculos = new ArrayList<>();
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "empresa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Venda> vendas = new ArrayList<>();
+
+  public List<Venda> obterVendasPorCliente(Usuario cliente) {
+    return vendas
+        .stream()
+        .filter(venda -> venda.getCliente().getId() == cliente.getId())
+        .collect(Collectors.toList());
+  }
+
+  public List<Venda> obterVendasPorVendedor(Usuario vendedor) {
+    return vendas
+        .stream()
+        .filter(venda -> venda.getVendedor().getId() == vendedor.getId())
+        .collect(Collectors.toList());
+  }
+
+  public List<Usuario> obterUsuariosPorPerfil(PerfilUsuario perfil) {
+    switch (perfil) {
+      case ADMIN:
+        return usuarios;
+      case GERENTE:
+        return usuarios
+            .stream()
+            .filter(usuario -> usuario.getPerfil() != PerfilUsuario.ADMIN)
+            .collect(Collectors.toList());
+      case VENDEDOR:
+        return usuarios
+            .stream()
+            .filter(usuario -> usuario.getPerfil() == PerfilUsuario.CLIENTE)
+            .collect(Collectors.toList());
+      default:
+        return usuarios;
+    }
+  }
 }

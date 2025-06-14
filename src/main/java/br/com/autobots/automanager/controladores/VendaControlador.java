@@ -2,10 +2,13 @@ package br.com.autobots.automanager.controladores;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,10 +27,13 @@ import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Venda;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.automanager.provedores.AutenticacaoProvedor;
 import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.VendaRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkVendaServico;
 import br.com.autobots.automanager.servicos.AtualizaVendaServico;
+import br.com.autobots.automanager.servicos.ObterVendaServico;
+import br.com.autobots.automanager.servicos.ObterVendasServico;
 import br.com.autobots.automanager.servicos.ValidaVendaServico;
 
 @RestController
@@ -40,6 +46,9 @@ public class VendaControlador {
   private EmpresaRepositorio empresaRepositorio;
 
   @Autowired
+  public AutenticacaoProvedor autenticacaoProvedor;
+
+  @Autowired
   private AdicionaLinkVendaServico adicionaLinkVendaServico;
 
   @Autowired
@@ -48,6 +57,19 @@ public class VendaControlador {
   @Autowired
   private ValidaVendaServico validaVendaServico;
 
+  @Autowired
+  private ObterVendasServico obterVendasServico;
+
+  @Autowired
+  private ObterVendaServico obterVendaServico;
+
+  private final Random random = new Random();
+
+  @PreAuthorize("""
+      hasRole('ADMIN') or
+      hasRole('GERENTE') or
+      (hasRole('VENDEDOR') and #venda.vendedor.id == authentication.principal.usuario.id)
+      """)
   @PostMapping("/{empresaId}/venda/cadastrar")
   @Operation(summary = "Cadastrar venda", description = "Cadastra um novo venda")
   @ApiResponses(value = {
@@ -61,8 +83,10 @@ public class VendaControlador {
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
+
+    venda.setIdentificacao(gerarIdentificacaoAleatoria());
+    venda.setEmpresa(empresa.get());
     validaVendaServico.validar(venda);
-    vendaRepositorio.save(venda);
     empresa.get().getVendas().add(venda);
     empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.CREATED);
@@ -76,18 +100,9 @@ public class VendaControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<List<Venda>> obterVendas(@PathVariable long empresaId) {
-    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
-    if (empresa.isEmpty()) {
-      throw new NaoEncontradoExcecao("Empresa não encontrada");
-    }
-    List<Venda> vendas = empresa.get().getVendas();
-    if (vendas.isEmpty()) {
-      throw new NaoEncontradoExcecao("Nenhum venda cadastrada");
-    } else {
-      adicionaLinkVendaServico.adicionarLink(vendas, empresaId);
-      ResponseEntity<List<Venda>> resposta = new ResponseEntity<>(vendas, HttpStatus.OK);
-      return resposta;
-    }
+    var vendas = obterVendasServico.obterVendas(empresaId);
+    adicionaLinkVendaServico.adicionarLink(vendas, empresaId);
+    return new ResponseEntity<>(vendas, HttpStatus.OK);
   }
 
   @GetMapping("/{empresaId}/venda/{id}")
@@ -98,19 +113,12 @@ public class VendaControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<Venda> obterVenda(@PathVariable long id, @PathVariable long empresaId) {
-    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
-    if (empresa.isEmpty()) {
-      throw new NaoEncontradoExcecao("Empresa não encontrada");
-    }
-    Optional<Venda> venda = vendaRepositorio.findById(id);
-    if (venda.isEmpty()) {
-      throw new NaoEncontradoExcecao("Venda não encontrada");
-    } else {
-      adicionaLinkVendaServico.adicionarLink(venda.get(), empresaId);
-      return ResponseEntity.status(HttpStatus.OK).body(venda.get());
-    }
+    var venda = obterVendaServico.obterVenda(id, empresaId);
+    adicionaLinkVendaServico.adicionarLink(venda, empresaId);
+    return new ResponseEntity<>(venda, HttpStatus.OK);
   }
 
+  @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
   @PutMapping("/{empresaId}/venda/atualizar")
   @Operation(summary = "Atualizar venda", description = "Atualiza as informações de um venda existente")
   @ApiResponses(value = {
@@ -134,6 +142,7 @@ public class VendaControlador {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
   @DeleteMapping("/{empresaId}/venda/excluir")
   @Operation(summary = "Excluir venda", description = "Exclui um venda existente")
   @ApiResponses(value = {
@@ -141,18 +150,28 @@ public class VendaControlador {
       @ApiResponse(responseCode = "404", description = "Venda não encontrada"),
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
+  @Transactional
   public ResponseEntity<?> excluirVenda(@RequestBody Venda exclusao, @PathVariable long empresaId) {
-    Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
+    var empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
-    Optional<Venda> venda = vendaRepositorio.findById(exclusao.getId());
+    var venda = vendaRepositorio.findById(exclusao.getId());
     if (venda.isEmpty()) {
       throw new NaoEncontradoExcecao("Venda não encontrada");
     }
-    vendaRepositorio.delete(venda.get());
+
     empresa.get().getVendas().remove(venda.get());
     empresaRepositorio.save(empresa.get());
+
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  private String gerarIdentificacaoAleatoria() {
+    StringBuilder identificacao = new StringBuilder("V");
+    for (int i = 0; i < 10; i++) {
+      identificacao.append(random.nextInt(10));
+    }
+    return identificacao.toString();
   }
 }

@@ -90,12 +90,7 @@ public class Usuario extends RepresentationModel<Usuario> {
   @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @Schema(description = "Credencial de usuário e senha")
   @NotNull(message = "Credencial de usuário e senha é obrigatória")
-  private CredencialUsuarioSenha credencialUsuarioSenha;
-
-  @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @Schema(description = "Credencial de código de barras")
-  @NotNull(message = "Credencial de código de barras é obrigatória")
-  private CredencialCodigoBarra credencialCodigoBarra;
+  private Credencial credencial;
 
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @JoinColumn(name = "cliente_id")

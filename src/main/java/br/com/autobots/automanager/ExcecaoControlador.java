@@ -1,5 +1,6 @@
 package br.com.autobots.automanager;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,8 +10,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.autobots.automanager.excecoes.AutenticacaoExcecao;
 import br.com.autobots.automanager.excecoes.ConflitoExcecao;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.automanager.excecoes.UsuarioNaoAutorizadoExcecao;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -56,5 +59,23 @@ public class ExcecaoControlador {
       org.springframework.http.converter.HttpMessageNotReadableException exception) {
     var message = new Mensagem(exception.getMessage());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+  }
+
+  @ExceptionHandler(AutenticacaoExcecao.class)
+  private ResponseEntity<Mensagem> excecaoAutenticacao(AutenticacaoExcecao exception) {
+    var message = new Mensagem(exception.getMessage());
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+  }
+
+  @ExceptionHandler(UsuarioNaoAutorizadoExcecao.class)
+  private ResponseEntity<Mensagem> excecaoUsuarioNaoAutorizado(UsuarioNaoAutorizadoExcecao exception) {
+    var message = new Mensagem(exception.getMessage());
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  private ResponseEntity<Mensagem> excecaoUsuarioNaoAutorizado(AccessDeniedException exception) {
+    var message = new Mensagem(exception.getMessage());
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
   }
 }

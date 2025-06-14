@@ -1,22 +1,28 @@
+# @name login
+POST http://localhost:8080/autenticacao/login
+Content-Type: application/json
+
+{
+  "nomeUsuario": "admin-usuario",
+  "senha": "123456"
+}
+
+@JWT = {{login.response.body.token}}
+
 ### Cadastrar um novo cliente
 POST http://localhost:8080/1/usuario/cadastrar
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
   "nome": "João da Silva",
   "nomeSocial": "João da Silva",
   "dataNascimento": "1990-01-01",
   "dataCadastro": "2000-01-01",
-  "credencialUsuarioSenha": {
-    "nomeUsuario": "joao",
+  "credencial": {
+    "nomeUsuario": "cliente-usuario-1",
     "senha": "123456",
     "criacao": "2025-01-01"
-  },
-  "credencialCodigoBarra": {
-    "criacao": "2025-01-01",
-    "ultimoAcesso": "2025-01-01",
-    "inativo": false,
-    "codigo": 123456
   },
   "documentos": [
     {
@@ -55,24 +61,72 @@ Content-Type: application/json
   "inativo": false
 }
 
-### Cadastrar um novo funcionário
+### Cadastrar um novo cliente
 POST http://localhost:8080/1/usuario/cadastrar
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "nome": "Lucas da Silva",
+  "nomeSocial": "Lucas da Silva",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
+  "credencial": {
+    "nomeUsuario": "cliente-usuario-2",
+    "senha": "123456",
+    "criacao": "2025-01-01"
+  },
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "12345678902"
+    }
+  ],
+  "emails": [
+    {
+      "endereco": "lucas@gmail.com"
+    }
+  ],
+  "endereco": {
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "CLIENTE",
+  "telefones": [
+    {
+      "ddd": "12",
+      "numero": "123456789"
+    }
+  ],
+  "veiculos": [
+    {
+      "tipo": "HATCH",
+      "modelo": "Gol",
+      "placa": "ABC-1234"
+    }
+  ],
+  "inativo": false
+}
+
+### Cadastrar um novo vendedor
+POST http://localhost:8080/1/usuario/cadastrar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
   "nome": "Gerson da Penha",
   "nomeSocial": "Gerson Paysandu",
   "dataNascimento": "1990-01-01",
   "dataCadastro": "2000-01-01",
-  "credencialUsuarioSenha": {
-    "nomeUsuario": "penha",
+  "credencial": {
+    "nomeUsuario": "vendedor-usuario-1",
     "senha": "123456",
     "criacao": "2025-01-01"
-  },
-  "credencialCodigoBarra": {
-    "criacao": "2025-01-01",
-    "ultimoAcesso": "2025-01-01",
-    "codigo": 654321
   },
   "documentos": [
     {
@@ -94,7 +148,7 @@ Content-Type: application/json
     "codigoPostal": "04101-300",
     "informacoesAdicionais": "Apto 101"
   },
-  "perfil": "FUNCIONARIO",
+  "perfil": "VENDEDOR",
   "telefones": [
     {
       "ddd": "91",
@@ -104,18 +158,157 @@ Content-Type: application/json
   "inativo": false
 }
 
+### Cadastrar um novo vendedor
+POST http://localhost:8080/1/usuario/cadastrar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "nome": "Nando dos Santos",
+  "nomeSocial": "Nand",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
+  "credencial": {
+    "nomeUsuario": "vendedor-usuario-2",
+    "senha": "123456",
+    "criacao": "2025-01-01"
+  },
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "48765432101"
+    }
+  ],
+  "emails": [
+    {
+      "endereco": "nand@gmail.com"
+    }
+  ],
+  "endereco": {
+    "estado": "PA",
+    "cidade": "Belém",
+    "bairro": "Barreiro",
+    "rua": "Rua dos Penha",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "VENDEDOR",
+  "telefones": [
+    {
+      "ddd": "91",
+      "numero": "987654321"
+    }
+  ],
+  "inativo": false
+}
+
+### Cadastrar um novo gerente
+POST http://localhost:8080/1/usuario/cadastrar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "nome": "Cristiano da Silva",
+  "nomeSocial": "Cristiano",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
+  "credencial": {
+    "nomeUsuario": "gerente-usuario",
+    "senha": "123456",
+    "criacao": "2025-01-01"
+  },
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "88765432101"
+    }
+  ],
+  "emails": [
+    {
+      "endereco": "cristiano@gmail.com"
+    }
+  ],
+  "endereco": {
+    "estado": "PA",
+    "cidade": "Belém",
+    "bairro": "Barreiro",
+    "rua": "Rua dos Cristianos",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "GERENTE",
+  "telefones": [
+    {
+      "ddd": "99",
+      "numero": "987654321"
+    }
+  ],
+  "inativo": false
+}
+
+### Cadastrar um novo admin
+POST http://localhost:8080/1/usuario/cadastrar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "nome": "Arnaldo da Silva",
+  "nomeSocial": "Arnaldo",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
+  "credencial": {
+    "nomeUsuario": "admin-usuario-2",
+    "senha": "123456",
+    "criacao": "2025-01-01"
+  },
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "18765432101"
+    }
+  ],
+  "emails": [
+    {
+      "endereco": "arnaldo@gmail.com"
+    }
+  ],
+  "endereco": {
+    "estado": "PA",
+    "cidade": "Belém",
+    "bairro": "Barreiro",
+    "rua": "Rua dos Arnaldos",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "ADMIN",
+  "telefones": [
+    {
+      "ddd": "40",
+      "numero": "987654321"
+    }
+  ],
+  "inativo": false
+}
+
+
 ### Obter todos os usuarios
 GET http://localhost:8080/1/usuarios
+Authorization: Bearer {{JWT}}
 
 ### Obter um usuario específico
 GET http://localhost:8080/1/usuario/1
+Authorization: Bearer {{JWT}}
 
 ### Atualizar um usuario
 PUT http://localhost:8080/1/usuario/atualizar
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
-  "id": 1,
+  "id": 4,
   "nome": "Raiam dos Santos",
   "nomeSocial": "Raiamizinho",
   "dataNascimento": "1990-01-01",
@@ -140,7 +333,7 @@ Content-Type: application/json
     "codigoPostal": "04101-300",
     "informacoesAdicionais": "Apto 101"
   },
-  "perfil": "CLIENTE",
+  "perfil": "GERENTE",
   "telefones": [
     {
       "ddd": "11",
@@ -160,35 +353,8 @@ Content-Type: application/json
 ### Excluir um usuario
 DELETE http://localhost:8080/1/usuario/excluir
 Content-Type: application/json
+Authorization: Bearer {{JWT}}
 
 {
-  "id": 1,
-  "nome": "Raim dos Santos",
-  "nomeSocial": "Raimizinho",
-  "dataNascimento": "1990-01-01",
-  "dataCadastro": "2025-01-01",
-  "documentos": [
-    {
-      "id": 1,
-      "tipo": "CPF",
-      "numero": "1234567890"
-    }
-  ],
-  "usuario": {
-    "id": 1,
-    "estado": "SP",
-    "cidade": "São Paulo",
-    "bairro": "Jardim Paulista",
-    "rua": "Rua das Flores",
-    "numero": "123",
-    "codigoPostal": "04101-300",
-    "informacoesAdicionais": "Apto 101"
-  },
-  "telefones": [
-    {
-      "id": 1,
-      "ddd": "11",
-      "numero": "99999-9999"
-    }
-  ]
+  "id": 1
 }
