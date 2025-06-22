@@ -70,7 +70,11 @@ GET http://localhost:8082/1/usuarios
 Authorization: Bearer {{JWT}}
 
 ### Obter um usuario específico
-GET http://localhost:8082/1/usuario/1
+GET http://localhost:8082/usuario/1
+Authorization: Bearer {{JWT}}
+
+### Obter um usuario específico por email
+GET http://localhost:8082/usuario/email/admin@autobots.com
 Authorization: Bearer {{JWT}}
 
 ### Atualizar um usuario

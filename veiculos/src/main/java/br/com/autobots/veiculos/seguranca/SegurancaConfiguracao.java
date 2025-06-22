@@ -1,4 +1,4 @@
-package br.com.autobots.usuarios.seguranca;
+package br.com.autobots.veiculos.seguranca;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,13 +10,15 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import br.com.autobots.usuarios.filtros.JwtFiltro;
+import br.com.autobots.veiculos.filtros.JwtFiltro;
 
 @Configuration
 @EnableWebSecurity
@@ -52,4 +54,10 @@ public class SegurancaConfiguracao {
     fonte.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
     return fonte;
   }
+
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
 }

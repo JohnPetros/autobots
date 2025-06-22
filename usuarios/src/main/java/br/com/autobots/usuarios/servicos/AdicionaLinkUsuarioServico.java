@@ -20,11 +20,21 @@ public class AdicionaLinkUsuarioServico implements AdicionaLinkServico<Usuario> 
 
 	@Override
 	public void adicionarLink(Usuario usuario, Long empresaId) {
-		Link linkProprio = WebMvcLinkBuilder
+		Link linkObterTodos = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(UsuarioControlador.class)
 						.obterUsuarios(empresaId))
-				.withRel("obter-todos");
+				.withRel("obter todos");
+		Link linkObterPorId = WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder
+						.methodOn(UsuarioControlador.class)
+						.obterUsuario(usuario.getId()))
+				.withRel("obter por id");
+		Link linkObterPorEmail = WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder
+						.methodOn(UsuarioControlador.class)
+						.obterUsuarioPorEmail(usuario.getEmail()))
+				.withRel("obter por email");
 		Link linkCadastrar = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
 						.methodOn(UsuarioControlador.class)
@@ -40,7 +50,9 @@ public class AdicionaLinkUsuarioServico implements AdicionaLinkServico<Usuario> 
 						.methodOn(UsuarioControlador.class)
 						.excluirUsuario(null))
 				.withRel("excluir");
-		usuario.add(linkProprio);
+		usuario.add(linkObterTodos);
+		usuario.add(linkObterPorId);
+		usuario.add(linkObterPorEmail);
 		usuario.add(linkCadastrar);
 		usuario.add(linkAtualizar);
 		usuario.add(linkExcluir);

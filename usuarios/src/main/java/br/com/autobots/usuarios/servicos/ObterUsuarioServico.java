@@ -1,5 +1,7 @@
 package br.com.autobots.usuarios.servicos;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,23 @@ public class ObterUsuarioServico {
       throw new NaoEncontradoExcecao("Usuário não encontrado");
     }
 
+    validarAutorizacao(usuario);
+
+    return usuario.get();
+  }
+
+  public Usuario obterUsuarioPorEmail(String email) {
+    var usuario = usuarioRepositorio.findByEmail(email);
+    if (usuario.isEmpty()) {
+      throw new NaoEncontradoExcecao("Usuário não encontrado");
+    }
+
+    validarAutorizacao(usuario);
+
+    return usuario.get();
+  }
+
+  private void validarAutorizacao(Optional<Usuario> usuario) {
     var usuarioAutenticado = autenticacaoProvedor.getUsuario();
     if (usuarioAutenticado.getPerfil() == PerfilUsuario.CLIENTE) {
       if (usuarioAutenticado.getId() != usuario.get().getId()) {
@@ -42,7 +61,5 @@ public class ObterUsuarioServico {
         && usuario.get().getPerfil() == PerfilUsuario.ADMIN) {
       throw new UsuarioNaoAutorizadoExcecao();
     }
-
-    return usuario.get();
   }
 }

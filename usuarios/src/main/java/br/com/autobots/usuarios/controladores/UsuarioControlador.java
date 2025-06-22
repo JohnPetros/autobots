@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.usuarios.entidades.Usuario;
@@ -95,15 +96,28 @@ public class UsuarioControlador {
   }
 
   @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
-  @GetMapping("/{empresaId}/usuario/{id}")
+  @GetMapping("/usuario/{id}")
   @Operation(summary = "Obter usuario", description = "Retorna um usuario específico com base no ID fornecido")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(schema = @Schema(implementation = Usuario.class))),
       @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
   })
-  public ResponseEntity<Usuario> obterUsuario(@PathVariable long id, @PathVariable long empresaId) {
+  public ResponseEntity<Usuario> obterUsuario(@PathVariable Long id) {
     var usuario = obterUsuarioServico.obterUsuario(id);
-    adicionaLinkUsuarioServico.adicionarLink(usuario, empresaId);
+    adicionaLinkUsuarioServico.adicionarLink(usuario, usuario.getEmpresaId());
+    return ResponseEntity.status(HttpStatus.OK).body(usuario);
+  }
+
+  @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+  @GetMapping("/usuario/email/{email}")
+  @Operation(summary = "Obter usuario", description = "Retorna um usuario específico com base no email fornecido")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(schema = @Schema(implementation = Usuario.class))),
+      @ApiResponse(responseCode = "404", description = "Usuario não encontrado"),
+  })
+  public ResponseEntity<Usuario> obterUsuarioPorEmail(@PathVariable String email) {
+    var usuario = obterUsuarioServico.obterUsuarioPorEmail(email);
+    adicionaLinkUsuarioServico.adicionarLink(usuario, usuario.getEmpresaId());
     return ResponseEntity.status(HttpStatus.OK).body(usuario);
   }
 
