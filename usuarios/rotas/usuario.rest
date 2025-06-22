@@ -1,0 +1,127 @@
+# @name login
+POST http://localhost:8081/autenticacao/login
+Content-Type: application/json
+
+{
+  "email": "admin@autobots.com",
+  "senha": "123456"
+}
+
+@JWT = {{login.response.body.token}}
+
+### Cadastrar um novo cliente
+POST http://localhost:8082/1/usuario/cadastrar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "nome": "João da Silva",
+  "nomeSocial": "João da Silva",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
+  "credencial": {
+    "nomeUsuario": "cliente-usuario-1",
+    "senha": "123456",
+    "criacao": "2025-01-01"
+  },
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "12345678901"
+    }
+  ],
+  "email": "joao@gmail.com",
+  "endereco": {
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "CLIENTE",
+  "telefones": [
+    {
+      "ddd": "11",
+      "numero": "123456789"
+    }
+  ],
+  "veiculos": [
+    {
+      "tipo": "HATCH",
+      "modelo": "Gol",
+      "placa": "ABC-1234"
+    }
+  ],
+  "inativo": false
+}
+
+### Obter todos os clientes
+GET http://localhost:8082/1/clientes
+Authorization: Bearer {{JWT}}
+
+### Obter todos os funcionarios
+GET http://localhost:8082/1/funcionarios
+Authorization: Bearer {{JWT}}
+
+### Obter todos os usuarios
+GET http://localhost:8082/1/usuarios
+Authorization: Bearer {{JWT}}
+
+### Obter um usuario específico
+GET http://localhost:8082/1/usuario/1
+Authorization: Bearer {{JWT}}
+
+### Atualizar um usuario
+PUT http://localhost:8082/1/usuario/atualizar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "id": 4,
+  "nome": "Raiam dos Santos",
+  "nomeSocial": "Raiamizinho",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2000-01-01",
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "99999999999"
+    }
+  ],
+  "email": "raiam@gmail.com",
+  "endereco": {
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "bairro": "Copacabana",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "perfil": "GERENTE",
+  "telefones": [
+    {
+      "ddd": "11",
+      "numero": "123456789"
+    }
+  ],
+  "veiculos": [
+    {
+      "tipo": "HATCH",
+      "modelo": "Gol",
+      "placa": "ABC-1234"
+    }
+  ],
+  "inativo": true
+}
+
+### Excluir um usuario
+DELETE http://localhost:8082/1/usuario/excluir
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "id": 1
+}

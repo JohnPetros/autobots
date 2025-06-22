@@ -17,34 +17,6 @@ import br.com.autobots.automanager.seguranca.SegurancaUsuario;
 
 @Component
 public class AutenticacaoProvedor {
-  @Autowired
-  private AuthenticationManager authenticationManager;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  public boolean validarCredenciais(String email, String password) {
-    var authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-    try {
-      var authentication = authenticationManager.authenticate(authenticationToken);
-      return authentication.isAuthenticated();
-    } catch (DisabledException e) {
-      throw new AutenticacaoExcecao("Usuário desabilitado");
-    } catch (BadCredentialsException e) {
-      return false;
-    } catch (Exception e) {
-      return false;
-    }
-  }
-
-  public Usuario registrar(Usuario usuario) {
-    var credencial = usuario.getCredencial();
-    var encryptedPassword = passwordEncoder.encode(credencial.getSenha());
-    credencial.setSenha(encryptedPassword);
-    usuario.setCredencial(credencial);
-    return usuario;
-  }
-
   public Usuario getUsuario() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null && authentication.getPrincipal() instanceof SegurancaUsuario segurancaUsuario) {
