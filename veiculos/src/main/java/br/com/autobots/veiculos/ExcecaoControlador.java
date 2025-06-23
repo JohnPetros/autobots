@@ -14,6 +14,7 @@ import br.com.autobots.veiculos.excecoes.AutenticacaoExcecao;
 import br.com.autobots.veiculos.excecoes.ConflitoExcecao;
 import br.com.autobots.veiculos.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.veiculos.excecoes.UsuarioNaoAutorizadoExcecao;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -77,5 +78,31 @@ public class ExcecaoControlador {
   private ResponseEntity<Mensagem> excecaoUsuarioNaoAutorizado(AccessDeniedException exception) {
     var message = new Mensagem(exception.getMessage());
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+  }
+
+  @ExceptionHandler(FeignException.class)
+  private ResponseEntity<Mensagem> excecaoFeign(FeignException exception) {
+    String mensagem = extrairMensagemDoCorpo(exception.contentUTF8());
+    var message = new Mensagem(mensagem != null ? mensagem : "Erro ao comunicar com serviço externo");
+    return ResponseEntity.status(HttpStatus.valueOf(exception.status())).body(message);
+  }
+
+  private String extrairMensagemDoCorpo(String corpo) {
+    if (corpo == null || corpo.isEmpty()) {
+      return null;
+    }
+
+    try {
+      if (corpo.contains("\"message\"")) {
+        int inicioMensagem = corpo.indexOf("\"message\":\"") + 11;
+        int fimMensagem = corpo.indexOf("\"", inicioMensagem);
+        if (inicioMensagem > 10 && fimMensagem > inicioMensagem) {
+          return corpo.substring(inicioMensagem, fimMensagem);
+        }
+      }
+    } catch (Exception e) {
+    }
+
+    return null;
   }
 }

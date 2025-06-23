@@ -19,11 +19,6 @@ Authorization: Bearer {{JWT}}
   "nomeSocial": "João da Silva",
   "dataNascimento": "1990-01-01",
   "dataCadastro": "2000-01-01",
-  "credencial": {
-    "nomeUsuario": "cliente-usuario-1",
-    "senha": "123456",
-    "criacao": "2025-01-01"
-  },
   "documentos": [
     {
       "tipo": "CPF",
@@ -31,6 +26,7 @@ Authorization: Bearer {{JWT}}
     }
   ],
   "email": "joao@gmail.com",
+  "senha": "123456", 
   "endereco": {
     "estado": "SP",
     "cidade": "São Paulo",

@@ -34,12 +34,12 @@ public class AdicionaLinkVeiculoServico implements AdicionaLinkServico<Veiculo> 
     Link linkCadastrar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(VeiculoControlador.class)
-            .cadastrarVeiculo(null, empresaId))
+            .cadastrarVeiculo(null, empresaId, null))
         .withRel("cadastrar veiculo");
     Link linkAtualizar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(VeiculoControlador.class)
-            .atualizarVeiculo(null, empresaId))
+            .atualizarVeiculo(null, empresaId, null))
         .withRel("atualizar veiculo");
     Link linkExcluir = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder

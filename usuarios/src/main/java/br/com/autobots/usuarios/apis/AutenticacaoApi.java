@@ -14,5 +14,5 @@ public interface AutenticacaoApi {
   }
 
   @PostMapping("/registrar")
-  public JwtResponse registrar(String nomeUsuario, String senha);
+  public JwtResponse registrar(String email, String senha);
 }

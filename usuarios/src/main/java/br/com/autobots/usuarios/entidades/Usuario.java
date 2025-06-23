@@ -8,12 +8,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.com.autobots.usuarios.enums.PerfilUsuario;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,6 +21,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,10 @@ public class Usuario extends RepresentationModel<Usuario> {
   @Schema(description = "Email do usuário", example = "joao.silva@gmail.com")
   @NotBlank(message = "Email é obrigatório")
   private String email;
+
+  @Transient
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private String senha;
 
   @Column
   @Schema(description = "Nome social do usuário", example = "João")

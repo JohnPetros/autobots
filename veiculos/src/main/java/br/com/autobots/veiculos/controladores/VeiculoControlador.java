@@ -59,8 +59,9 @@ public class VeiculoControlador {
   })
   public ResponseEntity<?> cadastrarVeiculo(
       @RequestBody @Valid Veiculo veiculo,
-      @PathVariable long empresaId) {
-    validaVeiculoServico.validar(veiculo);
+      @PathVariable long empresaId,
+      @RequestHeader("Authorization") String token) {
+    validaVeiculoServico.validar(veiculo, token);
     veiculoRepositorio.save(veiculo);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -75,7 +76,7 @@ public class VeiculoControlador {
   public ResponseEntity<List<Veiculo>> obterVeiculos(
       @PathVariable long empresaId,
       @RequestHeader("Authorization") String token) {
-    List<Veiculo> veiculos = veiculoRepositorio.findByEmpresaId(empresaId);
+    List<Veiculo> veiculos = veiculoRepositorio.findAllByEmpresaId(empresaId);
     if (veiculos.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum veiculo cadastrado");
     } else {
@@ -100,7 +101,7 @@ public class VeiculoControlador {
       @PathVariable long id,
       @PathVariable long empresaId,
       @RequestHeader("Authorization") String token) {
-    Optional<Veiculo> veiculo = veiculoRepositorio.findById(id);
+    Optional<Veiculo> veiculo = veiculoRepositorio.findByIdAndEmpresaId(id, empresaId);
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veiculo não encontrado");
     }
@@ -119,12 +120,13 @@ public class VeiculoControlador {
   })
   public ResponseEntity<?> atualizarVeiculo(
       @RequestBody Veiculo veiculoAtualizado,
-      @PathVariable long empresaId) {
+      @PathVariable long empresaId,
+      @RequestHeader("Authorization") String token) {
     Optional<Veiculo> veiculo = veiculoRepositorio.findById(veiculoAtualizado.getId());
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veiculo não encontrado");
     }
-    validaVeiculoServico.validar(veiculoAtualizado);
+    validaVeiculoServico.validar(veiculoAtualizado, token);
     atualizaVeiculoServico.atualizar(veiculo.get(), veiculoAtualizado);
     veiculoRepositorio.save(veiculo.get());
     return new ResponseEntity<>(HttpStatus.OK);

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.autobots.usuarios.apis.AutenticacaoApi;
 import br.com.autobots.usuarios.entidades.Usuario;
 import br.com.autobots.usuarios.repositorios.UsuarioRepositorio;
 import br.com.autobots.usuarios.servicos.AdicionaLinkUsuarioServico;
@@ -37,6 +38,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class UsuarioControlador {
   @Autowired
   private UsuarioRepositorio usuarioRepositorio;
+
+  @Autowired
+  private AutenticacaoApi autenticacaoApi;
 
   @Autowired
   private ValidaUsuarioServico validaUsuarioServico;
@@ -138,6 +142,7 @@ public class UsuarioControlador {
   public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid Usuario usuario, @PathVariable long empresaId) {
     usuario.setEmpresaId(empresaId);
     validaUsuarioServico.validar(usuario);
+    autenticacaoApi.registrar(usuario.getEmail(), usuario.getSenha());
     usuarioRepositorio.save(usuario);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }

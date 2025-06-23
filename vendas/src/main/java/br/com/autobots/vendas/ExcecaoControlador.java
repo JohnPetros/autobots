@@ -1,25 +1,23 @@
-package br.com.autobots.usuarios;
+package br.com.autobots.vendas;
 
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
-import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.com.autobots.vendas.excecoes.AutenticacaoExcecao;
+import br.com.autobots.vendas.excecoes.ConflitoExcecao;
+import br.com.autobots.vendas.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.vendas.excecoes.UsuarioNaoAutorizadoExcecao;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import br.com.autobots.usuarios.excecoes.AutenticacaoExcecao;
-import br.com.autobots.usuarios.excecoes.ConflitoExcecao;
-import br.com.autobots.usuarios.excecoes.NaoEncontradoExcecao;
-import br.com.autobots.usuarios.excecoes.UsuarioNaoAutorizadoExcecao;
 
 @ControllerAdvice
 public class ExcecaoControlador {

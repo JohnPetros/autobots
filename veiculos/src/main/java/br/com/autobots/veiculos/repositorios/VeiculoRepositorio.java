@@ -10,5 +10,9 @@ import br.com.autobots.veiculos.entidades.Veiculo;
 public interface VeiculoRepositorio extends JpaRepository<Veiculo, Long> {
   Optional<Veiculo> findByPlaca(String placa);
 
-  List<Veiculo> findByEmpresaId(Long empresaId);
+  Optional<Veiculo> findByIdAndEmpresaId(Long id, Long empresaId);
+
+  Optional<Veiculo> findByPlacaAndEmpresaId(String placa, Long empresaId);
+
+  List<Veiculo> findAllByEmpresaId(Long empresaId);
 }
