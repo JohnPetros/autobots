@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
@@ -36,12 +37,15 @@ public class Cliente {
   @Schema(description = "Data de cadastro do cliente", example = "2021-01-01")
   private LocalDate dataCadastro;
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "cliente_id")
   @Schema(description = "Documentos do cliente")
   private List<Documento> documentos = new ArrayList<>();
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "endereco_id")
   @Schema(description = "Endereço do cliente")
   private Endereco endereco;
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "cliente_id")
   @Schema(description = "Telefones do cliente")
   private List<Telefone> telefones = new ArrayList<>();
 }

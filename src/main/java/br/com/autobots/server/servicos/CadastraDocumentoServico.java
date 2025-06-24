@@ -11,6 +11,7 @@ public class CadastraDocumentoServico {
     var documentoEntity = new Documento();
     documentoEntity.setTipo(documento.getTipo());
     documentoEntity.setNumero(documento.getNumero());
+    documentoEntity.setClienteId(documento.getClienteId());
     return documentoEntity;
   }
 }

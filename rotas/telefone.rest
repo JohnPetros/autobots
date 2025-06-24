@@ -1,0 +1,33 @@
+### Cadastrar telefone
+POST http://localhost:8080/telefone/cadastro
+Content-Type: application/json
+
+{
+  "ddd": "99",
+  "numero": "999999999"
+}
+
+
+### Obter telefones
+GET http://localhost:8080/telefone/telefones
+
+### Obter telefone
+GET http://localhost:8080/telefone/telefone/1
+
+### Atualizar telefone
+PUT http://localhost:8080/telefone/atualizar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "ddd": "21",
+  "numero": "988888888"
+}
+
+### Excluir telefone
+DELETE http://localhost:8080/telefone/excluir
+Content-Type: application/json
+
+{
+  "id": 1
+} 

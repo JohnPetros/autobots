@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.server.dtos.DocumentoDto;
 import br.com.autobots.server.entidades.Documento;
+import br.com.autobots.server.repositorios.ClienteRepositorio;
 import br.com.autobots.server.repositorios.DocumentoRepositorio;
 import br.com.autobots.server.servicos.AtualizaDocumentoServico;
 import br.com.autobots.server.servicos.CadastraDocumentoServico;
@@ -33,11 +34,24 @@ public class DocumentoControlador {
   @Autowired
   private CadastraDocumentoServico cadastraDocumentoServico;
 
+  @Autowired
+  private ClienteRepositorio clienteRepositorio;
+
   @PostMapping("/cadastro")
   @Operation(summary = "Cadastrar documento", description = "Cadastra um novo documento")
   public void cadastrarDocumento(@RequestBody DocumentoDto documento) {
     var documentoEntity = cadastraDocumentoServico.cadastrar(documento);
     documentoRepositorio.save(documentoEntity);
+
+    // Se foi fornecido um clienteId, associar o documento ao cliente
+    if (documento.getClienteId() != null) {
+      var cliente = clienteRepositorio.findById(documento.getClienteId());
+      if (cliente.isPresent()) {
+        var clienteEntity = cliente.get();
+        clienteEntity.getDocumentos().add(documentoEntity);
+        clienteRepositorio.save(clienteEntity);
+      }
+    }
   }
 
   @GetMapping("/documentos")
@@ -67,6 +81,18 @@ public class DocumentoControlador {
   @Operation(summary = "Excluir documento", description = "Exclui um documento existente")
   public void excluirDocumento(@RequestBody Documento exclusao) {
     var documento = documentoRepositorio.findById(exclusao.getId());
-    documentoRepositorio.delete(documento.get());
+    if (documento.isPresent()) {
+      var doc = documento.get();
+      // Se o documento tem um cliente associado, remover a referência
+      if (doc.getClienteId() != null) {
+        var cliente = clienteRepositorio.findById(doc.getClienteId());
+        if (cliente.isPresent()) {
+          var clienteEntity = cliente.get();
+          clienteEntity.getDocumentos().removeIf(d -> d.getId().equals(doc.getId()));
+          clienteRepositorio.save(clienteEntity);
+        }
+      }
+      documentoRepositorio.delete(doc);
+    }
   }
 }

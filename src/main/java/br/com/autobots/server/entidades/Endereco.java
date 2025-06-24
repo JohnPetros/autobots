@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -36,5 +39,8 @@ public class Endereco {
   @Column(unique = false, nullable = true)
   @Schema(description = "Informações adicionais do endereço", example = "Apto 101")
   private String informacoesAdicionais;
-
+  @Column(name = "cliente_id")
+  @Schema(description = "ID do cliente proprietário do endereço", example = "1")
+  @JsonIgnore
+  private Long clienteId;
 }

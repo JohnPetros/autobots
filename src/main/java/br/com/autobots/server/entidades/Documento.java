@@ -8,6 +8,9 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Data
@@ -25,4 +28,8 @@ public class Documento {
   @Column(unique = true)
   @Schema(description = "Número do documento", example = "1234567890")
   private String numero;
+  @Column(name = "cliente_id")
+  @Schema(description = "ID do cliente proprietário do documento", example = "1")
+  @JsonIgnore
+  private Long clienteId;
 }

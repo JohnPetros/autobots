@@ -1,7 +1,6 @@
 package br.com.autobots.server.controladores;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.server.dtos.ClienteDto;
 import br.com.autobots.server.entidades.Cliente;
-import br.com.autobots.server.entidades.Documento;
-import br.com.autobots.server.entidades.Endereco;
-import br.com.autobots.server.entidades.Telefone;
 import br.com.autobots.server.repositorios.ClienteRepositorio;
 import br.com.autobots.server.servicos.AtualizaClienteServico;
 import br.com.autobots.server.servicos.CadastraClienteServico;

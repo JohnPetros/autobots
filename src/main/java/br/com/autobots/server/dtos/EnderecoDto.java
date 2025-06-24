@@ -19,4 +19,6 @@ public class EnderecoDto {
   private String codigoPostal;
   @Schema(description = "Informações adicionais do endereço", example = "Apto 101")
   private String informacoesAdicionais;
+  @Schema(description = "ID do cliente proprietário do endereço", example = "1")
+  private Long clienteId;
 }
