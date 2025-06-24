@@ -1,4 +1,4 @@
-package br.com.autobots.vendas.filtros;
+package br.com.autobots.sistema.filtros;
 
 import java.io.IOException;
 
@@ -9,10 +9,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.com.autobots.vendas.entidades.Usuario;
-import br.com.autobots.vendas.apis.SistemaApi;
-import br.com.autobots.vendas.provedores.JwtProvedor;
-import br.com.autobots.vendas.seguranca.SegurancaUsuario;
+import br.com.autobots.sistema.entidades.Usuario;
+import br.com.autobots.sistema.provedores.JwtProvedor;
+import br.com.autobots.sistema.repositorios.UsuarioRepositorio;
+import br.com.autobots.sistema.seguranca.SegurancaUsuario;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ public class JwtFiltro extends OncePerRequestFilter {
   JwtProvedor jwtProvedor;
 
   @Autowired
-  SistemaApi sistemaApi;
+  UsuarioRepositorio usuarioRepositorio;
 
   @Override
   protected void doFilterInternal(
@@ -36,8 +36,9 @@ public class JwtFiltro extends OncePerRequestFilter {
     var token = recoverToken(request);
     if (token != null) {
       var subject = jwtProvedor.validarToken(token);
+      System.out.println("Subject: " + subject);
       try {
-        var usuario = getUsuario(token, subject);
+        var usuario = getUsuario(subject);
         var segurancaUsuario = new SegurancaUsuario(usuario);
         var authentication = new UsernamePasswordAuthenticationToken(
             segurancaUsuario, null,
@@ -59,8 +60,11 @@ public class JwtFiltro extends OncePerRequestFilter {
     return authHeader.replace("Bearer ", "");
   }
 
-  private Usuario getUsuario(String token, String email) {
-    var usuario = sistemaApi.obterUsuarioPorEmail("Bearer " + token, email);
-    return usuario;
+  private Usuario getUsuario(String usuarioEmail) {
+    var usuario = usuarioRepositorio.findByEmail(usuarioEmail);
+    if (usuario.isEmpty()) {
+      throw new BadCredentialsException("Credenciais inválidas");
+    }
+    return usuario.get();
   }
 }

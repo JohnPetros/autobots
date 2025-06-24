@@ -8,9 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.autobots.vendas.apis.UsuariosApi;
-import br.com.autobots.vendas.apis.VeiculosApi;
-import br.com.autobots.vendas.apis.MercadoriasApi;
+import br.com.autobots.vendas.apis.SistemaApi;
 import br.com.autobots.vendas.entidades.Venda;
 import br.com.autobots.vendas.enums.PerfilUsuario;
 import br.com.autobots.vendas.provedores.AutenticacaoProvedor;
@@ -25,13 +23,7 @@ public class ObterVendasServico {
   private VendaRepositorio vendaRepositorio;
 
   @Autowired
-  private UsuariosApi usuariosApi;
-
-  @Autowired
-  private MercadoriasApi mercadoriasApi;
-
-  @Autowired
-  private VeiculosApi veiculosApi;
+  private SistemaApi sistemaApi;
 
   public List<Venda> obterVendas(Long empresaId, String token, LocalDate dataInicio, LocalDate dataFim) {
     var usuarioId = autenticacaoProvedor.getUsuario().getId();
@@ -68,20 +60,21 @@ public class ObterVendasServico {
   }
 
   private Venda obterDadosDeApis(Venda venda, String authorization, Long empresaId) {
-    var cliente = usuariosApi.obterUsuarioPorId(authorization, venda.getClienteId());
-    var vendedor = usuariosApi.obterUsuarioPorId(authorization, venda.getVendedorId());
+    var cliente = sistemaApi.obterUsuarioPorId(authorization, venda.getClienteId());
     venda.setCliente(cliente);
+
+    var vendedor = sistemaApi.obterUsuarioPorId(authorization, venda.getVendedorId());
     venda.setVendedor(vendedor);
 
-    var veiculo = veiculosApi.obterVeiculo(authorization, empresaId, venda.getVeiculoId());
+    var veiculo = sistemaApi.obterVeiculo(authorization, empresaId, venda.getVeiculoId());
     venda.setVeiculo(veiculo);
 
     for (Long pecaId : venda.getPecasIds()) {
-      var peca = mercadoriasApi.obterPeca(authorization, empresaId, pecaId);
+      var peca = sistemaApi.obterPeca(authorization, empresaId, pecaId);
       venda.getPecas().add(peca);
     }
     for (Long servicoId : venda.getServicosIds()) {
-      var servico = mercadoriasApi.obterServico(authorization, empresaId, servicoId);
+      var servico = sistemaApi.obterServico(authorization, empresaId, servicoId);
       venda.getServicos().add(servico);
     }
 

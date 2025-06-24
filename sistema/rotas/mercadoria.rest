@@ -1,0 +1,59 @@
+# @name login
+POST http://localhost:8081/autenticacao/login
+Content-Type: application/json
+
+{
+  "email": "admin@autobots.com",
+  "senha": "123456"
+}
+
+@JWT = {{login.response.body.token}}
+
+### Cadastrar uma nova peça
+POST http://localhost:8080/1/peca/cadastrar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "validade": "2030-01-01",
+  "fabricao": "2025-01-01",
+  "cadastro": "2025-01-01",
+  "nome": "Óleo de motor",
+  "quantidade": 10,
+  "valor": 100,
+  "descricao": "Óleo de motor 10W40",
+  "empresaId": 1
+}
+
+### Obter todas as peças
+GET http://localhost:8080/1/pecas
+Authorization: Bearer {{JWT}}
+
+### Obter uma peça específica
+GET http://localhost:8080/1/peca/1
+Authorization: Bearer {{JWT}}
+
+### Atualizar uma peça
+PUT http://localhost:8080/1/peca/atualizar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "id": 1,
+  "validade": "2045-01-01",
+  "fabricao": "2012-01-01",
+  "cadastro": "2025-01-01",
+  "nome": "Cera de motor",
+  "quantidade": 20,
+  "valor": 200,
+  "descricao": "Cera de motor 40W10"
+}
+
+### Excluir uma peça
+DELETE http://localhost:8080/1/peca/excluir
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "id": 1
+}

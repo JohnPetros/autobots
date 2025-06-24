@@ -1,28 +1,6 @@
 version: '3.8'
 
 services:
-  empresas_mysql:
-    image: mysql:8.0
-    container_name: empresas_mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: empresas_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
-    ports:
-      - "3307:3306"
-    volumes:
-      - empresas_mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
-    networks:
-      - empresas_network
-    command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
-
   autenticacao_mysql:
     image: mysql:8.0
     container_name: autenticacao_mysql
@@ -45,72 +23,6 @@ services:
       timeout: 20s
       retries: 10
 
-  usuarios_mysql:
-    image: mysql:8.0
-    container_name: usuarios_mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: usuarios_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
-    ports:
-      - "3308:3306"
-    volumes:
-      - usuarios_mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
-    networks:
-      - usuarios_network
-    command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
-
-  veiculos_mysql:
-    image: mysql:8.0
-    container_name: veiculos_mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: veiculos_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
-    ports:
-      - "3309:3306"
-    volumes:
-      - veiculos_mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
-    networks:
-      - veiculos_network
-    command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
-
-  mercadorias_mysql:
-    image: mysql:8.0
-    container_name: mercadorias_mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: mercadorias_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
-    ports:
-      - "3310:3306"
-    volumes:
-      - mercadorias_mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
-    networks:
-      - mercadorias_network
-    command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
-
   vendas_mysql:
     image: mysql:8.0
     container_name: vendas_mysql
@@ -121,7 +33,7 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin123
     ports:
-      - "3311:3306"
+      - "3308:3306"
     volumes:
       - vendas_mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
@@ -133,30 +45,40 @@ services:
       timeout: 20s
       retries: 10
 
+  sistema_mysql:
+    image: mysql:8.0
+    container_name: sistema_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: sistema_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123
+    ports:
+      - "3309:3306"
+    volumes:
+      - sistema_mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - sistema_network
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
 volumes:
-  empresas_mysql_data:
   autenticacao_mysql_data:
-  usuarios_mysql_data:
-  veiculos_mysql_data:
-  mercadorias_mysql_data:
   vendas_mysql_data:
+  sistema_mysql_data:
 
 
 networks:
-  empresas_network:
-    driver: bridge
-
   autenticacao_network:
     driver: bridge
 
-  veiculos_network:
-    driver: bridge
-
-  usuarios_network:
-    driver: bridge
-
-  mercadorias_network:
-    driver: bridge
-
   vendas_network:
+    driver: bridge
+
+  sistema_network:
     driver: bridge

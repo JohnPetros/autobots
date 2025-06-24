@@ -1,0 +1,66 @@
+### Cadastrar uma nova empresa
+POST http://localhost:8080/empresa/cadastrar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "razaoSocial": "Toyota Motor Corporation",
+  "nomeFantasia": "Toyota",
+  "cadastro": "2025-01-01",
+  "endereco": {
+    "estado": "Aichi",
+    "cidade": "Toyota City",
+    "bairro": "Toyota District",
+    "rua": "Toyota Street",
+    "numero": "1",
+    "codigoPostal": "471-8571",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "telefones": [
+    {
+      "ddd": "11",
+      "numero": "123654987"
+    }
+  ]
+}
+
+
+### Obter uma empresa específica
+GET http://localhost:8080/empresa/1
+Authorization: Bearer {{JWT}}
+
+### Atualizar uma empresa
+PUT http://localhost:8080/empresa/atualizar
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "id": 1,
+  "razaoSocial": "Volkswagen AG",
+  "nomeFantasia": "Volkswagen",
+  "cadastro": "2025-01-01",
+  "endereco": {
+    "estado": "Lower Saxony",
+    "cidade": "Wolfsburg",
+    "bairro": "Wolfsburg District",
+    "rua": "Wolfsburg Street",
+    "numero": "123",
+    "codigoPostal": "04101-300",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "telefones": [
+    {
+      "ddd": "21",
+      "numero": "123654987" 
+    }
+  ]
+}
+
+### Excluir uma empresa
+DELETE http://localhost:8080/empresa/excluir
+Content-Type: application/json
+Authorization: Bearer {{JWT}}
+
+{
+  "id": 1
+}
