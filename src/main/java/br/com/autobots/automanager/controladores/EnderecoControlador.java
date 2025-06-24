@@ -50,8 +50,7 @@ public class EnderecoControlador {
       @ApiResponse(responseCode = "409", description = "Endereco já cadastrado")
   })
   public ResponseEntity<?> cadastrarEndereco(@RequestBody Endereco endereco) {
-    Optional<Endereco> enderecoExistente = enderecoRepositorio.findById(endereco.getId());
-    if (enderecoExistente.isPresent()) {
+    if (endereco.getId() != null) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
     enderecoRepositorio.save(endereco);
@@ -100,6 +99,9 @@ public class EnderecoControlador {
       @ApiResponse(responseCode = "404", description = "Endereco não encontrado")
   })
   public ResponseEntity<?> atualizarEndereco(@RequestBody Endereco enderecoAtualizado) {
+    if (enderecoAtualizado.getId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
     Optional<Endereco> endereco = enderecoRepositorio.findById(enderecoAtualizado.getId());
     if (endereco.isPresent()) {
       atualizaEnderecoServico.atualizar(endereco.get(), enderecoAtualizado);

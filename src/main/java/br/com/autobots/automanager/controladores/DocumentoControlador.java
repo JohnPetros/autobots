@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.media.Content;
@@ -46,11 +45,10 @@ public class DocumentoControlador {
       @ApiResponse(responseCode = "409", description = "Documento já cadastrado")
   })
   public ResponseEntity<?> cadastrarDocumento(@RequestBody Documento documento) {
-    Optional<Documento> documentoExistente = repositorio.findById(documento.getId());
-    if (documentoExistente.isPresent()) {
+    if (documento.getId() != null) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    documentoExistente = repositorio.findByNumero(documento.getNumero());
+    Optional<Documento> documentoExistente = repositorio.findByNumero(documento.getNumero());
     if (documentoExistente.isPresent()) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
@@ -100,8 +98,15 @@ public class DocumentoControlador {
       @ApiResponse(responseCode = "404", description = "Documento não encontrado")
   })
   public ResponseEntity<?> atualizarDocumento(@RequestBody Documento documentoAtualizado) {
+    if (documentoAtualizado.getId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
     Optional<Documento> documento = repositorio.findById(documentoAtualizado.getId());
     if (documento.isPresent()) {
+      Optional<Documento> documentoExistente = repositorio.findByNumero(documentoAtualizado.getNumero());
+      if (documentoExistente.isPresent()) {
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
+      }
       atualizaDocumentoServico.atualizar(documento.get(), documentoAtualizado);
       repositorio.save(documento.get());
       return new ResponseEntity<>(HttpStatus.OK);
@@ -116,6 +121,9 @@ public class DocumentoControlador {
       @ApiResponse(responseCode = "404", description = "Documento não encontrado")
   })
   public ResponseEntity<?> excluirDocumento(@RequestBody Documento exclusao) {
+    if (exclusao.getId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
     HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Documento> documento = repositorio.findById(exclusao.getId());
     if (documento.isPresent()) {

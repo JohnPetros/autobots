@@ -3,7 +3,6 @@ POST http://localhost:8080/documento/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
   "tipo": "CPF",
   "numero": "1234567898"
 }
@@ -29,7 +28,5 @@ DELETE http://localhost:8080/documento/excluir
 Content-Type: application/json
 
 {
-  "id": 1,
-  "tipo": "CNPJ",
-  "numero": "8987654321"
+  "id": 1
 }

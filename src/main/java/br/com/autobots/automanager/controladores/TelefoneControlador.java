@@ -45,7 +45,10 @@ public class TelefoneControlador {
       @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
   })
   public ResponseEntity<?> cadastrarTelefone(@RequestBody Telefone telefone) {
-    Optional<Telefone> telefoneExistente = repositorio.findById(telefone.getId());
+    if (telefone.getId() != null) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+    Optional<Telefone> telefoneExistente = repositorio.findByDddAndNumero(telefone.getDdd(), telefone.getNumero());
     if (telefoneExistente.isPresent()) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
@@ -95,8 +98,17 @@ public class TelefoneControlador {
       @ApiResponse(responseCode = "404", description = "Telefone não encontrado")
   })
   public ResponseEntity<?> atualizarTelefone(@RequestBody Telefone telefoneAtualizado) {
+    if (telefoneAtualizado.getId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
     Optional<Telefone> telefone = repositorio.findById(telefoneAtualizado.getId());
     if (telefone.isPresent()) {
+      Optional<Telefone> telefoneExistente = repositorio.findByDddAndNumero(
+          telefoneAtualizado.getDdd(),
+          telefoneAtualizado.getNumero());
+      if (telefoneExistente.isPresent()) {
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
+      }
       atualizaTelefoneServico.atualizar(telefone.get(), telefoneAtualizado);
       repositorio.save(telefone.get());
       return new ResponseEntity<>(HttpStatus.OK);
@@ -111,6 +123,9 @@ public class TelefoneControlador {
       @ApiResponse(responseCode = "404", description = "Telefone não encontrado")
   })
   public ResponseEntity<?> excluirTelefone(@RequestBody Telefone exclusao) {
+    if (exclusao.getId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
     HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Telefone> telefone = repositorio.findById(exclusao.getId());
     if (telefone.isPresent()) {

@@ -3,7 +3,6 @@ POST http://localhost:8080/telefone/cadastrar
 Content-Type: application/json
 
 {
-  "id": 2,
   "ddd": "12",
   "numero": "999999999"
 }
@@ -29,7 +28,5 @@ DELETE http://localhost:8080/telefone/excluir
 Content-Type: application/json
 
 {
-  "id": 1,
-  "ddd": "11",
-  "numero": "999999999"
+  "id": 1
 }

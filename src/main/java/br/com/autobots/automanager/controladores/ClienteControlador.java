@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.automanager.entidades.Cliente;
+import br.com.autobots.automanager.entidades.Documento;
+import br.com.autobots.automanager.entidades.Telefone;
 import br.com.autobots.automanager.servicos.AdicionaLinkClienteServico;
 import br.com.autobots.automanager.servicos.AtualizaClienteServico;
 import br.com.autobots.automanager.repositorios.ClienteRepositorio;
+import br.com.autobots.automanager.repositorios.DocumentoRepositorio;
+import br.com.autobots.automanager.repositorios.TelefoneRepositorio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +34,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class ClienteControlador {
   @Autowired
   private ClienteRepositorio repositorio;
+
+  @Autowired
+  private DocumentoRepositorio documentoRepositorio;
+
+  @Autowired
+  private TelefoneRepositorio telefoneRepositorio;
 
   @Autowired
   private AdicionaLinkClienteServico adicionaLinkClienteServico;
@@ -80,11 +90,19 @@ public class ClienteControlador {
   })
   public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
     HttpStatus status = HttpStatus.CONFLICT;
-    Optional<Cliente> clienteExistente = repositorio.findById(cliente.getId());
-    if (clienteExistente.isEmpty()) {
-      repositorio.save(cliente);
-      status = HttpStatus.CREATED;
+    if (cliente.getId() != null) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
+
+    for (Documento documento : cliente.getDocumentos()) {
+      Optional<Documento> documentoExistente = documentoRepositorio.findByNumero(documento.getNumero());
+      if (documentoExistente.isPresent()) {
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
+      }
+    }
+
+    repositorio.save(cliente);
+    status = HttpStatus.CREATED;
     return new ResponseEntity<>(status);
   }
 
@@ -95,13 +113,33 @@ public class ClienteControlador {
       @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
   })
   public ResponseEntity<?> atualizarCliente(@RequestBody Cliente clienteAtualizacao) {
-    Optional<Cliente> cliente = repositorio.findById(clienteAtualizacao.getId());
-    if (cliente.isPresent()) {
-      atualizaClienteServico.atualizar(cliente.get(), clienteAtualizacao);
-      repositorio.save(cliente.get());
-      return new ResponseEntity<>(HttpStatus.OK);
+    if (clienteAtualizacao.getId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    Optional<Cliente> cliente = repositorio.findById(clienteAtualizacao.getId());
+    if (cliente.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    for (Documento documento : clienteAtualizacao.getDocumentos()) {
+      Optional<Documento> documentoExistente = documentoRepositorio.findByNumero(documento.getNumero());
+      if (documentoExistente.isPresent()) {
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
+      }
+    }
+
+    for (Telefone telefone : clienteAtualizacao.getTelefones()) {
+      Optional<Telefone> telefoneExistente = telefoneRepositorio.findByDddAndNumero(
+          telefone.getDdd(),
+          telefone.getNumero());
+      if (telefoneExistente.isPresent()) {
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
+      }
+    }
+
+    atualizaClienteServico.atualizar(cliente.get(), clienteAtualizacao);
+    repositorio.save(cliente.get());
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping("/cliente/excluir")
@@ -111,6 +149,9 @@ public class ClienteControlador {
       @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
   })
   public ResponseEntity<?> excluirCliente(@RequestBody Cliente exclusao) {
+    if (exclusao.getId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
     HttpStatus status = HttpStatus.NOT_FOUND;
     Optional<Cliente> cliente = repositorio.findById(exclusao.getId());
     if (cliente.isPresent()) {

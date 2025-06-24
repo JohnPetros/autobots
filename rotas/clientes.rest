@@ -3,20 +3,17 @@ POST http://localhost:8080/cliente/cadastrar
 Content-Type: application/json
 
 {
-  "id": 1,
   "nome": "João da Silva",
   "nomeSocial": "João da Silva",
   "dataNascimento": "1990-01-01",
   "dataCadastro": "2000-01-01",
   "documentos": [
     {
-      "id": 1,
       "tipo": "CPF",
-      "numero": "1234567890"
+      "numero": "1234567899"
     }
   ],
   "endereco": {
-    "id": 1,
     "estado": "SP",
     "cidade": "São Paulo",
     "bairro": "Jardim Paulista",
@@ -27,9 +24,8 @@ Content-Type: application/json
   },
   "telefones": [
     {
-      "id": 1,
       "ddd": "11",
-      "numero": "99999-9999"
+      "numero": "999999999"
     }
   ]
 }
@@ -46,19 +42,17 @@ Content-Type: application/json
 
 {
   "id": 1,
-  "nome": "Rain dos Santos",
-  "nomeSocial": "Rainizinho",
+  "nome": "Raim dos Santos",
+  "nomeSocial": "Raimizinho",
   "dataNascimento": "1990-01-01",
   "dataCadastro": "2025-01-01",
   "documentos": [
     {
-      "id": 1,
       "tipo": "CPF",
-      "numero": "1234567890"
+      "numero": "1234567700"
     }
   ],
   "endereco": {
-    "id": 1,
     "estado": "RJ",
     "cidade": "São Paulo",
     "bairro": "Jardim Paulista",
@@ -69,9 +63,8 @@ Content-Type: application/json
   },
   "telefones": [
     {
-      "id": 1,
-      "ddd": "11",
-      "numero": "99999-9999"
+      "ddd": "21",
+      "numero": "999999999"
     }
   ]
 }
@@ -81,33 +74,5 @@ DELETE http://localhost:8080/cliente/excluir
 Content-Type: application/json
 
 {
-  "id": 1,
-  "nome": "Raim dos Santos",
-  "nomeSocial": "Raimizinho",
-  "dataNascimento": "1990-01-01",
-  "dataCadastro": "2025-01-01",
-  "documentos": [
-    {
-      "id": 1,
-      "tipo": "CPF",
-      "numero": "1234567890"
-    }
-  ],
-  "cliente": {
-    "id": 1,
-    "estado": "SP",
-    "cidade": "São Paulo",
-    "bairro": "Jardim Paulista",
-    "rua": "Rua das Flores",
-    "numero": "123",
-    "codigoPostal": "04101-300",
-    "informacoesAdicionais": "Apto 101"
-  },
-  "telefones": [
-    {
-      "id": 1,
-      "ddd": "11",
-      "numero": "99999-9999"
-    }
-  ]
+  "id": 1
 }

@@ -2,10 +2,10 @@ package br.com.autobots.automanager.entidades;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class Endereco extends RepresentationModel<Endereco> {
   @Id()
   @Schema(description = "ID do endereço", example = "1")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = true)
