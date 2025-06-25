@@ -1,33 +1,30 @@
 package br.com.autobots.automanager.servicos;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.entidades.Endereco;
 
 @Service
 public class AtualizaEnderecoServico {
-  @Autowired
-  private VerificaStringNuloServico verificaStringServico;
 
   public void atualizar(Endereco endereco, Endereco atualizacao) {
     if (atualizacao != null) {
-      if (!verificaStringServico.verificar(atualizacao.getEstado())) {
+      if (atualizacao.getEstado() != null) {
         endereco.setEstado(atualizacao.getEstado());
       }
-      if (!verificaStringServico.verificar(atualizacao.getCidade())) {
+      if (atualizacao.getCidade() != null) {
         endereco.setCidade(atualizacao.getCidade());
       }
-      if (!verificaStringServico.verificar(atualizacao.getBairro())) {
+      if (atualizacao.getBairro() != null) {
         endereco.setBairro(atualizacao.getBairro());
       }
-      if (!verificaStringServico.verificar(atualizacao.getRua())) {
+      if (atualizacao.getRua() != null) {
         endereco.setRua(atualizacao.getRua());
       }
-      if (!verificaStringServico.verificar(atualizacao.getNumero())) {
+      if (atualizacao.getNumero() != null) {
         endereco.setNumero(atualizacao.getNumero());
       }
-      if (!verificaStringServico.verificar(atualizacao.getInformacoesAdicionais())) {
+      if (atualizacao.getInformacoesAdicionais() != null) {
         endereco.setInformacoesAdicionais(atualizacao.getInformacoesAdicionais());
       }
     }

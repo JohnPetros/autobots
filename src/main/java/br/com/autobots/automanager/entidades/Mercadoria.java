@@ -5,19 +5,15 @@ import java.time.LocalDate;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -70,14 +66,14 @@ public class Mercadoria extends RepresentationModel<Mercadoria> {
   @Column(nullable = false)
   @Schema(description = "Quantidade da mercadoria", example = "10", required = true)
   @NotNull(message = "Quantidade da mercadoria é obrigatória")
-  @Min(value = 0, message = "Quantidade da mercadoria deve ser maior que 0")
+  @Min(value = 1, message = "Quantidade da mercadoria deve ser maior que 0")
   private long quantidade;
 
   @Column(nullable = false)
   @Schema(description = "Valor da mercadoria", example = "100.00", required = true)
   @NotNull(message = "Valor da mercadoria é obrigatório")
-  @Min(value = 0, message = "Valor da mercadoria deve ser maior que 0")
-  private double valor;
+  @Min(value = 1, message = "Valor da mercadoria deve ser maior que 0")
+  private Double valor;
 
   @Column(nullable = false)
   @Schema(description = "Descrição da mercadoria", example = "Óleo de motor 10W40", required = true)

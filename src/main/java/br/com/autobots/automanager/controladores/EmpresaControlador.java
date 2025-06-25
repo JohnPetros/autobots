@@ -27,6 +27,7 @@ import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkEmpresaServico;
 import br.com.autobots.automanager.servicos.AtualizaEmpresaServico;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.automanager.excecoes.IdVazioExcecao;
 
 @RestController
 @Tag(name = "Empresa", description = "CRUD de empresas")
@@ -75,6 +76,9 @@ public class EmpresaControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<?> atualizarEmpresa(@RequestBody Empresa empresaAtualizado) {
+    if (empresaAtualizado.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = repositorio.findById(empresaAtualizado.getId());
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
@@ -91,6 +95,9 @@ public class EmpresaControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<?> excluirEmpresa(@RequestBody Empresa exclusao) {
+    if (exclusao.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = repositorio.findById(exclusao.getId());
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");

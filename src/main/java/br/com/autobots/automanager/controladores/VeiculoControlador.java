@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Veiculo;
+import br.com.autobots.automanager.excecoes.IdVazioExcecao;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.VeiculoRepositorio;
@@ -125,6 +126,9 @@ public class VeiculoControlador {
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
+    if (veiculoAtualizado.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Veiculo> veiculo = veiculoRepositorio.findById(veiculoAtualizado.getId());
     if (veiculo.isEmpty()) {
       throw new NaoEncontradoExcecao("Veículo não encontrado");
@@ -142,6 +146,9 @@ public class VeiculoControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<?> excluirVeiculo(@RequestBody Veiculo exclusao, @PathVariable long empresaId) {
+    if (exclusao.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");

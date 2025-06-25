@@ -2,22 +2,18 @@ package br.com.autobots.automanager.servicos;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.entidades.Telefone;
 
 @Service
 public class AtualizaTelefoneServico {
-  @Autowired
-  private VerificaStringNuloServico verificaStringServico;
-
   public void atualizar(Telefone telefone, Telefone atualizacao) {
     if (atualizacao != null) {
-      if (!verificaStringServico.verificar(atualizacao.getDdd())) {
+      if (atualizacao.getDdd() != null) {
         telefone.setDdd(atualizacao.getDdd());
       }
-      if (!verificaStringServico.verificar(atualizacao.getNumero())) {
+      if (atualizacao.getNumero() != null) {
         telefone.setNumero(atualizacao.getNumero());
       }
     }

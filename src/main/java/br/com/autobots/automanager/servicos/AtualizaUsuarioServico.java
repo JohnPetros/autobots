@@ -8,9 +8,6 @@ import br.com.autobots.automanager.entidades.Usuario;
 @Service
 public class AtualizaUsuarioServico {
   @Autowired
-  private VerificaStringNuloServico verificaStringServico;
-
-  @Autowired
   private AtualizaEnderecoServico atualizaEnderoServico;
 
   @Autowired
@@ -47,10 +44,10 @@ public class AtualizaUsuarioServico {
   }
 
   private void atualizarDados(Usuario usuario, Usuario usuarioAtualizado) {
-    if (!verificaStringServico.verificar(usuarioAtualizado.getNome())) {
+    if (usuarioAtualizado.getNome() != null) {
       usuario.setNome(usuarioAtualizado.getNome());
     }
-    if (!verificaStringServico.verificar(usuarioAtualizado.getNomeSocial())) {
+    if (usuarioAtualizado.getNomeSocial() != null) {
       usuario.setNomeSocial(usuarioAtualizado.getNomeSocial());
     }
     if (usuarioAtualizado.getPerfil() != null) {

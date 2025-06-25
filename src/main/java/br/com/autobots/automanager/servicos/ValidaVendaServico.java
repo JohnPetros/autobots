@@ -9,14 +9,19 @@ import br.com.autobots.automanager.entidades.Mercadoria;
 import br.com.autobots.automanager.entidades.Servico;
 import br.com.autobots.automanager.entidades.Venda;
 import br.com.autobots.automanager.enums.PerfilUsuario;
+import br.com.autobots.automanager.excecoes.ConflitoExcecao;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.MercadoriaRepositorio;
 import br.com.autobots.automanager.repositorios.ServicoRepositorio;
 import br.com.autobots.automanager.repositorios.UsuarioRepositorio;
 import br.com.autobots.automanager.repositorios.VeiculoRepositorio;
+import br.com.autobots.automanager.repositorios.VendaRepositorio;
 
 @Service
 public class ValidaVendaServico {
+  @Autowired
+  private VendaRepositorio vendaRepositorio;
+
   @Autowired
   private UsuarioRepositorio usuarioRepositorio;
 
@@ -30,6 +35,11 @@ public class ValidaVendaServico {
   private VeiculoRepositorio veiculoRepositorio;
 
   public void validar(Venda venda) {
+    var vendaExistente = vendaRepositorio.findByIdentificacao(venda.getIdentificacao());
+    if (vendaExistente.isPresent()) {
+      throw new ConflitoExcecao("Venda já cadastrada com a mesma identificação");
+    }
+
     if (venda.getCliente() != null) {
       var cliente = usuarioRepositorio.findByIdAndPerfil(venda.getCliente().getId(), PerfilUsuario.CLIENTE);
       if (cliente.isEmpty()) {
@@ -73,8 +83,6 @@ public class ValidaVendaServico {
       }
       venda.setServicos(servicos);
     }
-
-    System.out.println(venda.getServicos().get(0).getId());
 
     if (venda.getVeiculo() != null) {
       var veiculo = veiculoRepositorio.findById(venda.getVeiculo().getId());

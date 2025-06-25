@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Servico;
+import br.com.autobots.automanager.excecoes.IdVazioExcecao;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.ServicoRepositorio;
@@ -112,6 +113,9 @@ public class ServicoControlador {
   public ResponseEntity<?> atualizarServico(
       @RequestBody Servico servicoAtualizado,
       @PathVariable long empresaId) {
+    if (servicoAtualizado.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
@@ -134,6 +138,9 @@ public class ServicoControlador {
   public ResponseEntity<?> excluirServico(
       @RequestBody Servico exclusao,
       @PathVariable long empresaId) {
+    if (exclusao.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");

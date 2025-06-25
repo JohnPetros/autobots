@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Empresa;
 import br.com.autobots.automanager.entidades.Mercadoria;
+import br.com.autobots.automanager.excecoes.IdVazioExcecao;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.repositorios.MercadoriaRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkMercadoriaServico;
@@ -114,6 +115,9 @@ public class MercadoriaControlador {
   public ResponseEntity<?> atualizarMercadoria(
       @RequestBody Mercadoria mercadoriaAtualizado,
       @PathVariable long empresaId) {
+    if (mercadoriaAtualizado.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
@@ -136,6 +140,9 @@ public class MercadoriaControlador {
   public ResponseEntity<?> excluirMercadoria(
       @RequestBody Mercadoria exclusao,
       @PathVariable long empresaId) {
+    if (exclusao.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
