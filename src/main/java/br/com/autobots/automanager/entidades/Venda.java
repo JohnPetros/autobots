@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
@@ -73,5 +74,6 @@ public class Venda extends RepresentationModel<Venda> {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @Schema(description = "Empresa da venda")
+  @JsonIgnore
   private Empresa empresa;
 }

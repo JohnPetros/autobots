@@ -9,6 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.com.autobots.automanager.enums.PerfilUsuario;
 import jakarta.persistence.CascadeType;
@@ -95,6 +96,7 @@ public class Usuario extends RepresentationModel<Usuario> {
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
   @JoinColumn(name = "cliente_id")
   @Schema(description = "Lista de veículos do usuário")
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private List<Veiculo> veiculos = new ArrayList<>();
 
   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })

@@ -35,6 +35,7 @@ public class InserirDadosIniciais implements CommandLineRunner {
   public void run(String... args) throws Exception {
     var admin = inserirUsuario();
     inserirEmpresa(admin);
+    usuarioRepositorio.save(admin);
   }
 
   private Usuario inserirUsuario() {

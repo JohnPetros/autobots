@@ -8,9 +8,6 @@ import br.com.autobots.automanager.entidades.Empresa;
 @Service
 public class AtualizaEmpresaServico {
   @Autowired
-  private VerificaStringNuloServico verificaStringServico;
-
-  @Autowired
   private AtualizaEnderecoServico atualizaEnderoServico;
 
   public void atualizar(Empresa empresa, Empresa empresaAtualizado) {
@@ -24,10 +21,10 @@ public class AtualizaEmpresaServico {
 
   public void atualizarDados(Empresa empresa, Empresa atualizacao) {
     if (atualizacao != null) {
-      if (!verificaStringServico.verificar(atualizacao.getRazaoSocial())) {
+      if (atualizacao.getRazaoSocial() != null) {
         empresa.setRazaoSocial(atualizacao.getRazaoSocial());
       }
-      if (!verificaStringServico.verificar(atualizacao.getNomeFantasia())) {
+      if (atualizacao.getNomeFantasia() != null) {
         empresa.setNomeFantasia(atualizacao.getNomeFantasia());
       }
     }

@@ -20,7 +20,7 @@ Authorization: Bearer {{JWT}}
     "id": 2
   },
   "vendedor": {
-    "id": 5
+    "id": 3
   },
   "servicos": [
     {

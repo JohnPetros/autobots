@@ -2,25 +2,19 @@ package br.com.autobots.automanager.servicos;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.autobots.automanager.entidades.Mercadoria;
 
 @Service
 public class AtualizaMercadoriaServico {
-  @Autowired
-  private VerificaStringNuloServico verificaStringServico;
-
-  @Autowired
-  private VerificaDoubleNuloServico verificaDoubleServico;
 
   public void atualizar(Mercadoria mercadoria, Mercadoria atualizacao) {
     if (atualizacao != null) {
-      if (!verificaStringServico.verificar(atualizacao.getNome())) {
+      if (atualizacao.getNome() != null) {
         mercadoria.setNome(atualizacao.getNome());
       }
-      if (!verificaDoubleServico.verificar(atualizacao.getValor())) {
+      if (atualizacao.getValor() != null) {
         mercadoria.setValor(atualizacao.getValor());
       }
       if (atualizacao.getCadastro() != null) {
@@ -35,7 +29,7 @@ public class AtualizaMercadoriaServico {
       if (atualizacao.getQuantidade() >= 0) {
         mercadoria.setQuantidade(atualizacao.getQuantidade());
       }
-      if (!verificaStringServico.verificar(atualizacao.getDescricao())) {
+      if (atualizacao.getDescricao() != null) {
         mercadoria.setDescricao(atualizacao.getDescricao());
       }
     }
