@@ -48,9 +48,6 @@ public class UsuarioControlador {
   private EmpresaRepositorio empresaRepositorio;
 
   @Autowired
-  private CredencialRepositorio credencialRepositorio;
-
-  @Autowired
   private AutenticacaoProvedor autenticacaoProvedor;
 
   @Autowired
