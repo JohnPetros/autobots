@@ -42,7 +42,7 @@ GET http://localhost:8080/1/vendas
 Authorization: Bearer {{JWT}}
 
 ### Obter uma venda específica
-GET http://localhost:8080/1/venda/1
+GET http://localhost:8080/1/venda/2
 Authorization: Bearer {{JWT}}
 
 ### Atualizar uma venda

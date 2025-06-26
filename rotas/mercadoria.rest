@@ -3,7 +3,7 @@ POST http://localhost:8080/autenticacao/login
 Content-Type: application/json
 
 {
-  "nomeUsuario": "admin-usuario",
+  "nomeUsuario": "gerente-usuario",
   "senha": "123456"
 }
 
