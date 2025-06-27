@@ -49,9 +49,6 @@ public class VendaControlador {
   @Autowired
   private ValidaVendaServico validaVendaServico;
 
-  @Autowired
-  private EmpresaRepositorio empresaRepositorio;
-
   @PostMapping("/{empresaId}/venda/cadastrar")
   @Operation(summary = "Cadastrar venda", description = "Cadastra um novo venda")
   @ApiResponses(value = {
