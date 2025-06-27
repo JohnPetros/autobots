@@ -8,19 +8,7 @@ import br.com.autobots.automanager.entidades.Usuario;
 @Service
 public class AtualizaUsuarioServico {
   @Autowired
-  private VerificaStringNuloServico verificaStringServico;
-
-  @Autowired
   private AtualizaEnderecoServico atualizaEnderoServico;
-
-  @Autowired
-  private AtualizaDocumentoServico atualizaDocumentoServico;
-
-  @Autowired
-  private AtualizaTelefoneServico atualizaTelefoneServico;
-
-  @Autowired
-  private AtualizaVeiculoServico atualizaVeiculoServico;
 
   @Autowired
   private AtualizaCredencialUsuarioSenhaServico atualizaCredencialUsuarioSenhaServico;
@@ -30,10 +18,23 @@ public class AtualizaUsuarioServico {
 
   public void atualizar(Usuario usuario, Usuario usuarioAtualizado) {
     atualizarDados(usuario, usuarioAtualizado);
+    if (usuarioAtualizado.getEmails() != null) {
+      usuario.getEmails().clear();
+      usuario.getEmails().addAll(usuarioAtualizado.getEmails());
+    }
+    if (usuarioAtualizado.getDocumentos() != null) {
+      usuario.getDocumentos().clear();
+      usuario.getDocumentos().addAll(usuarioAtualizado.getDocumentos());
+    }
+    if (usuarioAtualizado.getTelefones() != null) {
+      usuario.getTelefones().clear();
+      usuario.getTelefones().addAll(usuarioAtualizado.getTelefones());
+    }
+    if (usuarioAtualizado.getVeiculos() != null) {
+      usuario.getVeiculos().clear();
+      usuario.getVeiculos().addAll(usuarioAtualizado.getVeiculos());
+    }
     atualizaEnderoServico.atualizar(usuario.getEndereco(), usuarioAtualizado.getEndereco());
-    atualizaDocumentoServico.atualizar(usuario.getDocumentos(), usuarioAtualizado.getDocumentos());
-    atualizaTelefoneServico.atualizar(usuario.getTelefones(), usuarioAtualizado.getTelefones());
-    atualizaVeiculoServico.atualizar(usuario.getVeiculos(), usuarioAtualizado.getVeiculos());
     atualizaCredencialUsuarioSenhaServico.atualizar(
         usuario.getCredencialUsuarioSenha(),
         usuarioAtualizado.getCredencialUsuarioSenha());
@@ -43,10 +44,10 @@ public class AtualizaUsuarioServico {
   }
 
   private void atualizarDados(Usuario usuario, Usuario usuarioAtualizado) {
-    if (!verificaStringServico.verificar(usuarioAtualizado.getNome())) {
+    if (usuarioAtualizado.getNome() != null) {
       usuario.setNome(usuarioAtualizado.getNome());
     }
-    if (!verificaStringServico.verificar(usuarioAtualizado.getNomeSocial())) {
+    if (usuarioAtualizado.getNomeSocial() != null) {
       usuario.setNomeSocial(usuarioAtualizado.getNomeSocial());
     }
     if (usuarioAtualizado.getPerfil() != null) {
@@ -59,4 +60,5 @@ public class AtualizaUsuarioServico {
       usuario.setUltimoAcesso(usuarioAtualizado.getUltimoAcesso());
     }
   }
+
 }

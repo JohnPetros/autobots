@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "cadastro": "2025-01-01",
-  "identificacao": "1234567809",
+  "identificacao": "1234567844",
   "cliente": {
     "id": 1
   },
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ### Obter todas as vendas
-GET http://localhost:8080/1/venda/vendas
+GET http://localhost:8080/1/vendas
 
 ### Obter uma venda específica
 GET http://localhost:8080/1/venda/1

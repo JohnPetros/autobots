@@ -1,5 +1,7 @@
 package br.com.autobots.automanager.entidades;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
@@ -16,5 +18,6 @@ public class CredencialUsuarioSenha extends Credencial {
 
   @Column(nullable = false)
   @NotBlank(message = "Senha é obrigatória")
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String senha;
 }

@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 
 import br.com.autobots.automanager.entidades.Endereco;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.automanager.excecoes.IdVazioExcecao;
 import br.com.autobots.automanager.repositorios.EnderecoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkEnderecoServico;
 import br.com.autobots.automanager.servicos.AtualizaEnderecoServico;
@@ -79,6 +80,9 @@ public class EnderecoControlador {
       @ApiResponse(responseCode = "404", description = "Endereco não encontrado")
   })
   public ResponseEntity<?> atualizarEndereco(@RequestBody Endereco enderecoAtualizado) {
+    if (enderecoAtualizado.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Endereco> endereco = enderecoRepositorio.findById(enderecoAtualizado.getId());
     if (endereco.isEmpty()) {
       throw new NaoEncontradoExcecao("Endereco não encontrado");

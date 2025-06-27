@@ -3,9 +3,9 @@ package br.com.autobots.automanager.controladores;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.automanager.entidades.Usuario;
+import br.com.autobots.automanager.excecoes.IdVazioExcecao;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import br.com.autobots.automanager.servicos.AdicionaLinkUsuarioServico;
 import br.com.autobots.automanager.servicos.AtualizaUsuarioServico;
@@ -129,6 +130,9 @@ public class UsuarioControlador {
       @ApiResponse(responseCode = "409", description = "Usuario já cadastrado")
   })
   public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuarioAtualizacao, @PathVariable long empresaId) {
+    if (usuarioAtualizacao.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
@@ -139,9 +143,8 @@ public class UsuarioControlador {
     }
     validaUsuarioServico.validar(usuarioAtualizacao);
     atualizaUsuarioServico.atualizar(usuario.get(), usuarioAtualizacao);
+    System.out.println(usuario.get().getEmails());
     usuarioRepositorio.save(usuario.get());
-    empresa.get().getUsuarios().add(usuario.get());
-    empresaRepositorio.save(empresa.get());
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -153,6 +156,9 @@ public class UsuarioControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
   public ResponseEntity<?> excluirUsuario(@RequestBody Usuario exclusao, @PathVariable long empresaId) {
+    if (exclusao.getId() == null) {
+      throw new IdVazioExcecao();
+    }
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
     if (empresa.isEmpty()) {
       throw new NaoEncontradoExcecao("Empresa não encontrada");

@@ -120,9 +120,15 @@ Content-Type: application/json
   "nomeSocial": "Raiamizinho",
   "dataNascimento": "1990-01-01",
   "dataCadastro": "2000-01-01",
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "99999999999"
+    }
+  ],
   "emails": [
     {
-      "endereco": "raim@gmail.com"
+      "endereco": "raiam@gmail.com"
     }
   ],
   "endereco": {

@@ -11,7 +11,6 @@ import br.com.autobots.automanager.entidades.Mercadoria;
 
 @Service
 public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercadoria> {
-
   @Override
   public void adicionarLink(List<Mercadoria> mercadorias, Long empresaId) {
     for (Mercadoria mercadoria : mercadorias) {

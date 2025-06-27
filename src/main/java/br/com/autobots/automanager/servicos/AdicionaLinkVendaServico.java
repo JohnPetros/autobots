@@ -47,17 +47,17 @@ public class AdicionaLinkVendaServico implements AdicionaLinkServico<Venda> {
     Link linkCadastrar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(VendaControlador.class)
-            .cadastrarVenda(null))
+            .cadastrarVenda(null, empresaId))
         .withRel("cadastrar venda");
     Link linkAtualizar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(VendaControlador.class)
-            .atualizarVenda(null))
+            .atualizarVenda(null, empresaId))
         .withRel("atualizar venda");
     Link linkExcluir = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(VendaControlador.class)
-            .excluirVenda(null))
+            .excluirVenda(null, empresaId))
         .withRel("excluir venda");
     adicionaLinkUsuarioServico.adicionarLink(venda.getCliente(), empresaId);
     adicionaLinkUsuarioServico.adicionarLink(venda.getFuncionario(), empresaId);

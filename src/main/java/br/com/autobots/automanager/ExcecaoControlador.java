@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import br.com.autobots.automanager.excecoes.ConflitoExcecao;
+import br.com.autobots.automanager.excecoes.IdVazioExcecao;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
@@ -35,11 +36,17 @@ public class ExcecaoControlador {
     return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
   }
 
+  @ExceptionHandler(IdVazioExcecao.class)
+  private ResponseEntity<Mensagem> excecaoIdVazio(IdVazioExcecao exception) {
+    var message = new Mensagem(exception.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   private ResponseEntity<Map<String, String>> excecaoArgumentoInvalido(MethodArgumentNotValidException exception) {
     var errors = new HashMap<String, String>();
     exception.getBindingResult().getFieldErrors()
-        .forEach(error -> errors.put("campo: " + error.getField(), error.getDefaultMessage()));
+        .forEach(error -> errors.put("campo " + error.getField(), error.getDefaultMessage()));
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
   }
 
