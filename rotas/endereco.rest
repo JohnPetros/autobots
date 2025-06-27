@@ -1,0 +1,43 @@
+### Cadastrar endereco
+POST http://localhost:8080/endereco/cadastro
+Content-Type: application/json
+
+{
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "bairro": "Jardim Paulista",
+  "rua": "Rua das Flores",
+  "numero": "123",
+  "codigoPostal": "01001-000",
+  "informacoesAdicionais": "Apto 101"
+}
+
+
+### Obter enderecos
+GET http://localhost:8080/endereco/enderecos
+
+### Obter endereco
+GET http://localhost:8080/endereco/endereco/1
+
+### Atualizar endereco
+PUT http://localhost:8080/endereco/atualizar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "estado": "MG",
+  "cidade": "Belo Horizonte",
+  "bairro": "Savassi",
+  "rua": "Rua Pernambuco",
+  "numero": "789",
+  "codigoPostal": "30130-150",
+  "informacoesAdicionais": "Sala 305"
+}
+
+### Excluir endereco
+DELETE http://localhost:8080/endereco/excluir
+Content-Type: application/json
+
+{
+  "id": 1
+} 

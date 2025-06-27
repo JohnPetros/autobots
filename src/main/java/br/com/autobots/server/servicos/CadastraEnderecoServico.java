@@ -15,6 +15,8 @@ public class CadastraEnderecoServico {
     enderecoEntity.setRua(endereco.getRua());
     enderecoEntity.setNumero(endereco.getNumero());
     enderecoEntity.setCodigoPostal(endereco.getCodigoPostal());
+    enderecoEntity.setInformacoesAdicionais(endereco.getInformacoesAdicionais());
+    enderecoEntity.setClienteId(endereco.getClienteId());
     return enderecoEntity;
   }
 }

@@ -1,6 +1,7 @@
 package br.com.autobots.server.controladores;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.server.dtos.EnderecoDto;
+import br.com.autobots.server.entidades.Cliente;
 import br.com.autobots.server.entidades.Endereco;
+import br.com.autobots.server.repositorios.ClienteRepositorio;
 import br.com.autobots.server.repositorios.EnderecoRepositorio;
 import br.com.autobots.server.servicos.AtualizaEnderecoServico;
 import br.com.autobots.server.servicos.CadastraEnderecoServico;
@@ -28,44 +31,63 @@ public class EnderecoControlador {
   private EnderecoRepositorio enderecoRepositorio;
 
   @Autowired
-  private AtualizaEnderecoServico TtualizaEnderecoServico;
+  private AtualizaEnderecoServico atualizaEnderecoServico;
 
   @Autowired
   private CadastraEnderecoServico cadastraEnderecoServico;
 
+  @Autowired
+  private ClienteRepositorio clienteRepositorio;
+
   @PostMapping("/cadastro")
   @Operation(summary = "Cadastrar endereço", description = "Cadastra um novo endereço")
-  public void CadastrarEndereco(@RequestBody EnderecoDto endereco) {
+  public void cadastrarEndereco(@RequestBody EnderecoDto endereco) {
     var enderecoEntity = cadastraEnderecoServico.cadastrar(endereco);
     enderecoRepositorio.save(enderecoEntity);
+
+    if (endereco.getClienteId() != null) {
+      Optional<Cliente> cliente = clienteRepositorio.findById(endereco.getClienteId());
+      if (cliente.isPresent()) {
+        Cliente clienteEntity = cliente.get();
+        clienteEntity.setEndereco(enderecoEntity);
+        clienteRepositorio.save(clienteEntity);
+      }
+    }
   }
 
   @GetMapping("/enderecos")
   @Operation(summary = "Obter todos os endereços", description = "Retorna uma lista de todos os endereços cadastrados")
-  public List<Endereco> ObterEnderecos() {
-    List<Endereco> Enderecos = enderecoRepositorio.findAll();
-    return Enderecos;
+  public List<Endereco> obterEnderecos() {
+    List<Endereco> enderecos = enderecoRepositorio.findAll();
+    return enderecos;
   }
 
   @GetMapping("/endereco/{id}")
   @Operation(summary = "Obter endereço", description = "Retorna um endereço específico com base no ID fornecido")
-  public Endereco ObterEndereco(@PathVariable long id) {
-    var endereco = enderecoRepositorio.findById(id);
+  public Endereco obterEndereco(@PathVariable long id) {
+    Optional<Endereco> endereco = enderecoRepositorio.findById(id);
     return endereco.get();
   }
 
   @PutMapping("/atualizar")
   @Operation(summary = "Atualizar endereço", description = "Atualiza as informações de um endereço existente")
-  public void AtualizarEndereco(@RequestBody Endereco EnderecoAtualizado) {
-    var endereco = enderecoRepositorio.findById(EnderecoAtualizado.getId());
-    TtualizaEnderecoServico.atualizar(endereco.get(), EnderecoAtualizado);
+  public void atualizarEndereco(@RequestBody Endereco enderecoAtualizado) {
+    Optional<Endereco> endereco = enderecoRepositorio.findById(enderecoAtualizado.getId());
+    atualizaEnderecoServico.atualizar(endereco.get(), enderecoAtualizado);
     enderecoRepositorio.save(endereco.get());
   }
 
   @DeleteMapping("/excluir")
   @Operation(summary = "Excluir endereço", description = "Exclui um endereço existente")
-  public void ExcluirEndereco(@RequestBody Endereco exclusao) {
-    var endereco = enderecoRepositorio.findById(exclusao.getId());
-    enderecoRepositorio.delete(endereco.get());
+  public void excluirEndereco(@RequestBody Endereco exclusao) {
+    Optional<Endereco> endereco = enderecoRepositorio.findById(exclusao.getId());
+    if (endereco.isPresent()) {
+      var cliente = clienteRepositorio.findByEndereco(endereco.get());
+      if (cliente.isPresent()) {
+        cliente.get().setEndereco(null);
+        clienteRepositorio.save(cliente.get());
+      }
+      enderecoRepositorio.delete(endereco.get());
+    }
   }
 }

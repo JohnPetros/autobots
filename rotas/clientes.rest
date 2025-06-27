@@ -1,4 +1,4 @@
-### Cadastrar usuário
+### Cadastrar cliente
 POST http://localhost:8080/cliente/cadastro
 Content-Type: application/json
 
@@ -36,7 +36,7 @@ GET http://localhost:8080/cliente/clientes
 ### Obter cliente
 GET http://localhost:8080/cliente/cliente/1
 
-### Atualizar usuário
+### Atualizar cliente
 PUT http://localhost:8080/cliente/atualizar
 Content-Type: application/json
 
@@ -45,7 +45,7 @@ Content-Type: application/json
   "nome": "Maria Oliveira",
   "nomeSocial": "Maria",
   "dataNascimento": "1985-05-15",
-  "dataCadastro": "2023-06-20",
+  "dataCadastro": "2023-07-10",
   "documentos": [
     {
       "tipo": "CPF",
@@ -59,20 +59,20 @@ Content-Type: application/json
     "rua": "Avenida Atlântica",
     "numero": "456",
     "codigoPostal": "22010-000",
-    "informacoesAdicionais": "Bloco B, apto 302"
+    "informacoesAdicionais": "Cobertura 202"
   },
   "telefones": [
     {
       "ddd": "21",
-      "numero": "988887777"
+      "numero": "988888888"
     }
   ]
 }
 
-### Deletar cliente
+### Excluir cliente
 DELETE http://localhost:8080/cliente/excluir
 Content-Type: application/json
 
 {
   "id": 1
-}
+} 

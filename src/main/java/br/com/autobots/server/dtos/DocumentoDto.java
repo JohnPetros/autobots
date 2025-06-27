@@ -9,4 +9,6 @@ public class DocumentoDto {
   private String tipo;
   @Schema(description = "Número do documento", example = "1234567890")
   private String numero;
+  @Schema(description = "ID do cliente proprietário do documento", example = "1")
+  private Long clienteId;
 }
