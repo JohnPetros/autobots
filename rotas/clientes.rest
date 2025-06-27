@@ -1,0 +1,78 @@
+### Cadastrar usuário
+POST http://localhost:8080/cliente/cadastro
+Content-Type: application/json
+
+{
+  "nome": "João da Silva",
+  "nomeSocial": "João",
+  "dataNascimento": "1990-01-01",
+  "dataCadastro": "2021-01-01",
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "1234567890"
+    }
+  ],
+  "endereco": {
+    "estado": "SP",
+    "cidade": "São Paulo",
+    "bairro": "Jardim Paulista",
+    "rua": "Rua das Flores",
+    "numero": "123",
+    "codigoPostal": "01001-000",
+    "informacoesAdicionais": "Apto 101"
+  },
+  "telefones": [
+    {
+      "ddd": "11",
+      "numero": "999999999"
+    }
+  ]
+}
+
+### Obter clientes
+GET http://localhost:8080/cliente/clientes
+
+### Obter cliente
+GET http://localhost:8080/cliente/cliente/1
+
+### Atualizar usuário
+PUT http://localhost:8080/cliente/atualizar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nome": "Maria Oliveira",
+  "nomeSocial": "Maria",
+  "dataNascimento": "1985-05-15",
+  "dataCadastro": "2023-06-20",
+  "documentos": [
+    {
+      "tipo": "CPF",
+      "numero": "98765432100"
+    }
+  ],
+  "endereco": {
+    "estado": "RJ",
+    "cidade": "Rio de Janeiro",
+    "bairro": "Copacabana",
+    "rua": "Avenida Atlântica",
+    "numero": "456",
+    "codigoPostal": "22010-000",
+    "informacoesAdicionais": "Bloco B, apto 302"
+  },
+  "telefones": [
+    {
+      "ddd": "21",
+      "numero": "988887777"
+    }
+  ]
+}
+
+### Deletar cliente
+DELETE http://localhost:8080/cliente/excluir
+Content-Type: application/json
+
+{
+  "id": 1
+}
