@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import br.com.autobots.automanager.entidades.Venda;
 import br.com.autobots.automanager.excecoes.NaoEncontradoExcecao;
+import br.com.autobots.automanager.repositorios.EmpresaRepositorio;
 import br.com.autobots.automanager.repositorios.VendaRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkVendaServico;
 import br.com.autobots.automanager.servicos.AtualizaVendaServico;
@@ -43,6 +44,9 @@ public class VendaControlador {
   @Autowired
   private ValidaVendaServico validaVendaServico;
 
+  @Autowired
+  private EmpresaRepositorio empresaRepositorio;
+
   @PostMapping("/{empresaId}/venda/cadastrar")
   @Operation(summary = "Cadastrar venda", description = "Cadastra um novo venda")
   @ApiResponses(value = {
@@ -58,17 +62,22 @@ public class VendaControlador {
   }
 
   @GetMapping("/{empresaId}/vendas")
-  @Operation(summary = "Obter todos os vendas", description = "Retorna uma lista de todos os vendas cadastrados")
+  @Operation(summary = "Obter todas as vendas", description = "Retorna uma lista de todas as vendas cadastradas")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Vendas encontrados", content = @Content(schema = @Schema(implementation = List.class))),
-      @ApiResponse(responseCode = "404", description = "Nenhum venda cadastrado")
+      @ApiResponse(responseCode = "404", description = "Nenhuma venda cadastrado"),
+      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
   })
-  public ResponseEntity<List<Venda>> obterVendas() {
-    List<Venda> vendas = repositorio.findAll();
+  public ResponseEntity<List<Venda>> obterVendas(@PathVariable long empresaId) {
+    var empresa = empresaRepositorio.findById(empresaId);
+    if (empresa.isEmpty()) {
+      throw new NaoEncontradoExcecao("Empresa não encontrada");
+    }
+    List<Venda> vendas = empresa.get().getVendas();
     if (vendas.isEmpty()) {
       throw new NaoEncontradoExcecao("Nenhum venda cadastrado");
     } else {
-      adicionaLinkVendaServico.adicionarLink(vendas, null);
+      adicionaLinkVendaServico.adicionarLink(vendas, empresaId);
       ResponseEntity<List<Venda>> resposta = new ResponseEntity<>(vendas, HttpStatus.OK);
       return resposta;
     }

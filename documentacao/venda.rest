@@ -1,10 +1,10 @@
 ### Cadastrar uma nova venda
-POST http://localhost:8080/venda/cadastrar
+POST http://localhost:8080/1/venda/cadastrar
 Content-Type: application/json
 
 {
   "cadastro": "2025-01-01",
-  "identificacao": "1234567899",
+  "identificacao": "1234567809",
   "cliente": {
     "id": 1
   },
@@ -22,13 +22,13 @@ Content-Type: application/json
 }
 
 ### Obter todas as vendas
-GET http://localhost:8080/vendas
+GET http://localhost:8080/1/venda/vendas
 
 ### Obter uma venda específica
-GET http://localhost:8080/venda/1
+GET http://localhost:8080/1/venda/1
 
 ### Atualizar uma venda
-PUT http://localhost:8080/venda/atualizar
+PUT http://localhost:8080/1/venda/atualizar
 Content-Type: application/json
 
 {
@@ -57,7 +57,7 @@ Content-Type: application/json
 }
 
 ### Excluir uma venda
-DELETE http://localhost:8080/venda/excluir
+DELETE http://localhost:8080/1/venda/excluir
 Content-Type: application/json
 
 {
