@@ -3,7 +3,7 @@ POST http://localhost:8080/autenticacao/login
 Content-Type: application/json
 
 {
-  "nomeUsuario": "cliente-usuario-1",
+  "nomeUsuario": "admin-usuario",
   "senha": "123456"
 }
 
@@ -299,7 +299,7 @@ GET http://localhost:8080/1/usuarios
 Authorization: Bearer {{JWT}}
 
 ### Obter um usuario específico
-GET http://localhost:8080/1/usuario/2
+GET http://localhost:8080/1/usuario/3
 Authorization: Bearer {{JWT}}
 
 ### Atualizar um usuario
