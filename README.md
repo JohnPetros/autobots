@@ -19,7 +19,7 @@
 
 ## Sobre o projeto
 
-Autobots é um sistema backend para o gerenciamento vendas de peças e serviços para automóveis. O desenvolvimento do projeto foi dividido em 5 *branchs*, cada uma contendo uma etapa de evolução, porém funcional do projeto, que são:
+Autobots é um sistema backend desenvolvido para o gerenciamento de vendas de peças e serviços automotivos. O desenvolvimento do projeto foi dividido em cinco branches funcionais, cada uma representando uma etapa distinta e evolutiva do projeto. São elas:
 - **atvi**: CRUD de clientes.
 - **atvii**: Padronização de respostas de rota e [HATEOUS](https://www.treinaweb.com.br/blog/o-que-e-hateoas). 
 - **atviii**: CRUD de empresas, mercadorias, serviços e veículos com validação de dados.
@@ -59,6 +59,6 @@ mvn spring-boot:run
 ### Testando rotas
 
 - É possível ver a documentação das rotas feita com [Swagger](https://swagger.io/) acessando o endereço http://localhost:8080/swagger-ui/index.html
-- É possível também testar as rotas utilizando a extenção [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). As rotas de teste estão no arquivo `/rotas`.
+- É possível também testar as rotas utilizando a extenção [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). As rotas de teste estão na pasta `/rotas`.
 
 ---
