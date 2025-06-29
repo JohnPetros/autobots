@@ -28,7 +28,7 @@ Autobots é um sistema backend desenvolvido para o gerenciamento de vendas de pe
 
 ---
 
-## Guia de instalação do Atviv
+## Guia de instalação da Atviv
 
 ### Pré-requisitos
 
