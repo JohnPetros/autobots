@@ -28,13 +28,14 @@ public class SegurancaConfiguracao {
   private JwtFiltro jwtFiltro;
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(crsf -> crsf.disable());
     http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     http.authorizeHttpRequests(auth -> auth
         .requestMatchers(HttpMethod.POST, "/autenticacao/login").permitAll()
         .requestMatchers(HttpMethod.GET, "/h2/**").permitAll()
         .requestMatchers(HttpMethod.POST, "/h2/**").permitAll()
+        .requestMatchers(HttpMethod.GET, "/swagger-ui/index.html").permitAll()
         .anyRequest()
         .authenticated());
     http.addFilterBefore(
