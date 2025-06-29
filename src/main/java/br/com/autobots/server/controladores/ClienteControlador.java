@@ -36,8 +36,7 @@ public class ClienteControlador {
   @GetMapping("/cliente/{id}")
   @Operation(summary = "Obter cliente", description = "Retorna um cliente específico com base no ID fornecido")
   public Cliente obterCliente(@PathVariable long id) {
-    var cliente = repositorio.findById(id);
-    return cliente.get();
+    return repositorio.findById(id).get();
   }
 
   @GetMapping("/clientes")

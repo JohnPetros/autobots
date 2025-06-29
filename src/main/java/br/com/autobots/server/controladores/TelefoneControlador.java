@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.autobots.server.dtos.TelefoneDto;
 import br.com.autobots.server.entidades.Telefone;
+import br.com.autobots.server.repositorios.ClienteRepositorio;
 import br.com.autobots.server.repositorios.TelefoneRepositorio;
 import br.com.autobots.server.servicos.AtualizaTelefoneServico;
 import br.com.autobots.server.servicos.CadastraTelefoneServico;
@@ -33,11 +34,23 @@ public class TelefoneControlador {
   @Autowired
   private CadastraTelefoneServico cadastraTelefoneServico;
 
+  @Autowired
+  private ClienteRepositorio clienteRepositorio;
+
   @PostMapping("/cadastro")
   @Operation(summary = "Cadastrar telefone", description = "Cadastra um novo telefone")
   public void cadastrarTelefone(@RequestBody TelefoneDto telefone) {
     var telefoneEntity = cadastraTelefoneServico.cadastrar(telefone);
     telefoneRepositorio.save(telefoneEntity);
+
+    if (telefone.getClienteId() != null) {
+      var cliente = clienteRepositorio.findById(telefone.getClienteId());
+      if (cliente.isPresent()) {
+        var clienteEntity = cliente.get();
+        clienteEntity.getTelefones().add(telefoneEntity);
+        clienteRepositorio.save(clienteEntity);
+      }
+    }
   }
 
   @GetMapping("/telefones")
@@ -50,7 +63,6 @@ public class TelefoneControlador {
   @GetMapping("/telefone/{id}")
   @Operation(summary = "Obter telefone", description = "Retorna um telefone específico com base no ID fornecido")
   public Telefone obtertelefone(@PathVariable long id) {
-    System.out.println(id);
     var Telefone = telefoneRepositorio.findById(id);
     return Telefone.get();
   }

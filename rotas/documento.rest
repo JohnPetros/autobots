@@ -4,7 +4,8 @@ Content-Type: application/json
 
 {
   "tipo": "CPF",
-  "numero": "1234567899"
+  "numero": "1234567899",
+  "clienteId": 1
 }
 
 

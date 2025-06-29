@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class DocumentoDto {
+  @Schema(description = "ID do documento", example = "1")
+  private Long id;
   @Schema(description = "Tipo do documento", example = "CPF")
   private String tipo;
   @Schema(description = "Número do documento", example = "1234567890")

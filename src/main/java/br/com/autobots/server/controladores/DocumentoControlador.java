@@ -43,7 +43,6 @@ public class DocumentoControlador {
     var documentoEntity = cadastraDocumentoServico.cadastrar(documento);
     documentoRepositorio.save(documentoEntity);
 
-    // Se foi fornecido um clienteId, associar o documento ao cliente
     if (documento.getClienteId() != null) {
       var cliente = clienteRepositorio.findById(documento.getClienteId());
       if (cliente.isPresent()) {
@@ -64,7 +63,6 @@ public class DocumentoControlador {
   @GetMapping("/documento/{id}")
   @Operation(summary = "Obter documento", description = "Retorna um documento específico com base no ID fornecido")
   public Documento obterDocumento(@PathVariable long id) {
-    System.out.println(id);
     var documento = documentoRepositorio.findById(id);
     return documento.get();
   }

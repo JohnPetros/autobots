@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class EnderecoDto {
+  @Schema(description = "ID do endereço", example = "1")
+  private Long id;
   @Schema(description = "Estado do endereço", example = "SP")
   private String estado;
   @Schema(description = "Cidade do endereço", example = "São Paulo")

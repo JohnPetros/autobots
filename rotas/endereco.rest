@@ -9,7 +9,8 @@ Content-Type: application/json
   "rua": "Rua das Flores",
   "numero": "123",
   "codigoPostal": "01001-000",
-  "informacoesAdicionais": "Apto 101"
+  "informacoesAdicionais": "Apto 101",
+  "clienteId": 1
 }
 
 

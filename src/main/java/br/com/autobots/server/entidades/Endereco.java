@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -41,6 +42,6 @@ public class Endereco {
   private String informacoesAdicionais;
   @Column(name = "cliente_id")
   @Schema(description = "ID do cliente proprietário do endereço", example = "1")
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private Long clienteId;
 }

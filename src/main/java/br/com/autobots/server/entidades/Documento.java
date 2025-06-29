@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -25,11 +25,10 @@ public class Documento {
   @Column
   @Schema(description = "Tipo do documento", example = "CPF")
   private String tipo;
-  @Column(unique = true)
   @Schema(description = "Número do documento", example = "1234567890")
   private String numero;
   @Column(name = "cliente_id")
   @Schema(description = "ID do cliente proprietário do documento", example = "1")
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private Long clienteId;
 }

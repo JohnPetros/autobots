@@ -4,9 +4,9 @@ Content-Type: application/json
 
 {
   "ddd": "99",
-  "numero": "999999999"
+  "numero": "999999999",
+  "clienteId": 1
 }
-
 
 ### Obter telefones
 GET http://localhost:8080/telefone/telefones

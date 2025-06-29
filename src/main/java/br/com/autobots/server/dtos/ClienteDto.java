@@ -7,6 +7,8 @@ import lombok.Data;
 
 @Data
 public class ClienteDto {
+  @Schema(description = "ID do cliente", example = "1")
+  private Long id;
   @Schema(description = "Nome do cliente", example = "João da Silva")
   private String nome;
   @Schema(description = "Nome social do cliente", example = "João")

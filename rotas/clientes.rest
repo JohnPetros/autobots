@@ -19,8 +19,7 @@ Content-Type: application/json
     "bairro": "Jardim Paulista",
     "rua": "Rua das Flores",
     "numero": "123",
-    "codigoPostal": "01001-000",
-    "informacoesAdicionais": "Apto 101"
+    "codigoPostal": "01001-000"
   },
   "telefones": [
     {

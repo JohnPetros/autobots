@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -21,4 +24,8 @@ public class Telefone {
 	@Column
 	@Schema(description = "Número do telefone", example = "999999999")
 	private String numero;
+	@Column(name = "cliente_id")
+	@Schema(description = "ID do cliente proprietário do telefone", example = "1")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private Long clienteId;
 }
