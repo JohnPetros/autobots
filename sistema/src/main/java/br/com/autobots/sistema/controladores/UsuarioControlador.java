@@ -154,6 +154,7 @@ public class UsuarioControlador {
       throw new NaoEncontradoExcecao("Empresa não encontrada");
     }
     validaUsuarioServico.validar(usuario);
+    usuario.setEmpresaId(empresaId);
     usuarioRepositorio.save(usuario);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
