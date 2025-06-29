@@ -1,7 +1,5 @@
 package br.com.autobots.automanager.entidades;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import br.com.autobots.automanager.enums.TipoDocumento;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
@@ -22,7 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "documentos")
-public class Documento extends RepresentationModel<Documento> {
+public class Documento {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Schema(description = "ID do documento", example = "1")

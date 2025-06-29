@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "enderecos")
-public class Endereco extends RepresentationModel<Endereco> {
+public class Endereco {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Schema(description = "ID do endereço", example = "1")

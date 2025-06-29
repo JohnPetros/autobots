@@ -104,8 +104,8 @@ public class UsuarioControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada"),
       @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com esse nome de usuário"),
       @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com essa código de barras"),
+      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com esse email"),
       @ApiResponse(responseCode = "409", description = "Documento já cadastrado"),
-      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado")
   })
   public ResponseEntity<?> cadastrarUsuario(@RequestBody @Valid Usuario usuario, @PathVariable long empresaId) {
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
@@ -126,8 +126,8 @@ public class UsuarioControlador {
       @ApiResponse(responseCode = "404", description = "Empresa não encontrada"),
       @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com esse nome de usuário"),
       @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com essa código de barras"),
+      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado com esse email"),
       @ApiResponse(responseCode = "409", description = "Documento já cadastrado"),
-      @ApiResponse(responseCode = "409", description = "Usuario já cadastrado")
   })
   public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuarioAtualizacao, @PathVariable long empresaId) {
     if (usuarioAtualizacao.getId() == null) {

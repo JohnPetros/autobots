@@ -53,9 +53,12 @@ public class VendaControlador {
   @Operation(summary = "Cadastrar venda", description = "Cadastra um novo venda")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Venda cadastrada com sucesso"),
+      @ApiResponse(responseCode = "409", description = "Venda já cadastrada"),
       @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+      @ApiResponse(responseCode = "404", description = "Funcionário não encontrado"),
       @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada"),
-      @ApiResponse(responseCode = "404", description = "Serviço não encontrado")
+      @ApiResponse(responseCode = "404", description = "Serviço não encontrado"),
+      @ApiResponse(responseCode = "404", description = "Veículo não encontrado")
   })
   public ResponseEntity<?> cadastrarVenda(@RequestBody @Valid Venda venda, @PathVariable long empresaId) {
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);
@@ -115,10 +118,13 @@ public class VendaControlador {
   @PutMapping("/{empresaId}/venda/atualizar")
   @Operation(summary = "Atualizar venda", description = "Atualiza as informações de um venda existente")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Venda atualizada com sucesso"),
-      @ApiResponse(responseCode = "422", description = "Venda não pode ser atualizada"),
-      @ApiResponse(responseCode = "404", description = "Venda não encontrada"),
-      @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
+      @ApiResponse(responseCode = "201", description = "Venda cadastrada com sucesso"),
+      @ApiResponse(responseCode = "409", description = "Venda já cadastrada"),
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+      @ApiResponse(responseCode = "404", description = "Funcionário não encontrado"),
+      @ApiResponse(responseCode = "404", description = "Mercadoria não encontrada"),
+      @ApiResponse(responseCode = "404", description = "Serviço não encontrado"),
+      @ApiResponse(responseCode = "404", description = "Veículo não encontrado")
   })
   public ResponseEntity<?> atualizarVenda(@RequestBody Venda vendaAtualizado, @PathVariable long empresaId) {
     Optional<Empresa> empresa = empresaRepositorio.findById(empresaId);

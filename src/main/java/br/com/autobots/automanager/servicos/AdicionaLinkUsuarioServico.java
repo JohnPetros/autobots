@@ -13,16 +13,7 @@ import br.com.autobots.automanager.entidades.Usuario;
 @Service
 public class AdicionaLinkUsuarioServico implements AdicionaLinkServico<Usuario> {
 	@Autowired
-	private AdicionaLinkDocumentoServico adicionaLinkDocumentoServico;
-
-	@Autowired
 	private AdicionaLinkTelefoneServico adicionaLinkTelefoneServico;
-
-	@Autowired
-	private AdicionaLinkEnderecoServico adicionaLinkEnderecoServico;
-
-	@Autowired
-	private AdicionaLinkVeiculoServico adicionaLinkVeiculoServico;
 
 	@Override
 	public void adicionarLink(List<Usuario> usuarios, Long empresaId) {
@@ -53,18 +44,7 @@ public class AdicionaLinkUsuarioServico implements AdicionaLinkServico<Usuario> 
 						.methodOn(UsuarioControlador.class)
 						.excluirUsuario(null, empresaId))
 				.withRel("excluir");
-		if (!usuario.getDocumentos().isEmpty()) {
-			adicionaLinkDocumentoServico.adicionarLink(usuario.getDocumentos(), empresaId);
-		}
-		if (!usuario.getTelefones().isEmpty()) {
-			adicionaLinkTelefoneServico.adicionarLink(usuario.getTelefones(), empresaId);
-		}
-		if (usuario.getEndereco() != null) {
-			adicionaLinkEnderecoServico.adicionarLink(usuario.getEndereco(), empresaId);
-		}
-		if (!usuario.getVeiculos().isEmpty()) {
-			adicionaLinkVeiculoServico.adicionarLink(usuario.getVeiculos(), empresaId);
-		}
+		adicionaLinkTelefoneServico.adicionarLink(usuario.getTelefones(), empresaId);
 		usuario.add(linkProprio);
 		usuario.add(linkCadastrar);
 		usuario.add(linkAtualizar);

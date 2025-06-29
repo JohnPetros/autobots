@@ -29,7 +29,7 @@ public class AdicionaLinkMercadoriaServico implements AdicionaLinkServico<Mercad
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
             .obterMercadorias(empresaId))
-        .withRel("obter todos os mercadorias");
+        .withRel("obter todas as mercadorias");
     Link linkCadastrar = WebMvcLinkBuilder
         .linkTo(WebMvcLinkBuilder
             .methodOn(MercadoriaControlador.class)
