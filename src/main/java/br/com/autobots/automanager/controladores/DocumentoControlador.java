@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import br.com.autobots.automanager.entidades.Documento;
+import br.com.autobots.automanager.repositorios.ClienteRepositorio;
 import br.com.autobots.automanager.repositorios.DocumentoRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkDocumentoServico;
 import br.com.autobots.automanager.servicos.AtualizaDocumentoServico;
@@ -38,11 +39,16 @@ public class DocumentoControlador {
   @Autowired
   private AtualizaDocumentoServico atualizaDocumentoServico;
 
+  @Autowired
+  private ClienteRepositorio clienteRepositorio;
+
   @PostMapping("/documento/cadastrar")
   @Operation(summary = "Cadastrar documento", description = "Cadastra um novo documento")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Documento cadastrado com sucesso"),
-      @ApiResponse(responseCode = "409", description = "Documento já cadastrado")
+      @ApiResponse(responseCode = "409", description = "Documento já cadastrado"),
+      @ApiResponse(responseCode = "400", description = "ID do cliente não pode ser nulo"),
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
   })
   public ResponseEntity<?> cadastrarDocumento(@RequestBody Documento documento) {
     if (documento.getId() != null) {
@@ -52,7 +58,18 @@ public class DocumentoControlador {
     if (documentoExistente.isPresent()) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    repositorio.save(documento);
+    if (documento.getClienteId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    var cliente = clienteRepositorio.findById(documento.getClienteId());
+    if (cliente.isPresent()) {
+      var clienteEntity = cliente.get();
+      repositorio.save(documento);
+      clienteEntity.getDocumentos().add(documento);
+      clienteRepositorio.save(clienteEntity);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -95,7 +112,8 @@ public class DocumentoControlador {
   @Operation(summary = "Atualizar documento", description = "Atualiza as informações de um documento existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Documento atualizado com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Documento não encontrado")
+      @ApiResponse(responseCode = "404", description = "Documento não encontrado"),
+      @ApiResponse(responseCode = "400", description = "ID do documento não pode ser nulo")
   })
   public ResponseEntity<?> atualizarDocumento(@RequestBody Documento documentoAtualizado) {
     if (documentoAtualizado.getId() == null) {
@@ -118,7 +136,8 @@ public class DocumentoControlador {
   @Operation(summary = "Excluir documento", description = "Exclui um documento existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Documento excluído com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Documento não encontrado")
+      @ApiResponse(responseCode = "404", description = "Documento não encontrado"),
+      @ApiResponse(responseCode = "400", description = "ID do documento não pode ser nulo")
   })
   public ResponseEntity<?> excluirDocumento(@RequestBody Documento exclusao) {
     if (exclusao.getId() == null) {

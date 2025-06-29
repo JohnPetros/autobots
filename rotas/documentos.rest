@@ -4,7 +4,8 @@ Content-Type: application/json
 
 {
   "tipo": "CPF",
-  "numero": "1234567898"
+  "numero": "1234567898",
+  "clienteId": 1
 }
 
 ### Obter todos os documentos

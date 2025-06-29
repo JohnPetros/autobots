@@ -110,7 +110,8 @@ public class ClienteControlador {
   @Operation(summary = "Atualizar cliente", description = "Atualiza as informações de um cliente existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+      @ApiResponse(responseCode = "400", description = "ID do cliente não pode ser nulo")
   })
   public ResponseEntity<?> atualizarCliente(@RequestBody Cliente clienteAtualizacao) {
     if (clienteAtualizacao.getId() == null) {
@@ -146,7 +147,8 @@ public class ClienteControlador {
   @Operation(summary = "Excluir cliente", description = "Exclui um cliente existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Cliente excluído com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+      @ApiResponse(responseCode = "400", description = "ID do cliente não pode ser nulo")
   })
   public ResponseEntity<?> excluirCliente(@RequestBody Cliente exclusao) {
     if (exclusao.getId() == null) {

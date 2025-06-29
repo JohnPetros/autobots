@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import br.com.autobots.automanager.entidades.Telefone;
+import br.com.autobots.automanager.repositorios.ClienteRepositorio;
 import br.com.autobots.automanager.repositorios.TelefoneRepositorio;
 import br.com.autobots.automanager.servicos.AdicionaLinkTelefoneServico;
 import br.com.autobots.automanager.servicos.AtualizaTelefoneServico;
@@ -38,11 +39,16 @@ public class TelefoneControlador {
   @Autowired
   private AtualizaTelefoneServico atualizaTelefoneServico;
 
+  @Autowired
+  private ClienteRepositorio clienteRepositorio;
+
   @PostMapping("/telefone/cadastrar")
   @Operation(summary = "Cadastrar telefone", description = "Cadastra um novo telefone")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Telefone cadastrado com sucesso"),
-      @ApiResponse(responseCode = "409", description = "Telefone já cadastrado")
+      @ApiResponse(responseCode = "400", description = "ID do cliente não pode ser nulo"),
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+      @ApiResponse(responseCode = "409", description = "Telefone já cadastrado"),
   })
   public ResponseEntity<?> cadastrarTelefone(@RequestBody Telefone telefone) {
     if (telefone.getId() != null) {
@@ -52,7 +58,20 @@ public class TelefoneControlador {
     if (telefoneExistente.isPresent()) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    repositorio.save(telefone);
+
+    if (telefone.getClienteId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    var cliente = clienteRepositorio.findById(telefone.getClienteId());
+    if (cliente.isPresent()) {
+      var clienteEntity = cliente.get();
+      clienteEntity.getTelefones().add(telefone);
+      repositorio.save(telefone);
+      clienteRepositorio.save(clienteEntity);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -95,7 +114,8 @@ public class TelefoneControlador {
   @Operation(summary = "Atualizar telefone", description = "Atualiza as informações de um telefone existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Telefone atualizado com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Telefone não encontrado")
+      @ApiResponse(responseCode = "404", description = "Telefone não encontrado"),
+      @ApiResponse(responseCode = "400", description = "ID do telefone não pode ser nulo")
   })
   public ResponseEntity<?> atualizarTelefone(@RequestBody Telefone telefoneAtualizado) {
     if (telefoneAtualizado.getId() == null) {
@@ -120,7 +140,8 @@ public class TelefoneControlador {
   @Operation(summary = "Excluir telefone", description = "Exclui um telefone existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Telefone excluído com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Telefone não encontrado")
+      @ApiResponse(responseCode = "404", description = "Telefone não encontrado"),
+      @ApiResponse(responseCode = "400", description = "ID do telefone não pode ser nulo")
   })
   public ResponseEntity<?> excluirTelefone(@RequestBody Telefone exclusao) {
     if (exclusao.getId() == null) {

@@ -4,7 +4,8 @@ Content-Type: application/json
 
 {
   "ddd": "12",
-  "numero": "999999999"
+  "numero": "999999999",
+  "clienteId": 1
 }
 
 ### Obter todos os telefones

@@ -47,13 +47,26 @@ public class EnderecoControlador {
   @Operation(summary = "Cadastrar endereco", description = "Cadastra um novo endereco")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Endereco cadastrado com sucesso"),
-      @ApiResponse(responseCode = "409", description = "Endereco já cadastrado")
+      @ApiResponse(responseCode = "409", description = "Endereco já cadastrado"),
+      @ApiResponse(responseCode = "400", description = "ID do cliente não pode ser nulo"),
+      @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
   })
   public ResponseEntity<?> cadastrarEndereco(@RequestBody Endereco endereco) {
     if (endereco.getId() != null) {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    enderecoRepositorio.save(endereco);
+    if (endereco.getClienteId() == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    var cliente = clienteRepositorio.findById(endereco.getClienteId());
+    if (cliente.isPresent()) {
+      var clienteEntity = cliente.get();
+      clienteEntity.setEndereco(endereco);
+      enderecoRepositorio.save(endereco);
+      clienteRepositorio.save(clienteEntity);
+    } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -96,7 +109,8 @@ public class EnderecoControlador {
   @Operation(summary = "Atualizar endereco", description = "Atualiza as informações de um endereco existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Endereco atualizado com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Endereco não encontrado")
+      @ApiResponse(responseCode = "404", description = "Endereco não encontrado"),
+      @ApiResponse(responseCode = "400", description = "ID do endereco não pode ser nulo")
   })
   public ResponseEntity<?> atualizarEndereco(@RequestBody Endereco enderecoAtualizado) {
     if (enderecoAtualizado.getId() == null) {
@@ -115,7 +129,8 @@ public class EnderecoControlador {
   @Operation(summary = "Excluir endereco", description = "Exclui um endereco existente")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Endereco excluído com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Endereco não encontrado")
+      @ApiResponse(responseCode = "404", description = "Endereco não encontrado"),
+      @ApiResponse(responseCode = "400", description = "ID do endereco não pode ser nulo")
   })
   public ResponseEntity<?> excluirEndereco(@RequestBody Endereco exclusao) {
     HttpStatus status = HttpStatus.NOT_FOUND;

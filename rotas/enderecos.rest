@@ -9,7 +9,8 @@ Content-Type: application/json
   "rua": "Rua das Flores",
   "numero": "123",
   "codigoPostal": "04101-300",
-  "informacoesAdicionais": "Apto 101"
+  "informacoesAdicionais": "Apto 101",
+  "clienteId": 1
 }
 
 ### Obter todos os enderecos

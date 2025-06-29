@@ -2,6 +2,8 @@ package br.com.autobots.automanager.entidades;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,4 +53,8 @@ public class Endereco extends RepresentationModel<Endereco> {
   @Column(unique = false, nullable = true)
   @Schema(description = "Informações adicionais do endereço", example = "Apto 101")
   private String informacoesAdicionais;
+
+  @Column(name = "cliente_id")
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private Long clienteId;
 }

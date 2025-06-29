@@ -19,8 +19,7 @@ Content-Type: application/json
     "bairro": "Jardim Paulista",
     "rua": "Rua das Flores",
     "numero": "123",
-    "codigoPostal": "04101-300",
-    "informacoesAdicionais": "Apto 101"
+    "codigoPostal": "04101-300"
   },
   "telefones": [
     {
@@ -54,11 +53,11 @@ Content-Type: application/json
   ],
   "endereco": {
     "estado": "RJ",
-    "cidade": "São Paulo",
-    "bairro": "Jardim Paulista",
+    "cidade": "Rio de Janeiro",
+    "bairro": "Copacabana",
     "rua": "Rua das Flores",
     "numero": "123",
-    "codigoPostal": "04101-300",
+    "codigoPostal": "04101-300", 
     "informacoesAdicionais": "Apto 101"
   },
   "telefones": [
